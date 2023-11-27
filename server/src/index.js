@@ -1,11 +1,6 @@
 const port = 8080;
-const express = require('express');
-const app = express();
-
-app.get('/', (req, res) => {
-  res.send('Server is up and running!');
-});
+const app = require('./app-config');
 
 app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+  console.log(`Serveur Express en cours d'exécution sur le port ${port}`);
 });
