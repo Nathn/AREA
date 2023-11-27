@@ -2,14 +2,22 @@ const express = require('express');
 const router = express.Router();
 
 router.get("/about.json", (req, res) => {
-  res.json({
+  var host = req.ip;
+  if (host.startsWith("::ffff:"))
+    host = host.substring(7);
+
+  const current_time = Math.floor(Date.now() / 1000);
+
+  const data = {
     "client": {
-      "host": req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+      "host": host
     },
     "server": {
-      "current_time": Date.now(),
-    }
-  });
+      "current_time": current_time,
+    },
+  };
+
+  res.json(data);
 });
 
 module.exports = router;
