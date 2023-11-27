@@ -11,12 +11,30 @@ services:
     volumes:
       - ./server:/app
 
+  client_mobile:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.flutter
+    container_name: area-client-mobile
+    depends_on:
+      - server
+    volumes:
+      - ./app:/app
+      - common:/apk
+
   client_web:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.react
     container_name: area-client-web
+    depends_on:
+      - server
+      - client_mobile
     ports:
       - "8081:3000"
     volumes:
       - ./web:/app
+      - common:/apk
+
+volumes:
+  common:

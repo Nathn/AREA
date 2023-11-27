@@ -1,0 +1,42 @@
+# Flutter Dockerfile
+
+# Ubuntu base image
+FROM ubuntu:18.04
+
+# Installing base dependencies
+RUN apt update && apt install -y curl git unzip xz-utils zip libglu1-mesa openjdk-8-jdk wget
+
+# Installing Android SDK
+WORKDIR /home/developer
+
+RUN mkdir -p Android/sdk
+ENV ANDROID_SDK_ROOT /home/developer/Android/sdk
+RUN mkdir -p .android && touch .android/repositories.cfg
+
+RUN wget -q -O sdk-tools.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
+RUN unzip -q sdk-tools.zip && rm sdk-tools.zip
+RUN mv tools Android/sdk/tools
+RUN cd Android/sdk/tools/bin && yes | ./sdkmanager --licenses
+RUN cd Android/sdk/tools/bin && ./sdkmanager "build-tools;29.0.2" "platform-tools" "platforms;android-29" "sources;android-29" >/dev/null
+ENV PATH "$PATH:/home/developer/Android/sdk/platform-tools"
+
+# Installing Flutter SDK
+RUN wget -q https://storage.googleapis.com/flutter_infra/releases/stable/linux/flutter_linux_1.22.6-stable.tar.xz
+RUN tar -xJf flutter_linux_1.22.6-stable.tar.xz
+ENV PATH "$PATH:/home/developer/flutter/bin"
+RUN git config --global --add safe.directory /home/developer/flutter
+
+RUN flutter doctor
+
+# Setting working directory
+WORKDIR /app
+COPY ./app /app
+
+# Setting up Flutter app
+RUN flutter pub get
+RUN flutter analyze .
+RUN flutter test --verbose
+RUN flutter build apk
+
+# Copying APK to /apk
+ENTRYPOINT cp /app/build/app/outputs/apk/release/app-release.apk /apk/client.apk
