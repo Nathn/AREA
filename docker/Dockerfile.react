@@ -12,5 +12,5 @@ COPY ./app/package*.json ./
 # Install dependencies
 RUN npm install
 
-# Launch express server
+# Launch react application
 CMD ["npm", "start"]
