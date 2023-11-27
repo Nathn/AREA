@@ -10,3 +10,13 @@ services:
       - "8080:8080"
     volumes:
       - ./server:/app
+
+  client_web:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.react
+    container_name: area-client-web
+    ports:
+      - "8081:3000"
+    volumes:
+      - ./app:/app
