@@ -3,9 +3,13 @@
 <img src="./img_src/place_holder.png" height="150px" style=";margin: 1em 30vh 0;z-index: 1">
 
 ## **Table of contents**
-- [Description](#description)
-- [Developer](#developers)
-- [Benchmark](#benchmark)
+- [AREA](#area)
+  - [**Table of contents**](#table-of-contents)
+  - [Description](#description)
+    - [Developers](#developers)
+    - [Benchmark](#benchmark)
+  - [Requirements](#requirements)
+  - [Launching the project](#launching-the-project)
 
 ## Description
 <p style="font-size:40px; color: cyan;font-weight:bold;">A<span style="color:white;font-weight:bold">ction</span></span><span style="color:gray;font-size:30px"> and</span> REA<span style="color:white">ction</span></p>
@@ -29,3 +33,27 @@ The aim of this project is to create a software platform that function like a IF
 - MEAN (MongoDB | Express | AngularJS | NodeJS)
 - RUBY (Ruby on rails full stack)
 
+
+## Requirements
+For this project you will need at least on your computer:
+
+> Using the provided Docker installation
+- [Docker](https://docs.docker.com/engine/install/)
+- [Docker compose](https://docs.docker.com/compose/install/)
+
+## Launching the project
+
+> Using Docker compose
+
+First, build the containers using:
+```bash
+docker compose build
+```
+
+Once the containers are built, you can run the project by using:
+
+```bash
+docker compose up -d
+```
+
+Now you should be able to access the web application on [localhost:8081](http://localhost:8081) !
