@@ -19,4 +19,4 @@ services:
     ports:
       - "8081:3000"
     volumes:
-      - ./app:/app
+      - ./web:/app
