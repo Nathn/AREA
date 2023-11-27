@@ -31,7 +31,7 @@ services:
       - server
       - client_mobile
     ports:
-      - "8081:3000"
+      - "8081:8081"
     volumes:
       - ./web:/app
       - common:/apk
