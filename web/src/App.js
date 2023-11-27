@@ -2,23 +2,25 @@ import expressServer from './api/express-server';
 import React, { useState, useEffect } from 'react';
 
 function App() {
-  const [ping, setPing] = useState(null);
+  const [about, setAbout] = useState(null);
 
   useEffect(() => {
-    expressServer.ping().then((response) => {
-      setPing(response.data);
+    expressServer.about().then((response) => {
+      setAbout(response.data);
     });
   }, []);
 
   return (
     <div>
-      {ping ? (
+      { about ? (
         <div>
-          <p>Server ping:</p>
-          <p>{ping}</p>
+          <h1>Client host: {about.client.host}</h1>
+          <h1>Server current time: {about.server.current_time}</h1>
         </div>
       ) : (
-        <p>Loading.. please wait!</p>
+        <div>
+          <h1>Loading...</h1>
+        </div>
       )}
     </div>
   );
