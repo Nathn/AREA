@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.express
+    container_name: area-server
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./server:/app
