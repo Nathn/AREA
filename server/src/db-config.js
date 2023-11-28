@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
-const uri = "mongodb+srv://corentinlevet:58e1KHanQWUOFM18@area.jtrmzx9.mongodb.net/area-db?retryWrites=true&w=majority"; // TODO : Load from env
+require('dotenv').config();
+
+const uri = process.env.MONGODB_URI;
 
 mongoose.connect(uri, {
   useNewUrlParser: true,
