@@ -36,7 +36,6 @@ COPY ./app /app
 RUN flutter pub get
 RUN flutter analyze .
 RUN flutter test --verbose
-RUN flutter build apk
 
-# Copying APK to /apk
-ENTRYPOINT cp /app/build/app/outputs/apk/release/app-release.apk /apk/client.apk
+# Building Flutter app
+ENTRYPOINT ["./entrypoint.sh"]
