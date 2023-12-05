@@ -1,0 +1,16 @@
+# React Dockerfile
+
+# Node base image
+FROM node:latest
+
+# Set working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY ./web/package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Launch react application
+CMD ["npm", "start"]
