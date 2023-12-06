@@ -1,5 +1,5 @@
-import expressServer from './api/express-server';
-import React, { useState, useEffect } from 'react';
+import expressServer from "./api/express-server";
+import React, { useState, useEffect } from "react";
 
 function App() {
   const [about, setAbout] = useState(null);
@@ -12,16 +12,19 @@ function App() {
 
   return (
     <div>
-      { about ? (
-        <div>
-          <h1>Client host: {about.client.host}</h1>
-          <h1>Server current time: {about.server.current_time}</h1>
-        </div>
-      ) : (
-        <div>
-          <h1>Loading...</h1>
-        </div>
-      )}
+      <h1>AREA</h1>
+      <div>
+        {about ? (
+          <div>
+            <h2>Client host: {about.client.host}</h2>
+            <h2>Server current time: {about.server.current_time}</h2>
+          </div>
+        ) : (
+          <div>
+            <h2>Loading...</h2>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
