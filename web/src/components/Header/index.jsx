@@ -7,7 +7,7 @@ function Header() {
         <h3>Accueil</h3>
       </Link>
       <Link to="/login">
-        <h3>Connexion / Inscription</h3>
+        <h3>Signin</h3>
       </Link>
     </nav>
   );
