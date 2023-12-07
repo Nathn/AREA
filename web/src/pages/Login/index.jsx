@@ -1,6 +1,6 @@
-import { initializeApp } from "firebase/app";
-import { getAuth, EmailAuthProvider, GoogleAuthProvider } from "firebase/auth";
-import * as firebaseui from "firebaseui";
+import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAS_48Zw3y2m5BhZ1vqSQACsIjd36xaR2o",
@@ -12,40 +12,27 @@ const firebaseConfig = {
   measurementId: "G-YLDGSLQMGY",
 };
 
-function Login() {
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const ui =
-    firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(auth);
-  var uiConfig = {
-    callbacks: {
-      signInSuccessWithAuthResult: function (authResult, redirectUrl) {
-        // User successfully signed in.
-        // Return type determines whether we continue the redirect automatically
-        // or whether we leave that to developer to handle.
-        return true;
-      },
-      uiShown: function () {
-        // The widget is rendered.
-        // Hide the loader.
-        document.getElementById("loader").style.display = "none";
-      },
+firebase.initializeApp(firebaseConfig);
+const uiConfig = {
+  callbacks: {
+    signInSuccessWithAuthResult: function (authResult, redirectUrl) {
+      return true;
     },
-    signInSuccessUrl: "/",
-    signInOptions: [
-      EmailAuthProvider.PROVIDER_ID,
-      // GoogleAuthProvider.PROVIDER_ID,
-    ],
-    tosUrl: "/",
-    privacyPolicyUrl: "/",
-  };
+  },
+  signInSuccessUrl: "/",
+  signInFlow: "popup",
+  signInOptions: [
+    firebase.auth.EmailAuthProvider.PROVIDER_ID,
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+  ],
+  tosUrl: "/tos",
+  privacyPolicyUrl: "/privacy",
+};
 
-  ui.start("#firebaseui-auth-container", uiConfig);
-
+function Login() {
   return (
     <div>
-      <div id="firebaseui-auth-container"></div>
-      <div id="loader">Loading...</div>
+      <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
     </div>
   );
 }
