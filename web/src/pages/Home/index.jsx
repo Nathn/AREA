@@ -1,5 +1,5 @@
-import expressServer from "../../api/express-server";
 import React, { useState, useEffect } from "react";
+import expressServer from "../../api/express-server";
 
 function App() {
   const [about, setAbout] = useState(null);

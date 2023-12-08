@@ -2,6 +2,8 @@ import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 
+import expressServer from "../../api/express-server";
+
 const firebaseConfig = {
   apiKey: "AIzaSyAS_48Zw3y2m5BhZ1vqSQACsIjd36xaR2o",
   authDomain: "area-om.firebaseapp.com",
@@ -16,7 +18,25 @@ firebase.initializeApp(firebaseConfig);
 const uiConfig = {
   callbacks: {
     signInSuccessWithAuthResult: function (authResult, redirectUrl) {
-      return true;
+      if (authResult.additionalUserInfo.isNewUser) {
+        expressServer
+          .createUser({
+            uid: authResult.user.uid,
+            email: authResult.user.email,
+            name: authResult.user.displayName,
+            photoURL: authResult.user.photoURL,
+          })
+          .then((response) => {
+            if (response.status !== 200) {
+              console.log(response);
+              return false;
+            }
+            window.location.assign("/");
+            return true;
+          });
+      } else {
+        return true;
+      }
     },
   },
   signInSuccessUrl: "/",

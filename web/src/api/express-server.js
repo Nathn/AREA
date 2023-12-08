@@ -14,6 +14,10 @@ class ExpressServer {
   about() {
     return this.api.get("/about.json");
   }
+
+  createUser(user) {
+    return this.api.post("/register", user);
+  }
 }
 
 const expressServer = new ExpressServer();

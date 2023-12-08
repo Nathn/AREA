@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
+router.use((req, res, next) => {
+  console.log(`Received ${req.method} request for ${req.url}`);
+  next();
+});
+
 const about = require('./about');
 const users = require('./users');
 
