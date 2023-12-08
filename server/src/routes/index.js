@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-router.use((req, res, next) => {
+router.use((req, res, next) => { // Log all requests
   console.log(`Received ${req.method} request for ${req.url}`);
   next();
 });
