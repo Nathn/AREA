@@ -39,6 +39,11 @@ function Header() {
           <h3>Sign in</h3>
         </Link>
       )}
+      {user && !loading && (
+        <a href="" onClick={() => firebase.auth().signOut()}>
+          <h3>Sign out</h3>
+        </a>
+      )}
     </nav>
   );
 }
