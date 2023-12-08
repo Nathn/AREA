@@ -14,6 +14,7 @@ router.get("/about.json", (req, res) => {
     },
     "server": {
       "current_time": current_time,
+      "services": []
     },
   };
 
