@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+
 import expressServer from "../../api/express-server";
 
 function App() {
@@ -11,7 +12,7 @@ function App() {
   }, []);
 
   return (
-    <div>
+    <div className="App">
       <h1>AREA</h1>
       <div>
         {about ? (

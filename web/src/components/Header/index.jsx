@@ -1,7 +1,9 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import { useState, useEffect } from "react";
+
+import "./index.css";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAS_48Zw3y2m5BhZ1vqSQACsIjd36xaR2o",
@@ -40,9 +42,15 @@ function Header() {
         </Link>
       )}
       {user && !loading && (
+          <span>
+            Signed in as <strong>{user.displayName}</strong>
+          </span>
+
+      )}
+      {user && !loading && (
         <a href="" onClick={() => firebase.auth().signOut()}>
-          <h3>Sign out</h3>
-        </a>
+        <h3>Sign out</h3>
+      </a>
       )}
     </nav>
   );

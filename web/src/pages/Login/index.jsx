@@ -34,12 +34,11 @@ const uiConfig = {
             window.location.assign("/");
             return true;
           });
-      } else {
-        return true;
       }
+      window.location.assign("/");
+      return true;
     },
   },
-  signInSuccessUrl: "/",
   signInFlow: "popup",
   signInOptions: [
     firebase.auth.EmailAuthProvider.PROVIDER_ID,
@@ -51,7 +50,7 @@ const uiConfig = {
 
 function Login() {
   return (
-    <div>
+    <div className="App">
       <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
     </div>
   );
