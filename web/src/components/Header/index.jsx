@@ -22,8 +22,22 @@ function Header() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const cookieValue = document.cookie
+      ?.split('; ')
+      ?.find(row => row.startsWith('user='))
+      ?.split('=')[1];
+
+    const user = cookieValue ? JSON.parse(decodeURIComponent(cookieValue)) : null;
+    if (user) {
+      setUser(user);
+      setLoading(false);
+    }
+
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       setUser(user);
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 30);
+      document.cookie = `user=${encodeURIComponent(JSON.stringify(user))}; expires=${expiryDate}; path=/`;
       setLoading(false);
     });
 
