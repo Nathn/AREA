@@ -13,7 +13,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>AREA</h1>
+      <h1>AREA ({process.env.NODE_ENV} mode)</h1>
       <div>
         {about ? (
           <div>

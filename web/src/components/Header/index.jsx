@@ -6,16 +6,20 @@ import "firebase/compat/auth";
 import "./index.css";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAS_48Zw3y2m5BhZ1vqSQACsIjd36xaR2o",
-  authDomain: "area-om.firebaseapp.com",
-  projectId: "area-om",
-  storageBucket: "area-om.appspot.com",
-  messagingSenderId: "1082443809392",
-  appId: "1:1082443809392:web:08cea15ff2455c9e8deab5",
-  measurementId: "G-YLDGSLQMGY",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_AP_FIREBASEP_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+} else {
+  firebase.app();
+}
 
 function Header() {
   const [user, setUser] = useState(null);
@@ -23,11 +27,13 @@ function Header() {
 
   useEffect(() => {
     const cookieValue = document.cookie
-      ?.split('; ')
-      ?.find(row => row.startsWith('user='))
-      ?.split('=')[1];
+      ?.split("; ")
+      ?.find((row) => row.startsWith("user="))
+      ?.split("=")[1];
 
-    const user = cookieValue ? JSON.parse(decodeURIComponent(cookieValue)) : null;
+    const user = cookieValue
+      ? JSON.parse(decodeURIComponent(cookieValue))
+      : null;
     if (user) {
       setUser(user);
       setLoading(false);
@@ -37,7 +43,9 @@ function Header() {
       setUser(user);
       const expiryDate = new Date();
       expiryDate.setDate(expiryDate.getDate() + 30);
-      document.cookie = `user=${encodeURIComponent(JSON.stringify(user))}; expires=${expiryDate}; path=/`;
+      document.cookie = `user=${encodeURIComponent(
+        JSON.stringify(user)
+      )}; expires=${expiryDate}; path=/`;
       setLoading(false);
     });
 
@@ -56,15 +64,14 @@ function Header() {
         </Link>
       )}
       {user && !loading && (
-          <span>
-            Signed in as <strong>{user.displayName}</strong>
-          </span>
-
+        <span>
+          Signed in as <strong>{user.displayName}</strong>
+        </span>
       )}
       {user && !loading && (
-        <a href="" onClick={() => firebase.auth().signOut()}>
-        <h3>Sign out</h3>
-      </a>
+        <a href="#" onClick={() => firebase.auth().signOut()}>
+          <h3>Sign out</h3>
+        </a>
       )}
     </nav>
   );
