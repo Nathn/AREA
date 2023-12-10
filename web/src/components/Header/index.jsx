@@ -40,11 +40,11 @@ function Header() {
     }
 
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      setUser(user);
+      setUser(user || null);
       const expiryDate = new Date();
       expiryDate.setDate(expiryDate.getDate() + 30);
       document.cookie = `user=${encodeURIComponent(
-        JSON.stringify(user)
+        (user ? JSON.stringify(user) : null) || ""
       )}; expires=${expiryDate}; path=/`;
       setLoading(false);
     });

@@ -7,6 +7,7 @@ import reportWebVitals from "./reportWebVitals";
 
 import Home from "./pages/Home/";
 import Login from "./pages/Login/";
+import New from "./pages/New/";
 
 import Header from "./components/Header";
 
@@ -17,6 +18,7 @@ root.render(
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/new" element={<New />} />
     </Routes>
   </Router>
 );

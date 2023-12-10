@@ -31,10 +31,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>AREA ({process.env.NODE_ENV} mode)</h1>
-      <Link className="main-button" to={user ? "/new" : "/login"}>
-        Créer une nouvelle action/réaction
-      </Link>
+      <h1>Ajouter une action/réaction</h1>
     </div>
   );
 }
