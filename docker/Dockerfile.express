@@ -9,8 +9,5 @@ WORKDIR /app
 # Copy package.json and package-lock.json
 COPY ./server/package*.json ./
 
-# Install dependencies
-RUN npm install
-
-# Launch express server
-CMD ["npm", "start"]
+# Install dependencies and launch express server
+CMD [ "sh", "-c", "npm install && npm start" ]

@@ -9,8 +9,5 @@ WORKDIR /app
 # Copy package.json and package-lock.json
 COPY ./web/package*.json ./
 
-# Install dependencies
-RUN npm install --legacy-peer-deps
-
-# Launch react application
-CMD ["npm", "start"]
+# Install dependencies and launch react application
+CMD [ "sh", "-c", "npm install --legacy-peer-deps && npm start" ]
