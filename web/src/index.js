@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -11,17 +11,34 @@ import New from "./pages/New/";
 
 import Header from "./components/Header";
 
+function App() {
+  const [user, setUser] = useState(null);
+  // You can use useEffect here to listen for changes in the user's auth state
+  if (user) {
+    return (
+      <Router>
+        <Header user={user} setUser={setUser} />
+        <Routes>
+          <Route path="/" element={<Home user={user} setUser={setUser} />} />
+          <Route path="/new" element={<New user={user} />} />
+        </Routes>
+      </Router>
+    );
+  } else {
+    return (
+      <Router>
+        <Header user={user} setUser={setUser} />
+        <Routes>
+          <Route path="/" element={<Home user={user} setUser={setUser} />} />
+          <Route path="/new" element={<New user={user} />} />
+          <Route path="/login" element={<Login setUser={setUser} />} />
+        </Routes>
+      </Router>
+    );
+  }
+}
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-  <Router>
-    <Header />
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/new" element={<New />} />
-    </Routes>
-  </Router>
-);
+root.render(<App />);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

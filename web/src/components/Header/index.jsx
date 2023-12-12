@@ -21,8 +21,7 @@ if (!firebase.apps.length) {
   firebase.app();
 }
 
-function Header() {
-  const [user, setUser] = useState(null);
+function Header({ user, setUser }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,11 +30,11 @@ function Header() {
       ?.find((row) => row.startsWith("user="))
       ?.split("=")[1];
 
-    const user = cookieValue
+    const userFromCookie = cookieValue
       ? JSON.parse(decodeURIComponent(cookieValue))
       : null;
-    if (user) {
-      setUser(user);
+    if (userFromCookie) {
+      setUser(userFromCookie);
       setLoading(false);
     }
 
@@ -45,13 +44,13 @@ function Header() {
       expiryDate.setDate(expiryDate.getDate() + 30);
       document.cookie = `user=${encodeURIComponent(
         (user ? JSON.stringify(user) : null) || ""
-      )}; expires=${expiryDate}; path=/`;
+      )}; expires=${expiryDate}; path=/; SameSite=Lax`;
       setLoading(false);
     });
 
     // Cleanup subscription on unmount
     return () => unsubscribe();
-  }, []);
+  }, [setUser]);
 
   return (
     <nav>
