@@ -7,9 +7,23 @@ import expressServer from "../../api/express-server";
 import "./index.css";
 
 function App(user) {
+  async function googleAuth(service) {
+    await expressServer.googleAuth(service).then((response) => {
+      window.location.assign(response.data);
+    });
+  }
+
   return (
     <div className="App">
       <h1>Ajouter une action/réaction</h1>
+      <button
+        className="google-button"
+        onClick={() => {
+          googleAuth("drive");
+        }}
+      >
+        Se connecter avec Google Drive
+      </button>
     </div>
   );
 }

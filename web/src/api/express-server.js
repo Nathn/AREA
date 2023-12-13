@@ -18,6 +18,10 @@ class ExpressServer {
   createUser(user) {
     return this.api.post("/register", user);
   }
+
+  googleAuth(service) {
+    return this.api.get("/auth/google/" + service);
+  }
 }
 
 const expressServer = new ExpressServer();
