@@ -6,7 +6,7 @@ import "firebase/compat/auth";
 
 import expressServer from "../../api/express-server";
 
-function Login(setUser) {
+function Login() {
   const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
     authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
@@ -17,7 +17,11 @@ function Login(setUser) {
     measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
   };
 
-  firebase.initializeApp(firebaseConfig);
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  } else {
+    firebase.app();
+  }
   const uiConfig = {
     callbacks: {
       signInSuccessWithAuthResult: function (authResult, redirectUrl) {

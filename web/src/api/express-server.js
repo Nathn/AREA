@@ -19,12 +19,12 @@ class ExpressServer {
     return this.api.post("/register", user);
   }
 
-  googleAuth(service) {
-    return this.api.get("/auth/google/" + service);
+  getUserData(uid) {
+    return this.api.get("/user/" + uid);
   }
 
-  googleAuthToken(service, code) {
-    return this.api.post("/auth/google/" + service + "/token", { code });
+  googleAuth(service) {
+    return this.api.get("/auth/google/" + service);
   }
 }
 

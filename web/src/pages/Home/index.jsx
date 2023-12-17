@@ -1,42 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
 
 import expressServer from "../../api/express-server";
 import "./index.css";
 
-function App({ user, setUser }) {
+function App({ user }) {
   const [about, setAbout] = useState(null);
-  const firebaseConfig = {
-    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.REACT_AP_FIREBASEP_MESSAGING_SENDER_ID,
-    appId: process.env.REACT_APP_FIREBASE_APP_ID,
-    measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
-  };
-
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  } else {
-    firebase.app();
-  }
 
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      setUser(user || null);
-      const expiryDate = new Date();
-      expiryDate.setDate(expiryDate.getDate() + 30);
-      document.cookie = `user=${encodeURIComponent(
-        (user ? JSON.stringify(user) : null) || ""
-      )}; expires=${expiryDate}; path=/; SameSite=Lax`;
-    });
     expressServer.about().then((response) => {
       setAbout(response.data);
     });
-    return () => unsubscribe();
   }, []);
 
   return (
