@@ -36,6 +36,9 @@ router.get("/callback", async (req, res) => {
     if (scope.includes("drive")) {
       user.auth.google.drive = tokens;
     }
+    if (scope.includes("mail.google.com")) {
+      user.auth.google.gmail = tokens;
+    }
     // save the user
     try {
       await user.save();
