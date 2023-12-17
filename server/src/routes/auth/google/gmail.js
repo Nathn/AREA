@@ -12,6 +12,7 @@ router.get("/gmail", async (req, res) => {
   const url = oauth2Client.generateAuthUrl({
     access_type: "offline",
     scope: scopes,
+    prompt: "consent",
   });
   res.send(url);
 });
@@ -61,7 +62,6 @@ router.get("/gmail/sendMail", async (req, res) => {
         console.log(err);
         return;
       }
-      console.log(res);
     }
   );
 

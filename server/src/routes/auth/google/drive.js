@@ -1,4 +1,5 @@
 const express = require("express");
+const axios = require("axios");
 const router = express.Router();
 const { google } = require("googleapis");
 
@@ -60,6 +61,10 @@ const checkForNewFiles = async (drive, reaction) => {
 
     if (newFiles.length > 0) {
       console.log("New files added:", newFiles);
+      if (reaction === "gmail") {
+        // send GET request to /auth/google/gmail/sendMail
+        axios.get("http://localhost:8080/auth/google/gmail/sendMail");
+      }
       // Update the set of file IDs
       newFiles.forEach((file) => fileIds.add(file.id));
     }
