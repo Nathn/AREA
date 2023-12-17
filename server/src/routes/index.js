@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-router.use((req, res, next) => {
-  // Log all requests
+function requestLoggerMiddleware(req, res, next) {
   console.log(`Received ${req.method} request for ${req.url}`);
   next();
-});
+}
+
+router.use(requestLoggerMiddleware);
 
 const about = require("./about");
 const users = require("./users");

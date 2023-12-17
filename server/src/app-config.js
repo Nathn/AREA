@@ -1,22 +1,29 @@
-const cors = require("cors");
 const express = require("express");
 const app = express();
-const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
-const routes = require("./routes");
 
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
+
+const path = require('path');
+const rootPath = path.resolve(__dirname);
+require('module-alias/register');
+require('module-alias').addAlias('@', rootPath);
+
+const cors = require("cors");
 const corsOptions = {
-  origin: true, // Allow the server to accept cross-origin requests
-  credentials: true, // Allow the server to accept requests without credentials
+  origin: true,
+  credentials: true,
 };
-
-app.use(express.json({ limit: "10mb" })); // Limit the size of JSON requests to 10mb
-app.use(express.urlencoded({ limit: "10mb", extended: true })); // Limit the size of URL-encoded requests to 10mb
 app.use(cors(corsOptions));
+
+const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
+const routes = require("./routes");
 app.use("/", routes);
 
 module.exports = app;
