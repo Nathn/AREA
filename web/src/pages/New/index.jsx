@@ -5,13 +5,17 @@ import expressServer from "../../api/express-server";
 import "./index.css";
 
 function App(user) {
-  const [isGoogleDriveConnected, setIsGoogleDriveConnected] = useState(false);
-  const [isGmailConnected, setIsGmailConnected] = useState(false);
+  const [action, setAction] = useState("drive");
+  const [reaction, setReaction] = useState("gmail");
+
+  const [googleDriveAccessTokens, setGoogleDriveAccessTokens] = useState("");
+  const [gmailAccessTokens, setGmailAccessTokens] = useState("");
 
   function getAuthentificationStates(userData) {
     if (userData?.auth?.google?.drive?.access_token)
-      setIsGoogleDriveConnected(true);
-    if (userData?.auth?.google?.gmail?.access_token) setIsGmailConnected(true);
+      setGoogleDriveAccessTokens(userData?.auth?.google?.drive);
+    if (userData?.auth?.google?.gmail?.access_token)
+      setGmailAccessTokens(userData?.auth?.google?.gmail);
   }
 
   useEffect(() => {
@@ -55,39 +59,73 @@ function App(user) {
     });
   }
 
+  const createAction = (event) => {
+    event.preventDefault();
+    expressServer
+      .createAction(action, reaction, googleDriveAccessTokens)
+      .then((res) => {
+        console.log(res);
+      });
+  };
+
   return (
     <div className="App">
       <h1>Ajouter une action/réaction</h1>
-      {isGoogleDriveConnected && (
-        <div>
-          <h2>Google Drive est connecté</h2>
-        </div>
-      )}
-      {!isGoogleDriveConnected && (
-        <button
-          className="google-button"
-          onClick={() => {
-            googleAuth("drive");
-          }}
+      <div className="buttons">
+        {googleDriveAccessTokens && (
+          <div>
+            <h2>Google Drive est connecté</h2>
+          </div>
+        )}
+        {!googleDriveAccessTokens && (
+          <button
+            className="google-button"
+            onClick={() => {
+              googleAuth("drive");
+            }}
+          >
+            Se connecter avec Google Drive
+          </button>
+        )}
+        {gmailAccessTokens && (
+          <div>
+            <h2>Gmail est connecté</h2>
+          </div>
+        )}
+        {!gmailAccessTokens && (
+          <button
+            className="google-button"
+            onClick={() => {
+              googleAuth("gmail");
+            }}
+          >
+            Se connecter avec Gmail
+          </button>
+        )}
+      </div>
+      <form onSubmit={createAction}>
+        <label htmlFor="action">Action</label>
+        <select
+          name="action"
+          id="action"
+          defaultValue="drive"
+          onChange={(e) => setAction(e.target.value)}
         >
-          Se connecter avec Google Drive
-        </button>
-      )}
-      {isGmailConnected && (
-        <div>
-          <h2>Gmail est connecté</h2>
-        </div>
-      )}
-      {!isGmailConnected && (
-        <button
-          className="google-button"
-          onClick={() => {
-            googleAuth("gmail");
-          }}
+          <option value="drive">Google Drive</option>
+          <option value="gmail">Gmail</option>
+        </select>
+        <label htmlFor="reaction">Réaction</label>
+        <select
+          name="reaction"
+          id="reaction"
+          defaultValue="gmail"
+          onChange={(e) => setReaction(e.target.value)}
         >
-          Se connecter avec Gmail
-        </button>
-      )}
+          <option value="drive">Google Drive</option>
+          <option value="gmail">Gmail</option>
+        </select>
+        <button>Créer</button>
+      </form>
     </div>
   );
 }

@@ -26,6 +26,10 @@ class ExpressServer {
   googleAuth(service) {
     return this.api.get("/auth/google/" + service);
   }
+
+  createAction(action, reaction, tokens) {
+    return this.api.post("/auth/google/" + action + "/" + reaction, tokens);
+  }
 }
 
 const expressServer = new ExpressServer();
