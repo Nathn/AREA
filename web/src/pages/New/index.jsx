@@ -30,7 +30,7 @@ function App(user) {
           googleAuth("gmail");
         }}
       >
-        Se connecter avec Google Drive
+        Se connecter avec Gmail
       </button>
     </div>
   );
