@@ -38,9 +38,10 @@ function Login(setUser) {
               window.location.assign(redirectUrl);
               return false;
             });
+        } else {
+          window.location.assign(redirectUrl);
+          return false;
         }
-        window.location.assign(redirectUrl);
-        return false;
       },
     },
     signInSuccessUrl: "/",

@@ -2,6 +2,7 @@ const cors = require("cors");
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const routes = require("./routes");
 
 const corsOptions = {
@@ -14,6 +15,7 @@ app.use(express.urlencoded({ limit: "10mb", extended: true })); // Limit the siz
 app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 app.use("/", routes);
 
