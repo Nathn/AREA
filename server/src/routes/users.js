@@ -1,7 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const User = require('@/models/User');
+const User = require("@/models/User");
 
 router.get("/users", async (req, res) => {
   var users = await User.find({});
@@ -25,6 +25,12 @@ router.post("/register", async (req, res) => {
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
+});
+
+router.get("/users/:uid", async (req, res) => {
+  var user = await User.findOne({ uid: req.params.uid });
+
+  res.send(user);
 });
 
 module.exports = router;

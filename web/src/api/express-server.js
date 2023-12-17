@@ -20,7 +20,7 @@ class ExpressServer {
   }
 
   getUserData(uid) {
-    return this.api.get("/user/" + uid);
+    return this.api.get("/users/" + uid);
   }
 
   googleAuth(service) {
