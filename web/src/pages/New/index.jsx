@@ -24,6 +24,14 @@ function App(user) {
       >
         Se connecter avec Google Drive
       </button>
+      <button
+        className="google-button"
+        onClick={() => {
+          googleAuth("gmail");
+        }}
+      >
+        Se connecter avec Google Drive
+      </button>
     </div>
   );
 }
