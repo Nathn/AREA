@@ -103,26 +103,32 @@ function App(user) {
           </button>
         )}
       </div>
-      <form onSubmit={createAction}>
+      <form onSubmit={createAction} className="form-action">
         <label htmlFor="action">Action</label>
         <select
           name="action"
           id="action"
           defaultValue="drive"
+          required
           onChange={(e) => setAction(e.target.value)}
         >
-          <option value="drive">Google Drive</option>
-          <option value="gmail">Gmail</option>
+          {googleDriveAccessTokens && (
+            <option value="drive">Google Drive</option>
+          )}
+          {gmailAccessTokens && <option value="gmail">Gmail</option>}
         </select>
         <label htmlFor="reaction">Réaction</label>
         <select
           name="reaction"
           id="reaction"
           defaultValue="gmail"
+          required
           onChange={(e) => setReaction(e.target.value)}
         >
-          <option value="drive">Google Drive</option>
-          <option value="gmail">Gmail</option>
+          {googleDriveAccessTokens && (
+            <option value="drive">Google Drive</option>
+          )}
+          {gmailAccessTokens && <option value="gmail">Gmail</option>}
         </select>
         <button>Créer</button>
       </form>
