@@ -11,6 +11,8 @@ function App(user) {
   const [googleDriveAccessTokens, setGoogleDriveAccessTokens] = useState("");
   const [gmailAccessTokens, setGmailAccessTokens] = useState("");
 
+  const [successMessage, setSuccessMessage] = useState("");
+
   function getAuthentificationStates(userData) {
     if (userData?.auth?.google?.drive?.access_token)
       setGoogleDriveAccessTokens(userData?.auth?.google?.drive);
@@ -64,7 +66,11 @@ function App(user) {
     expressServer
       .createAction(action, reaction, googleDriveAccessTokens)
       .then((res) => {
-        console.log(res);
+        if (res.status === 200) {
+          setSuccessMessage("Action créée avec succès.");
+        } else {
+          console.error(res);
+        }
       });
   };
 
@@ -138,6 +144,7 @@ function App(user) {
         </select>
         <button>Créer</button>
       </form>
+      {successMessage && <p className="success">{successMessage}</p>}
     </div>
   );
 }
