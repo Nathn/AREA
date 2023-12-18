@@ -17,14 +17,16 @@ router.get("/gmail", async (req, res) => {
   res.send(url);
 });
 
-router.get("/gmail/sendMail", async (req, res) => {
+router.post("/gmail/sendMail", async (req, res) => {
   const User = require("@/models/User");
 
-  const user = await User.findOne({ email: "clevetepitech@gmail.com" });
+  const user = await User.findOne({ email: "tranchant.nathan@gmail.com" });
   if (!user) {
     res.status(400).send("Bad request");
     return;
   }
+
+  const { subject, text } = req.body;
 
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
@@ -41,8 +43,8 @@ router.get("/gmail/sendMail", async (req, res) => {
   const message = {
     to: user.email,
     from: user.email,
-    subject: "Test",
-    text: "Test",
+    subject: subject,
+    text: text,
   };
 
   gmail.users.messages.send(

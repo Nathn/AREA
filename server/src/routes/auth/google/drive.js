@@ -62,8 +62,12 @@ const checkForNewFiles = async (drive, reaction) => {
     if (newFiles.length > 0) {
       console.log("New files added:", newFiles);
       if (reaction === "gmail") {
-        // send GET request to /auth/google/gmail/sendMail
-        axios.get("http://localhost:8080/auth/google/gmail/sendMail");
+        newFiles.forEach((file) => {
+          axios.post("http://localhost:8080/auth/google/gmail/sendMail", {
+            subject: "New file added",
+            text: `A new file was added to your drive: ${file.name}`,
+          });
+        });
       }
       // Update the set of file IDs
       newFiles.forEach((file) => fileIds.add(file.id));
