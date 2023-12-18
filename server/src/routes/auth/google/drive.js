@@ -3,6 +3,8 @@ const axios = require("axios");
 const router = express.Router();
 const { google } = require("googleapis");
 
+const User = require("@/models/User");
+
 router.get("/drive", async (req, res) => {
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
@@ -17,39 +19,18 @@ router.get("/drive", async (req, res) => {
   res.send(url);
 });
 
-router.get("/drive/token", async (req, res) => {
-  const oauth2Client = new google.auth.OAuth2(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_CLIENT_SECRET,
-    process.env.GOOGLE_CALLBACK_URL
-  );
-  const { code } = req.query;
-  console.log(code);
-  if (!code) {
-    res.status(400).send("Bad request");
-    return;
+const findUserInRequestCookies = async (req) => {
+  const cookiesUser = JSON.parse(req.cookies.user);
+  if (!cookiesUser) {
+    return null;
   }
-  try {
-    const { tokens } = await oauth2Client.getToken(code);
-    console.log(tokens);
-    res.send(tokens);
-  } catch (error) {
-    try {
-      oauth2Client.setCredentials({
-        refresh_token: `STORED_REFRESH_TOKEN`,
-      });
-      const { tokens } = await oauth2Client.refreshAccessToken();
-      console.log(tokens);
-      res.send(tokens);
-    } catch (error) {
-      console.log(error);
-      res.status(400).send("Bad request");
-    }
-  }
-});
+
+  const user = await User.findOne({ uid: cookiesUser.uid });
+  return user;
+};
 
 let fileIds = new Set();
-const checkForNewFiles = async (drive, reaction) => {
+const checkForNewFiles = async (drive, reaction, user) => {
   try {
     let response = await drive.files.list({
       fields: "nextPageToken, files(id, name)",
@@ -64,6 +45,8 @@ const checkForNewFiles = async (drive, reaction) => {
       if (reaction === "gmail") {
         newFiles.forEach((file) => {
           axios.post("http://localhost:8080/auth/google/gmail/sendMail", {
+            token: user?.auth?.google?.gmail?.access_token,
+            to: user.email,
             subject: "New file added",
             text: `A new file was added to your drive: ${file.name}`,
           });
@@ -79,16 +62,18 @@ const checkForNewFiles = async (drive, reaction) => {
 
 router.post("/drive/:reaction", async (req, res) => {
   const { reaction } = req.params;
-  const { access_token, refresh_token } = req.body;
-  if (!access_token || !refresh_token) {
-    res.status(400).send("Bad request");
-    return;
-  }
+  const user = await findUserInRequestCookies(req);
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
     process.env.GOOGLE_CALLBACK_URL
   );
+  let access_token = user?.auth?.google?.drive?.access_token;
+  let refresh_token = user?.auth?.google?.drive?.refresh_token;
+  if (!access_token || !refresh_token) {
+    res.status(400).send("Bad request");
+    return;
+  }
   oauth2Client.setCredentials({
     access_token: access_token,
     refresh_token: refresh_token,
@@ -114,7 +99,7 @@ router.post("/drive/:reaction", async (req, res) => {
     });
     let files = response.data.files;
     files.forEach((file) => fileIds.add(file.id));
-    setInterval(checkForNewFiles, 5000, drive, reaction);
+    setInterval(checkForNewFiles, 5000, drive, reaction, user);
     res.status(200).send("OK");
   } catch (error) {
     console.log(error);

@@ -18,15 +18,12 @@ router.get("/gmail", async (req, res) => {
 });
 
 router.post("/gmail/sendMail", async (req, res) => {
-  const User = require("@/models/User");
+  const { token, subject, text, to } = req.body;
 
-  const user = await User.findOne({ email: "tranchant.nathan@gmail.com" });
-  if (!user) {
+  if (!token || !subject || !text || !to) {
     res.status(400).send("Bad request");
     return;
   }
-
-  const { subject, text } = req.body;
 
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
@@ -35,14 +32,14 @@ router.post("/gmail/sendMail", async (req, res) => {
   );
 
   oauth2Client.setCredentials({
-    access_token: user.auth.google.gmail.access_token,
+    access_token: token,
   });
 
   const gmail = google.gmail({ version: "v1", auth: oauth2Client });
 
   const message = {
-    to: user.email,
-    from: user.email,
+    to: to,
+    from: to,
     subject: subject,
     text: text,
   };

@@ -28,7 +28,9 @@ class ExpressServer {
   }
 
   createAction(action, reaction, tokens) {
-    return this.api.post("/auth/google/" + action + "/" + reaction, tokens);
+    return this.api.post("/auth/google/" + action + "/" + reaction, tokens, {
+      withCredentials: true,
+    });
   }
 }
 

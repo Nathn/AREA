@@ -5,8 +5,8 @@ import expressServer from "../../api/express-server";
 import "./index.css";
 
 function App(user) {
-  const [action, setAction] = useState("drive");
-  const [reaction, setReaction] = useState("gmail");
+  const [action, setAction] = useState("");
+  const [reaction, setReaction] = useState("");
 
   const [googleDriveAccessTokens, setGoogleDriveAccessTokens] = useState("");
   const [gmailAccessTokens, setGmailAccessTokens] = useState("");
@@ -108,10 +108,13 @@ function App(user) {
         <select
           name="action"
           id="action"
-          defaultValue="drive"
+          defaultValue=""
           required
           onChange={(e) => setAction(e.target.value)}
         >
+          <option value="" disabled>
+            Select an action
+          </option>
           {googleDriveAccessTokens && (
             <option value="drive">Google Drive</option>
           )}
@@ -121,10 +124,13 @@ function App(user) {
         <select
           name="reaction"
           id="reaction"
-          defaultValue="gmail"
+          defaultValue=""
           required
           onChange={(e) => setReaction(e.target.value)}
         >
+          <option value="" disabled>
+            Select a reaction
+          </option>
           {googleDriveAccessTokens && (
             <option value="drive">Google Drive</option>
           )}
