@@ -20,7 +20,7 @@ const findUserInRequestCookies = async (req) => {
 
   const user = await User.findOne({ uid: cookiesUser.uid });
   return user;
-}
+};
 
 const initUserGoogleAuth = async (user) => {
   if (!user.auth) {
@@ -28,16 +28,13 @@ const initUserGoogleAuth = async (user) => {
       google: {},
     };
   }
-  if (!user.auth.google) {
-    user.auth.google = {};
-  }
 
   try {
     await user.save();
   } catch (error) {
     console.log("Error saving user:", error);
   }
-}
+};
 
 router.get("/callback", async (req, res) => {
   const { code, scope } = req.query;
@@ -57,13 +54,9 @@ router.get("/callback", async (req, res) => {
     const { tokens } = await oauth2Client.getToken(code);
     oauth2Client.setCredentials(tokens);
 
-    if (!user.auth || !user.auth.google)
-      await initUserGoogleAuth(user);
+    if (!user.auth) await initUserGoogleAuth(user);
 
-    if (scope.includes("drive"))
-      user.auth.google.drive = tokens;
-    if (scope.includes("mail.google.com"))
-      user.auth.google.gmail = tokens;
+    user.auth.google = tokens;
 
     await user.save();
 

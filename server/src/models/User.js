@@ -32,43 +32,24 @@ const userSchema = new mongoose.Schema({
   },
   auth: {
     google: {
-      drive: {
-        access_token: {
-          type: String,
-          trim: true,
-        },
-        refresh_token: {
-          type: String,
-          trim: true,
-        },
-        scope: {
-          type: String,
-          trim: true,
-        },
-        token_type: {
-          type: String,
-          trim: true,
-        },
-        expiry_date: {
-          type: Number,
-        },
+      access_token: {
+        type: String,
+        trim: true,
       },
-      gmail: {
-        access_token: {
-          type: String,
-          trim: true,
-        },
-        scope: {
-          type: String,
-          trim: true,
-        },
-        token_type: {
-          type: String,
-          trim: true,
-        },
-        expiry_date: {
-          type: Number,
-        },
+      refresh_token: {
+        type: String,
+        trim: true,
+      },
+      scope: {
+        type: String,
+        trim: true,
+      },
+      token_type: {
+        type: String,
+        trim: true,
+      },
+      expiry_date: {
+        type: Number,
       },
     },
   },

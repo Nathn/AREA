@@ -5,20 +5,6 @@ const { google } = require("googleapis");
 
 const User = require("@/models/User");
 
-router.get("/drive", async (req, res) => {
-  const oauth2Client = new google.auth.OAuth2(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_CLIENT_SECRET,
-    process.env.GOOGLE_CALLBACK_URL
-  );
-  const scopes = ["https://www.googleapis.com/auth/drive"];
-  const url = oauth2Client.generateAuthUrl({
-    access_type: "offline",
-    scope: scopes,
-  });
-  res.send(url);
-});
-
 const findUserInRequestCookies = async (req) => {
   const cookiesUser = JSON.parse(req.cookies.user);
   if (!cookiesUser) {
@@ -45,7 +31,7 @@ const checkForNewFiles = async (drive, reaction, user) => {
       if (reaction === "gmail") {
         newFiles.forEach((file) => {
           axios.post("http://localhost:8080/auth/google/gmail/sendMail", {
-            token: user?.auth?.google?.gmail?.access_token,
+            token: user?.auth?.google?.access_token,
             to: user.email,
             subject: "New file added",
             text: `A new file was added to your drive: ${file.name}`,
@@ -68,8 +54,8 @@ router.post("/drive/:reaction", async (req, res) => {
     process.env.GOOGLE_CLIENT_SECRET,
     process.env.GOOGLE_CALLBACK_URL
   );
-  let access_token = user?.auth?.google?.drive?.access_token;
-  let refresh_token = user?.auth?.google?.drive?.refresh_token;
+  let access_token = user?.auth?.google?.access_token;
+  let refresh_token = user?.auth?.google?.refresh_token;
   if (!access_token || !refresh_token) {
     res.status(400).send("Bad request");
     return;

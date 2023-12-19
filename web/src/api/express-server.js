@@ -23,8 +23,8 @@ class ExpressServer {
     return this.api.get("/users/" + uid);
   }
 
-  googleAuth(service) {
-    return this.api.get("/auth/google/" + service);
+  googleAuth() {
+    return this.api.get("/auth/google");
   }
 
   createAction(action, reaction, tokens) {
