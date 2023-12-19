@@ -77,7 +77,7 @@ function App(user) {
       <div className="buttons">
         {googleAccessTokens && (
           <div>
-            <h2>Les sevices Google sont connectés</h2>
+            <h2>Les services Google sont connectés</h2>
           </div>
         )}
         {!googleAccessTokens && (
