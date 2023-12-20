@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "firebase/compat/auth";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
+
 import expressServer from "../../api/express-server";
 import "./index.css";
 
@@ -77,21 +80,22 @@ function App(user) {
     <div className="App">
       <h1>Ajouter une action/réaction</h1>
       <div className="buttons">
-        {googleAccessTokens && (
-          <div>
-            <h2>Les services Google sont connectés</h2>
-          </div>
-        )}
-        {!googleAccessTokens && (
-          <button
-            className="google-button"
-            onClick={() => {
+        <button
+          className={
+            googleAccessTokens ? "login-button logged" : "login-button"
+          }
+          onClick={() => {
+            if (!googleAccessTokens) {
               googleAuth();
-            }}
-          >
-            Se connecter avec Google
-          </button>
-        )}
+            }
+          }}
+        >
+          <div className="service-name">
+            <FontAwesomeIcon icon={faGoogle} />
+            <span>Services Google</span>
+          </div>
+          {googleAccessTokens ? "Connecté" : "Se connecter"}
+        </button>
       </div>
       <form onSubmit={createAction} className="form-action">
         <label htmlFor="action">Action</label>
