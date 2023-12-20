@@ -11,6 +11,7 @@ function App(user) {
   const [googleAccessTokens, setGoogleAccessTokens] = useState("");
 
   const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   function getAuthentificationStates(userData) {
     if (userData?.auth?.google?.access_token)
@@ -63,10 +64,11 @@ function App(user) {
     expressServer
       .createAction(action, reaction, googleAccessTokens)
       .then((res) => {
-        if (res.status === 200) {
+        if (!res.data || res.data === "OK") {
           setSuccessMessage("Action créée avec succès.");
         } else {
-          console.error(res);
+          console.error(res.data);
+          setErrorMessage(res.data);
         }
       });
   };
@@ -123,6 +125,7 @@ function App(user) {
         <button>Créer</button>
       </form>
       {successMessage && <p className="success">{successMessage}</p>}
+      {errorMessage && <p className="error">{errorMessage}</p>}
     </div>
   );
 }

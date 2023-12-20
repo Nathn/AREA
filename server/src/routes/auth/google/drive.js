@@ -49,6 +49,20 @@ const checkForNewFiles = async (drive, reaction, user) => {
 router.post("/drive/:reaction", async (req, res) => {
   const { reaction } = req.params;
   const user = await findUserInRequestCookies(req);
+  if (!user) {
+    res.status(400).send("Bad request");
+    return;
+  }
+  if (
+    user.action_reactions.some(
+      (ar) => ar.action === "drive" && ar.reaction === reaction
+    )
+  ) {
+    res
+      .status(200)
+      .send("This action/reaction is already active on your account");
+    return;
+  }
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
@@ -86,6 +100,8 @@ router.post("/drive/:reaction", async (req, res) => {
     let files = response.data.files;
     files.forEach((file) => fileIds.add(file.id));
     setInterval(checkForNewFiles, 5000, drive, reaction, user);
+    user.action_reactions.push({ action: "drive", reaction: reaction });
+    await user.save();
     res.status(200).send("OK");
   } catch (error) {
     console.log(error);

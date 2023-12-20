@@ -5,6 +5,7 @@ import expressServer from "../../api/express-server";
 import "./index.css";
 
 function App({ user }) {
+  const [userData, setUserData] = useState(null);
   const [about, setAbout] = useState(null);
 
   useEffect(() => {
@@ -12,6 +13,37 @@ function App({ user }) {
       setAbout(response.data);
     });
   }, []);
+
+  useEffect(() => {
+    if (!user || !user.user) {
+      const cookie = document.cookie
+        .split(";")
+        .find((c) => c.trim().startsWith("userData="));
+      if (!cookie) {
+        return;
+      }
+      setUserData(JSON.parse(decodeURIComponent(cookie.split("=")[1])));
+      if (!userData) {
+        return;
+      }
+    }
+    // get user data from db
+    expressServer
+      .getUserData(user?.user?.uid || userData.uid)
+      .then((response) => {
+        if (response.status !== 200) {
+          console.warn(response);
+          return;
+        }
+        const expiryDate = new Date();
+        expiryDate.setDate(expiryDate.getDate() + 30);
+        document.cookie = `userData=${encodeURIComponent(
+          JSON.stringify(response.data) || ""
+        )}; expires=${expiryDate}; path=/; SameSite=Lax`;
+        setUserData(response.data);
+        return;
+      });
+  }, [user]);
 
   return (
     <div className="App">
@@ -21,7 +53,16 @@ function App({ user }) {
       </Link>
       {user ? (
         <div className="main">
-          <h2>Mes actions/réactions</h2>
+          <h2>Mes actions/réactions actives</h2>
+          <div className="actions">
+            {userData?.action_reactions?.map((ar, index) => (
+              <div className="action active" key={index}>
+                <span>{ar.action}</span>
+                <span className="arrow">→</span>
+                <span>{ar.reaction}</span>
+              </div>
+            ))}
+          </div>
         </div>
       ) : (
         <div>
