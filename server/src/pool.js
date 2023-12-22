@@ -23,9 +23,28 @@ function areGoogleServicesInvolved(ar) {
   }
 }
 
-async function checkGoogleServicesConnection(ar, user) {
-  // TODO : Check that the access_token is stil valid
-  // If not, refresh it
+async function checkGoogleServicesConnection(user, oauth2Client) {
+  let access_token = user?.auth?.google?.access_token;
+  let refresh_token = user?.auth?.google?.refresh_token;
+  if (!access_token || !refresh_token) {
+    return false;
+  }
+  oauth2Client.setCredentials({
+    access_token: access_token,
+    refresh_token: refresh_token,
+  });
+  // Check if token is expired
+  if (oauth2Client.isTokenExpiring()) {
+    try {
+      const newTokens = await oauth2Client.refreshAccessToken();
+      oauth2Client.setCredentials(newTokens);
+      // TODO: save new tokens in database
+    } catch (error) {
+      console.log("Error refreshing access token:", error);
+      return false;
+    }
+  }
+  return true;
 }
 
 async function actionsPool() {
@@ -33,7 +52,14 @@ async function actionsPool() {
   users.forEach(user => {
     user.action_reactions.forEach(ar => {
       if (areGoogleServicesInvolved(ar)) {
-        checkGoogleServicesConnection(ar, user);
+        const oauth2Client = new google.auth.OAuth2(
+          process.env.GOOGLE_CLIENT_ID,
+          process.env.GOOGLE_CLIENT_SECRET,
+          process.env.GOOGLE_CALLBACK_URL
+        );
+        if (!checkGoogleServicesConnection(user, oauth2Client)) {
+          return; // skip this action reaction
+        }
       }
       // TODO: Call all the appropriate action routes
     });
