@@ -3,6 +3,7 @@ const { google } = require("googleapis");
 const User = require('@/models/User');
 
 let actionsPoolInterval;
+
 const services = [
   {
     name: "gmail",
@@ -15,6 +16,7 @@ const services = [
     type: "google",
   },
 ]
+let currentStateOfThings = {};
 
 function areGoogleServicesInvolved(ar) {
   let googleServices = services.filter(service => service.type === "google").map(service => service.name);
@@ -52,6 +54,9 @@ async function checkGoogleServicesConnection(user, oauth2Client) {
 async function actionsPool() {
   let users = await User.find({});
   users.forEach(user => {
+    if (!currentStateOfThings[user._id]) {
+      currentStateOfThings[user._id] = {};
+    }
     user.action_reactions.forEach(ar => {
       if (areGoogleServicesInvolved(ar)) {
         const oauth2Client = new google.auth.OAuth2(
@@ -62,6 +67,11 @@ async function actionsPool() {
         if (!checkGoogleServicesConnection(user, oauth2Client)) {
           return; // skip this action reaction
         }
+      }
+      if (!currentStateOfThings[user._id][service.name]) {
+        currentStateOfThings[user._id][service.name] = {};
+        // TODO: Call the appropriate action route to poulate the currentStateOfThings
+        // e.g. {service.route}/defaultValues
       }
       // TODO: Call all the appropriate action routes
     });
