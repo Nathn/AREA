@@ -68,10 +68,10 @@ async function actionsPool() {
           return; // skip this action reaction
         }
       }
-      if (!currentStateOfThings[user._id][service.name]) {
-        currentStateOfThings[user._id][service.name] = {};
+      if (!currentStateOfThings[user._id][ar.action]) {
+        currentStateOfThings[user._id][ar.action] = {};
         // TODO: Call the appropriate action route to poulate the currentStateOfThings
-        // e.g. {service.route}/defaultValues
+        // e.g. {ar.action.route}/defaultValues
       }
       // TODO: Call all the appropriate action routes
     });
