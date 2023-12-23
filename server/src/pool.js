@@ -1,6 +1,7 @@
+const axios = require("axios");
 const { google } = require("googleapis");
 
-const User = require('@/models/User');
+const User = require("@/models/User");
 
 let actionsPoolInterval;
 
@@ -15,13 +16,18 @@ const services = [
     route: "/auth/google/drive",
     type: "google",
   },
-]
+];
 let currentStateOfThings = {};
 
 function areGoogleServicesInvolved(ar) {
-  let googleServices = services.filter(service => service.type === "google").map(service => service.name);
+  let googleServices = services
+    .filter((service) => service.type === "google")
+    .map((service) => service.name);
   for (let i = 0; i < googleServices.length; i++) {
-    if (ar.action.startsWith(googleServices[i]) || ar.reaction.startsWith(googleServices[i])) {
+    if (
+      ar.action.startsWith(googleServices[i]) ||
+      ar.reaction.startsWith(googleServices[i])
+    ) {
       return true;
     }
   }
@@ -51,13 +57,18 @@ async function checkGoogleServicesConnection(user, oauth2Client) {
   return true;
 }
 
+function getServiceFromAction(action) {
+  return services.find((service) => action.startsWith(service.name));
+}
+
 async function actionsPool() {
   let users = await User.find({});
-  users.forEach(user => {
+  users.forEach((user) => {
     if (!currentStateOfThings[user._id]) {
       currentStateOfThings[user._id] = {};
     }
-    user.action_reactions.forEach(ar => {
+    user.action_reactions.forEach(async (ar) => {
+      let service = getServiceFromAction(ar.action);
       if (areGoogleServicesInvolved(ar)) {
         const oauth2Client = new google.auth.OAuth2(
           process.env.GOOGLE_CLIENT_ID,
@@ -68,12 +79,24 @@ async function actionsPool() {
           return; // skip this action reaction
         }
       }
-      if (!currentStateOfThings[user._id][ar.action]) {
-        currentStateOfThings[user._id][ar.action] = {};
-        // TODO: Call the appropriate action route to poulate the currentStateOfThings
-        // e.g. {ar.action.route}/defaultValues
+      if (!currentStateOfThings[user._id][service.name]) {
+        currentStateOfThings[user._id][service.name] = {};
+        // Call the appropriate base values route to populate the currentStateOfThings
+        await axios
+          .post(`${process.env.SERVER_URL}${service.route}/baseValues`, {
+            user: user,
+          })
+          .then((response) => {
+            currentStateOfThings[user._id][service.name] = response.data;
+          })
+          .catch((error) => {
+            console.log(
+              `Error getting the base values for service ${service.name}: ${error}`
+            );
+          });
       }
       // TODO: Call all the appropriate action routes
+      // then call reaction routes if actions returned something
     });
   });
 }
