@@ -10,10 +10,12 @@ router.use(requestLoggerMiddleware);
 
 const about = require("./about");
 const users = require("./users");
+const actionreactions = require("./actionreactions");
 const auth = require("./auth");
 
 router.use("/", about);
 router.use("/", users);
+router.use("/", actionreactions);
 router.use("/auth", auth);
 
 router.get("/", (req, res) => {

@@ -45,6 +45,22 @@ function App({ user }) {
       });
   }, [user]);
 
+  const deleteActionReaction = (id) => (event) => {
+    expressServer.deleteActionReaction(id).then((response) => {
+      if (response.status !== 200) {
+        console.warn(response);
+        return;
+      }
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 30);
+      document.cookie = `userData=${encodeURIComponent(
+        JSON.stringify(response.data) || ""
+      )}; expires=${expiryDate}; path=/; SameSite=Lax`;
+      setUserData(response.data);
+      return;
+    });
+  };
+
   return (
     <div className="App">
       <h1>AREA ({process.env.NODE_ENV} mode)</h1>
@@ -60,6 +76,9 @@ function App({ user }) {
                 <span>{ar.action}</span>
                 <span className="arrow">→</span>
                 <span>{ar.reaction}</span>
+                <a onClick={deleteActionReaction(ar._id)} href="#">
+                  Supprimer
+                </a>
               </div>
             ))}
           </div>

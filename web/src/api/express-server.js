@@ -27,10 +27,24 @@ class ExpressServer {
     return this.api.get("/auth/google");
   }
 
-  createAction(action, reaction, tokens) {
-    return this.api.post("/auth/google/" + action + "/" + reaction, tokens, {
-      withCredentials: true,
-    });
+  createActionReaction(action, reaction) {
+    return this.api.post(
+      "/createActionReaction/" + action + "/" + reaction,
+      {},
+      {
+        withCredentials: true,
+      }
+    );
+  }
+
+  deleteActionReaction(arId) {
+    return this.api.post(
+      "/deleteActionReaction/" + arId,
+      {},
+      {
+        withCredentials: true,
+      }
+    );
   }
 }
 

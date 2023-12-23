@@ -62,23 +62,27 @@ function App(user) {
     });
   }
 
-  const createAction = (event) => {
+  const createActionReaction = (event) => {
     event.preventDefault();
-    expressServer
-      .createAction(action, reaction, googleAccessTokens)
-      .then((res) => {
-        if (!res.data || res.data === "OK") {
-          setSuccessMessage("Action créée avec succès.");
-        } else {
-          console.error(res.data);
-          setErrorMessage(res.data);
-        }
-      });
+    expressServer.createActionReaction(action, reaction).then((response) => {
+      if (response.status !== 200) {
+        console.warn(response);
+        setErrorMessage(response.data);
+        return;
+      }
+      setSuccessMessage("Action/reaction successfully created.");
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 30);
+      document.cookie = `userData=${encodeURIComponent(
+        JSON.stringify(response.data) || ""
+      )}; expires=${expiryDate}; path=/; SameSite=Lax`;
+      return;
+    });
   };
 
   return (
     <div className="App">
-      <h1>Ajouter une action/réaction</h1>
+      <h1>Add an action/reaction</h1>
       <div className="buttons">
         <button
           className={
@@ -92,12 +96,12 @@ function App(user) {
         >
           <div className="service-name">
             <FontAwesomeIcon icon={faGoogle} />
-            <span>Services Google</span>
+            <span>Google services</span>
           </div>
-          {googleAccessTokens ? "Connecté" : "Se connecter"}
+          {googleAccessTokens ? "Connected" : "Connect"}
         </button>
       </div>
-      <form onSubmit={createAction} className="form-action">
+      <form onSubmit={createActionReaction} className="form-action">
         <label htmlFor="action">Action</label>
         <select
           name="action"
@@ -109,10 +113,11 @@ function App(user) {
           <option value="" disabled>
             Select an action
           </option>
-          {googleAccessTokens && <option value="drive">Google Drive</option>}
-          {googleAccessTokens && <option value="gmail">Gmail</option>}
+          {googleAccessTokens && (
+            <option value="drive_fileUpload">Google Drive - File Upload</option>
+          )}
         </select>
-        <label htmlFor="reaction">Réaction</label>
+        <label htmlFor="reaction">Reaction</label>
         <select
           name="reaction"
           id="reaction"
@@ -123,10 +128,11 @@ function App(user) {
           <option value="" disabled>
             Select a reaction
           </option>
-          {googleAccessTokens && <option value="drive">Google Drive</option>}
-          {googleAccessTokens && <option value="gmail">Gmail</option>}
+          {googleAccessTokens && (
+            <option value="gmail_sendEmail">Gmail - Send Email</option>
+          )}
         </select>
-        <button>Créer</button>
+        <button>Create</button>
       </form>
       {successMessage && <p className="success">{successMessage}</p>}
       {errorMessage && <p className="error">{errorMessage}</p>}
