@@ -61,6 +61,10 @@ function getServiceFromAction(action) {
   return services.find((service) => action.startsWith(service.name));
 }
 
+function getIdFromAction(action) {
+  return action.split("_")[1];
+}
+
 async function actionsPool() {
   let users = await User.find({});
   users.forEach((user) => {
@@ -95,8 +99,28 @@ async function actionsPool() {
             );
           });
       }
-      // TODO: Call all the appropriate action routes
-      // then call reaction routes if actions returned something
+      // Call all the appropriate action routes
+      await axios
+        .post(
+          `${process.env.SERVER_URL}${service.route}/action/${getIdFromAction(
+            ar.action
+          )}`,
+          {
+            user: user,
+            baseValues: currentStateOfThings[user._id][service.name],
+          }
+        )
+        .then((response) => {
+          currentStateOfThings[user._id][service.name][
+            response.data.baseValuesId
+          ] = response.data.newBaseValues;
+          // then call reaction routes if response.data.result returned true
+        })
+        .catch((error) => {
+          console.log(
+            `Error calling action route for action ${ar.action}: ${error}`
+          );
+        });
     });
   });
 }
