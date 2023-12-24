@@ -8,12 +8,12 @@ let actionsPoolInterval;
 const services = [
   {
     name: "gmail",
-    route: "/auth/google/gmail",
+    route: "/services/google/gmail",
     type: "google",
   },
   {
     name: "drive",
-    route: "/auth/google/drive",
+    route: "/services/google/drive",
     type: "google",
   },
 ];

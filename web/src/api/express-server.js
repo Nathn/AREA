@@ -24,7 +24,7 @@ class ExpressServer {
   }
 
   googleAuth() {
-    return this.api.get("/auth/google");
+    return this.api.get("/services/google");
   }
 
   createActionReaction(action, reaction) {

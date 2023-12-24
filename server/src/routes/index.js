@@ -11,12 +11,12 @@ router.use(requestLoggerMiddleware);
 const about = require("./about");
 const users = require("./users");
 const actionreactions = require("./actionreactions");
-const auth = require("./auth");
+const services = require("./services");
 
 router.use("/", about);
 router.use("/", users);
 router.use("/", actionreactions);
-router.use("/auth", auth);
+router.use("/services", services);
 
 router.get("/", (req, res) => {
   res.send("Pong !");
