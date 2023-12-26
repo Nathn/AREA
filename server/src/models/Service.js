@@ -29,6 +29,10 @@ const serviceSchema = new mongoose.Schema({
         type: String,
         trim: true,
       },
+      description: {
+        type: String,
+        trim: true,
+      },
     },
   ],
   reactions: [
@@ -38,6 +42,10 @@ const serviceSchema = new mongoose.Schema({
         trim: true,
       },
       name_short: {
+        type: String,
+        trim: true,
+      },
+      description: {
         type: String,
         trim: true,
       },

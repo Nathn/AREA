@@ -6,18 +6,6 @@ const Service = require("@/models/Service");
 
 let actionsPoolInterval;
 let services = [];
-// const services = [
-//   {
-//     name: "gmail",
-//     route: "/services/google/gmail",
-//     type: "google",
-//   },
-//   {
-//     name: "drive",
-//     route: "/services/google/drive",
-//     type: "google",
-//   },
-// ];
 let currentStateOfThings = {};
 
 function areGoogleServicesInvolved(ar) {
