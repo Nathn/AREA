@@ -5,6 +5,7 @@ import expressServer from "../../api/express-server";
 import "./index.css";
 
 function App({ user }) {
+  const [services, setServices] = useState([]);
   const [userData, setUserData] = useState(null);
   const [about, setAbout] = useState(null);
 
@@ -43,6 +44,26 @@ function App({ user }) {
         setUserData(response.data);
         return;
       });
+
+    const cookie = document.cookie
+      .split(";")
+      .find((c) => c.trim().startsWith("services="));
+    if (cookie) {
+      setServices(JSON.parse(decodeURIComponent(cookie.split("=")[1])));
+    }
+    expressServer.getServices().then((response) => {
+      if (response.status !== 200) {
+        console.warn(response);
+        return false;
+      }
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 30);
+      document.cookie = `services=${encodeURIComponent(
+        JSON.stringify(response.data) || ""
+      )}; expires=${expiryDate}; path=/; SameSite=Lax`;
+      setServices(response.data);
+      return true;
+    });
   }, [user]);
 
   const deleteActionReaction = (id) => (event) => {
@@ -65,19 +86,37 @@ function App({ user }) {
     <div className="App">
       <h1>AREA ({process.env.NODE_ENV} mode)</h1>
       <Link className="main-button" to={user ? "/new" : "/login"}>
-        Créer une nouvelle action/réaction
+        Create a new action/reaction
       </Link>
       {user ? (
         <div className="main">
-          <h2>Mes actions/réactions actives</h2>
+          <h2>My active action/reactions</h2>
           <div className="actions">
             {userData?.action_reactions?.map((ar, index) => (
               <div className="action active" key={index}>
-                <span>{ar.action}</span>
+                {services.map((service) =>
+                  service.actions.map((action) =>
+                    service.name_short + "_" + action.name_short ===
+                    ar.action ? (
+                      <span>
+                        {service.name_long} - {action.name_long}
+                      </span>
+                    ) : null
+                  )
+                )}
                 <span className="arrow">→</span>
-                <span>{ar.reaction}</span>
+                {services.map((service) =>
+                  service.reactions.map((reaction) =>
+                    service.name_short + "_" + reaction.name_short ===
+                    ar.reaction ? (
+                      <span>
+                        {service.name_long} - {reaction.name_long}
+                      </span>
+                    ) : null
+                  )
+                )}
                 <a onClick={deleteActionReaction(ar._id)} href="#">
-                  Supprimer
+                  Delete
                 </a>
               </div>
             ))}

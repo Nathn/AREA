@@ -15,6 +15,10 @@ class ExpressServer {
     return this.api.get("/about.json");
   }
 
+  getServices() {
+    return this.api.get("/services");
+  }
+
   createUser(user) {
     return this.api.post("/register", user);
   }
