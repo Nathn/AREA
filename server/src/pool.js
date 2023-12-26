@@ -37,7 +37,10 @@ async function checkGoogleServicesConnection(user, oauth2Client) {
     try {
       const newTokens = await oauth2Client.refreshAccessToken();
       oauth2Client.setCredentials(newTokens);
-      // TODO: save new tokens in database
+      // save new tokens in database
+      user.auth.google.access_token = newTokens.access_token;
+      user.auth.google.refresh_token = newTokens.refresh_token;
+      await user.save();
     } catch (error) {
       console.log("Error refreshing access token:", error);
       return false;
