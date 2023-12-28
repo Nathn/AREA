@@ -1,4 +1,3 @@
-// Example Yammer callback route
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
@@ -39,10 +38,9 @@ router.get("/callback", async (req, res) => {
       grant_type: "authorization_code",
     });
 
-    const accessToken = response.data.access_token;
+    const accessTokens = response.data.access_token;
 
-    // ???
-    /*const user = await findUserInRequestCookies(req);
+    const user = await findUserInRequestCookies(req);
     if (!user) {
       res.status(400).send("User not found");
       return;
@@ -50,8 +48,8 @@ router.get("/callback", async (req, res) => {
 
     if (!user.auth) await initUserYammerAuth(user);
 
-    user.auth.yammer = accessToken;
-    await user.save();*/
+    user.auth.yammer = accessTokens;
+    await user.save();
 
     // Redirect or send a response based on the success of the authentication
     res.redirect("http://localhost:8081/new");
