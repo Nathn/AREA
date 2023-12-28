@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "firebase/compat/auth";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGoogle ,faYammer} from "@fortawesome/free-brands-svg-icons";
+import { faGoogle, faYammer } from "@fortawesome/free-brands-svg-icons";
 
 import expressServer from "../../api/express-server";
 import "./index.css";
@@ -22,7 +22,7 @@ function App(user) {
   function getAuthentificationStates(userData) {
     if (userData?.auth?.google?.access_token)
       setGoogleAccessTokens(userData?.auth?.google);
-    if (userData?.auth?.yammer?.access_token)
+    if (userData?.auth?.yammer?.token)
       setYammerAccessTokens(userData?.auth?.yammer);
   }
 
@@ -133,14 +133,22 @@ function App(user) {
         </button>
 
         {/* Yammer */}
-        <button className="login-button" onClick={() => { if (!microsoftAccessTokens) { MicrosoftAuth(); } }}>
+        <button
+          className={
+            microsoftAccessTokens ? "login-button logged" : "login-button"
+          }
+          onClick={() => {
+            if (!microsoftAccessTokens) {
+              MicrosoftAuth();
+            }
+          }}
+        >
           <div className="service-name">
             <FontAwesomeIcon icon={faYammer} />
             <span>Yammer</span>
           </div>
           {microsoftAccessTokens ? "Connected" : "Connect"}
         </button>
-
       </div>
       <form onSubmit={createActionReaction} className="form-action">
         <label htmlFor="action">Action</label>
