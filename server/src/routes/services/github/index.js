@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-router.get("/callback", async (req, res) => {
-  console.log("Cookies: ", req.cookies);
-});
+const callback = require("./callback");
+
+router.use("/", callback);
 
 module.exports = router;

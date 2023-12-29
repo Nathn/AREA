@@ -52,6 +52,20 @@ const userSchema = new mongoose.Schema({
         type: Number,
       },
     },
+    github: {
+      access_token: {
+        type: String,
+        trim: true,
+      },
+      scope: {
+        type: String,
+        trim: true,
+      },
+      token_type: {
+        type: String,
+        trim: true,
+      },
+    },
   },
   action_reactions: [
     {

@@ -10,5 +10,15 @@ export function getGitHubUrl(from) {
 
   const qs = new URLSearchParams(options);
 
-  return `${rootURl}?${qs.toString()}`;
+  var qsString = qs.toString();
+  const qsArray = qsString.split('&');
+  for (let i = 0; i < qsArray.length; i++) {
+    if (qsArray[i].includes('redirect_uri')) {
+      qsArray.splice(i, 1);
+    }
+  }
+  qsString = qsArray.join('&');
+  console.log(qsString);
+
+  return `${rootURl}?${qsString}`;
 }
