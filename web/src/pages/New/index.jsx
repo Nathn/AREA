@@ -2,17 +2,22 @@ import React, { useState, useEffect } from "react";
 import "firebase/compat/auth";
 
 import { getGitHubUrl } from "../../utils/github";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 
 import expressServer from "../../api/express-server";
 import "./index.css";
 
 function App(user) {
+  const [services, setServices] = useState([]);
+
   const [action, setAction] = useState("");
   const [reaction, setReaction] = useState("");
 
   const [googleAccessTokens, setGoogleAccessTokens] = useState("");
 
   const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   function getAuthentificationStates(userData) {
     if (userData?.auth?.google?.access_token)
@@ -52,6 +57,26 @@ function App(user) {
         getAuthentificationStates(response.data);
         return true;
       });
+
+    const cookie = document.cookie
+      .split(";")
+      .find((c) => c.trim().startsWith("services="));
+    if (cookie) {
+      setServices(JSON.parse(decodeURIComponent(cookie.split("=")[1])));
+    }
+    expressServer.getServices().then((response) => {
+      if (response.status !== 200) {
+        console.warn(response);
+        return false;
+      }
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 30);
+      document.cookie = `services=${encodeURIComponent(
+        JSON.stringify(response.data) || ""
+      )}; expires=${expiryDate}; path=/; SameSite=Lax`;
+      setServices(response.data);
+      return true;
+    });
   }, [user]);
 
   async function googleAuth() {
@@ -60,17 +85,22 @@ function App(user) {
     });
   }
 
-  const createAction = (event) => {
+  const createActionReaction = (event) => {
     event.preventDefault();
-    expressServer
-      .createAction(action, reaction, googleAccessTokens)
-      .then((res) => {
-        if (res.status === 200) {
-          setSuccessMessage("Action créée avec succès.");
-        } else {
-          console.error(res);
-        }
-      });
+    expressServer.createActionReaction(action, reaction).then((response) => {
+      if (response.status !== 200) {
+        console.warn(response);
+        setErrorMessage(response.data);
+        return;
+      }
+      setSuccessMessage("Action/reaction successfully created.");
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 30);
+      document.cookie = `userData=${encodeURIComponent(
+        JSON.stringify(response.data) || ""
+      )}; expires=${expiryDate}; path=/; SameSite=Lax`;
+      return;
+    });
   };
 
   return (
@@ -83,24 +113,26 @@ function App(user) {
       >
         Se connecter avec GitHub
       </a>
+      <h1>Add an action/reaction</h1>
       <div className="buttons">
-        {googleAccessTokens && (
-          <div>
-            <h2>Les services Google sont connectés</h2>
-          </div>
-        )}
-        {!googleAccessTokens && (
-          <button
-            className="google-button"
-            onClick={() => {
+        <button
+          className={
+            googleAccessTokens ? "login-button logged" : "login-button"
+          }
+          onClick={() => {
+            if (!googleAccessTokens) {
               googleAuth();
-            }}
-          >
-            Se connecter avec Google
-          </button>
-        )}
+            }
+          }}
+        >
+          <div className="service-name">
+            <FontAwesomeIcon icon={faGoogle} />
+            <span>Google services</span>
+          </div>
+          {googleAccessTokens ? "Connected" : "Connect"}
+        </button>
       </div>
-      <form onSubmit={createAction} className="form-action">
+      <form onSubmit={createActionReaction} className="form-action">
         <label htmlFor="action">Action</label>
         <select
           name="action"
@@ -112,10 +144,17 @@ function App(user) {
           <option value="" disabled>
             Select an action
           </option>
-          {googleAccessTokens && <option value="drive">Google Drive</option>}
-          {googleAccessTokens && <option value="gmail">Gmail</option>}
+          {services.map(
+            (service) =>
+              (service.type !== "google" || googleAccessTokens) &&
+              service.actions.map((action) => (
+                <option value={`${service.name_short}_${action.name_short}`}>
+                  {`${service.name_long} - ${action.name_long}`}
+                </option>
+              ))
+          )}
         </select>
-        <label htmlFor="reaction">Réaction</label>
+        <label htmlFor="reaction">Reaction</label>
         <select
           name="reaction"
           id="reaction"
@@ -126,12 +165,20 @@ function App(user) {
           <option value="" disabled>
             Select a reaction
           </option>
-          {googleAccessTokens && <option value="drive">Google Drive</option>}
-          {googleAccessTokens && <option value="gmail">Gmail</option>}
+          {services.map(
+            (service) =>
+              (service.type !== "google" || googleAccessTokens) &&
+              service.reactions.map((reaction) => (
+                <option
+                  value={`${service.name_short}_${reaction.name_short}`}
+                >{`${service.name_long} - ${reaction.name_long}`}</option>
+              ))
+          )}
         </select>
-        <button>Créer</button>
+        <button>Create</button>
       </form>
       {successMessage && <p className="success">{successMessage}</p>}
+      {errorMessage && <p className="error">{errorMessage}</p>}
     </div>
   );
 }

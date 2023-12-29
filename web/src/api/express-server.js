@@ -15,6 +15,10 @@ class ExpressServer {
     return this.api.get("/about.json");
   }
 
+  getServices() {
+    return this.api.get("/services");
+  }
+
   createUser(user) {
     return this.api.post("/register", user);
   }
@@ -24,13 +28,27 @@ class ExpressServer {
   }
 
   googleAuth() {
-    return this.api.get("/auth/google");
+    return this.api.get("/services/google");
   }
 
-  createAction(action, reaction, tokens) {
-    return this.api.post("/auth/google/" + action + "/" + reaction, tokens, {
-      withCredentials: true,
-    });
+  createActionReaction(action, reaction) {
+    return this.api.post(
+      "/createActionReaction/" + action + "/" + reaction,
+      {},
+      {
+        withCredentials: true,
+      }
+    );
+  }
+
+  deleteActionReaction(arId) {
+    return this.api.post(
+      "/deleteActionReaction/" + arId,
+      {},
+      {
+        withCredentials: true,
+      }
+    );
   }
 }
 

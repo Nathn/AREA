@@ -53,6 +53,20 @@ const userSchema = new mongoose.Schema({
       },
     },
   },
+  action_reactions: [
+    {
+      action: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      reaction: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+    },
+  ],
 });
 
 const User = mongoose.model("User", userSchema);

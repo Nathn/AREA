@@ -10,11 +10,13 @@ router.use(requestLoggerMiddleware);
 
 const about = require("./about");
 const users = require("./users");
-const auth = require("./auth");
+const actionreactions = require("./actionreactions");
+const services = require("./services");
 
 router.use("/", about);
 router.use("/", users);
-router.use("/auth", auth);
+router.use("/", actionreactions);
+router.use("/services", services);
 
 router.get("/", (req, res) => {
   res.send("Pong !");
