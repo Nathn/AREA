@@ -3,7 +3,7 @@ import "firebase/compat/auth";
 
 import { getGitHubUrl } from "../../utils/github";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { faGoogle, faYammer } from "@fortawesome/free-brands-svg-icons";
 
 import expressServer from "../../api/express-server";
 import "./index.css";
@@ -15,6 +15,7 @@ function App(user) {
   const [reaction, setReaction] = useState("");
 
   const [googleAccessTokens, setGoogleAccessTokens] = useState("");
+  const [microsoftAccessTokens, setYammerAccessTokens] = useState("");
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -22,6 +23,8 @@ function App(user) {
   function getAuthentificationStates(userData) {
     if (userData?.auth?.google?.access_token)
       setGoogleAccessTokens(userData?.auth?.google);
+    if (userData?.auth?.yammer?.token)
+      setYammerAccessTokens(userData?.auth?.yammer);
   }
 
   useEffect(() => {
@@ -85,6 +88,12 @@ function App(user) {
     });
   }
 
+  async function MicrosoftAuth() {
+    await expressServer.MicrosoftAuth().then((response) => {
+      window.location.assign(response.data);
+    });
+  }
+
   const createActionReaction = (event) => {
     event.preventDefault();
     expressServer.createActionReaction(action, reaction).then((response) => {
@@ -130,6 +139,24 @@ function App(user) {
             <span>Google services</span>
           </div>
           {googleAccessTokens ? "Connected" : "Connect"}
+        </button>
+
+        {/* Yammer */}
+        <button
+          className={
+            microsoftAccessTokens ? "login-button logged" : "login-button"
+          }
+          onClick={() => {
+            if (!microsoftAccessTokens) {
+              MicrosoftAuth();
+            }
+          }}
+        >
+          <div className="service-name">
+            <FontAwesomeIcon icon={faYammer} />
+            <span>Yammer</span>
+          </div>
+          {microsoftAccessTokens ? "Connected" : "Connect"}
         </button>
       </div>
       <form onSubmit={createActionReaction} className="form-action">
