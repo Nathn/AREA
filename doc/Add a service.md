@@ -136,7 +136,7 @@ module.exports = router;
 ```
 Run a find-and-replace (Ctrl+F) operation on the file to replace occurences of `newservice` with the name_short of your service.<br /><br />
 Now, in your new `index.js` file, add the code that generates the link to the OAuth screen of your service.
-You will need to specify a callback URL. If it has to be in the code store it as an environnement variable called `[name_short]_CALLBACK_URL`. Set its value as `http://localhost:8080/services/[name_short]/callback`<br />
+You will need to specify a callback URL. If it has to be in the code store it as an environnement variable called `[name_short]_CALLBACK_URL`. Set its value as `http://localhost:8080/services/[name_short]/callback`.<br />
 In `callback.js` on the other hand, you will have find the code executed after this screen has been passed through.
 You will have to add here the code that gets the access_token(s) or other types or credentials to save them in the user's object.
 > Both of these operations can be very different from a service to another. Feel free to use [NPM modules](https://www.npmjs.com/) and to follow the examples found in the service's API documentation.
@@ -166,7 +166,7 @@ function getAuthentificationStates(userData) {
 }
 ```
 - a new async function:
-```js
+```jsx
 async function serviceAuth() {
   await expressServer.serviceAuth().then((response) => { // use the function name you used in express-server
     window.location.assign(response.data);
@@ -174,8 +174,17 @@ async function serviceAuth() {
 }
 ```
 And, of course, the actual *Connect* button:
-```js
-<button className="login-button" onClick={() => { if (!serviceAccessTokens) { serviceAuth(); } }}>
+```jsx
+<button
+  className={
+    serviceAccessTokens ? "login-button logged" : "login-button"
+  }
+  onClick={() => {
+    if (!serviceAccessTokens) {
+      serviceAuth();
+    }
+  }}
+>
   <div className="service-name"> <!-- do not change the class name -->
     <span>New Service</span>
   </div>
