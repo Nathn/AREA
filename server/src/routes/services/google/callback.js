@@ -60,7 +60,7 @@ router.get("/callback", async (req, res) => {
 
     await user.save();
 
-    res.redirect(`http://localhost:8081/new`);
+    res.redirect(`${process.env.FRONT_URL}/new`);
   } catch (error) {
     console.log(error);
     res.status(400).send("Bad request");

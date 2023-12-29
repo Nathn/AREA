@@ -31,6 +31,10 @@ class ExpressServer {
     return this.api.get("/services/google");
   }
 
+  MicrosoftAuth() {
+    return this.api.get("/services/yammer");
+  }
+
   createActionReaction(action, reaction) {
     return this.api.post(
       "/createActionReaction/" + action + "/" + reaction,
