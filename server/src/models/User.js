@@ -69,6 +69,20 @@ const userSchema = new mongoose.Schema({
       authorized_at: String,
       expires_at: String,
     },
+    github: {
+      access_token: {
+        type: String,
+        trim: true,
+      },
+      scope: {
+        type: String,
+        trim: true,
+      },
+      token_type: {
+        type: String,
+        trim: true,
+      },
+    },
   },
   action_reactions: [
     {
