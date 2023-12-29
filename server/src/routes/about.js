@@ -14,7 +14,7 @@ router.get("/about.json", async (req, res) => {
 
   db_services.forEach((service) => {
     services.push({
-      name: service.name,
+      name: service.name_short,
       actions: service.actions.map((action) => {
         return {
           name: action.name_long,

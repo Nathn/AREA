@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import "firebase/compat/auth";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGithub, faGoogle, faYammer } from "@fortawesome/free-brands-svg-icons";
+import {
+  faGithub,
+  faGoogle,
+  faYammer,
+} from "@fortawesome/free-brands-svg-icons";
 
 import expressServer from "../../api/express-server";
 import "./index.css";
@@ -174,7 +178,7 @@ function App(user) {
             <FontAwesomeIcon icon={faGithub} />
             <span>GitHub</span>
           </div>
-          { githubAccessTokens ? "Connected" : "Connect" }
+          {githubAccessTokens ? "Connected" : "Connect"}
         </button>
       </div>
       <form onSubmit={createActionReaction} className="form-action">
