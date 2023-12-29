@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "firebase/compat/auth";
 
-import { getGitHubUrl } from "../../utils/github";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGoogle, faYammer } from "@fortawesome/free-brands-svg-icons";
+import { faGithub, faGoogle, faYammer } from "@fortawesome/free-brands-svg-icons";
 
 import expressServer from "../../api/express-server";
 import "./index.css";
@@ -16,6 +15,7 @@ function App(user) {
 
   const [googleAccessTokens, setGoogleAccessTokens] = useState("");
   const [microsoftAccessTokens, setYammerAccessTokens] = useState("");
+  const [githubAccessTokens, setGithubAccessTokens] = useState("");
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -25,6 +25,8 @@ function App(user) {
       setGoogleAccessTokens(userData?.auth?.google);
     if (userData?.auth?.yammer?.token)
       setYammerAccessTokens(userData?.auth?.yammer);
+    if (userData?.auth?.github?.access_token)
+      setGithubAccessTokens(userData?.auth?.github);
   }
 
   useEffect(() => {
@@ -94,6 +96,12 @@ function App(user) {
     });
   }
 
+  async function githubAuth() {
+    await expressServer.githubAuth().then((response) => {
+      window.location.assign(response.data);
+    });
+  }
+
   const createActionReaction = (event) => {
     event.preventDefault();
     expressServer.createActionReaction(action, reaction).then((response) => {
@@ -114,14 +122,6 @@ function App(user) {
 
   return (
     <div className="App">
-      <h1>Ajouter une action/réaction</h1>
-      <a
-        href={getGitHubUrl()}
-        rel="noopener noreferrer"
-        className="github-link"
-      >
-        Se connecter avec GitHub
-      </a>
       <h1>Add an action/reaction</h1>
       <div className="buttons">
         <button
@@ -157,6 +157,24 @@ function App(user) {
             <span>Yammer</span>
           </div>
           {microsoftAccessTokens ? "Connected" : "Connect"}
+        </button>
+
+        {/* GitHub */}
+        <button
+          className={
+            githubAccessTokens ? "login-button logged" : "login-button"
+          }
+          onClick={() => {
+            if (!githubAccessTokens) {
+              githubAuth();
+            }
+          }}
+        >
+          <div className="service-name">
+            <FontAwesomeIcon icon={faGithub} />
+            <span>GitHub</span>
+          </div>
+          { githubAccessTokens ? "Connected" : "Connect" }
         </button>
       </div>
       <form onSubmit={createActionReaction} className="form-action">

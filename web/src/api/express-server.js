@@ -35,6 +35,10 @@ class ExpressServer {
     return this.api.get("/services/yammer");
   }
 
+  githubAuth() {
+    return this.api.get("/services/github");
+  }
+
   createActionReaction(action, reaction) {
     return this.api.post(
       "/createActionReaction/" + action + "/" + reaction,
