@@ -3,7 +3,8 @@
 ## Overview
 
 This guide outlines the steps to add a new service to the AREA project. Follow these instructions to seamlessly integrate your service into the existing ecosystem.
-> ⚠️ This guide may not be entirely accurate for some special cases, like services that depends on others APIs (like YouTube depends on Google API). Discuss with other contributors before following it.
+> [!WARNING]
+> This guide may not be entirely accurate for some special cases, like services that depends on others APIs (like YouTube depends on Google API). Discuss with other contributors before following it.
 
 ## Prerequisites
 
@@ -21,7 +22,8 @@ All services require a different proccess about registering a new application. I
 - `http://localhost:8081`
 - `http://localhost:8081/new`
 
-> ⚠️ Replace `[name_short]` with a short name of the service you're adding (ex.: for Google Drive, use only `drive`). It will be used as an ID throughout this guide, always with the denomination `name_short`.
+> [!IMPORTANT]
+> Replace `[name_short]` with a short name of the service you're adding (ex.: for Google Drive, use only `drive`). It will be used as an ID throughout this guide, always with the denomination `name_short`.
 
 When the service is ready do give you an access to their [API](https://en.wikipedia.org/wiki/API), it will probably provides you some sort of token(s) or credentials. Store them in your local [`/server/.env`](../server/.env) file and don't forget to update [`/server/.env.example`](../server/.env.example) accordingly.
 
@@ -139,6 +141,7 @@ Now, in your new `index.js` file, add the code that generates the link to the OA
 You will need to specify a callback URL. If it has to be in the code store it as an environnement variable called `[name_short]_CALLBACK_URL`. Set its value as `http://localhost:8080/services/[name_short]/callback`.<br />
 In `callback.js` on the other hand, you will have find the code executed after this screen has been passed through.
 You will have to add here the code that gets the access_token(s) or other types or credentials to save them in the user's object.
+> [!TIP]
 > Both of these operations can be very different from a service to another. Feel free to use [NPM modules](https://www.npmjs.com/) and to follow the examples found in the service's API documentation.
 
 ## Step 4: Front-end, testing
