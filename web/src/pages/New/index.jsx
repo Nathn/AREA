@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "firebase/compat/auth";
 
+import { getGitHubUrl } from "../../utils/github";
+
 import expressServer from "../../api/express-server";
 import "./index.css";
 
@@ -74,6 +76,13 @@ function App(user) {
   return (
     <div className="App">
       <h1>Ajouter une action/réaction</h1>
+      <a
+        href={getGitHubUrl()}
+        rel="noopener noreferrer"
+        className="github-link"
+      >
+        Se connecter avec GitHub
+      </a>
       <div className="buttons">
         {googleAccessTokens && (
           <div>
