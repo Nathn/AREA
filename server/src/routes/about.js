@@ -14,16 +14,16 @@ router.get("/about.json", async (req, res) => {
 
   db_services.forEach((service) => {
     services.push({
-      name: service.name_short,
+      name: service.name_long.toLowerCase().replaceAll(" ", "_"),
       actions: service.actions.map((action) => {
         return {
-          name: action.name_long,
+          name: action.name_long.toLowerCase().replaceAll(" ", "_"),
           description: action.description,
         };
       }),
       reactions: service.reactions.map((reaction) => {
         return {
-          name: reaction.name_long,
+          name: reaction.name_long.toLowerCase().replaceAll(" ", "_"),
           description: reaction.description,
         };
       }),

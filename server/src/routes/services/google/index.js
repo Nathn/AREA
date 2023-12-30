@@ -25,7 +25,7 @@ router.get("/", async (req, res) => {
 });
 
 router.use("/", callback);
-router.use("/", drive);
-router.use("/", gmail);
+router.use("/drive", drive);
+router.use("/gmail", gmail);
 
 module.exports = router;
