@@ -34,6 +34,52 @@ router.use("/", baseValues);
 router.use("/", actions);
 ```
 
+Let's start with `baseValues.js` as it is the route that's gonna be called first. Here is the draft to paste in it:
+
+```js
+const express = require("express");
+const router = express.Router();
+
+router.post("/baseValues", async (req, res) => {
+  try {
+    const { user } = req.body;
+    if (!user) {
+      res.status(400).send("Bad request");
+      return;
+    }
+    let baseValues = {};
+
+    /*
+      Build the baseValues
+      object here
+    */
+
+    res.status(200).send(baseValues);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("Bad request");
+  }
+});
+
+module.exports = router;
+```
+
+You're gonna have to use the credentials stored in the `user` object to retrieve useful pieces of information about the user's account on the service.
+Then, assemble them to form a custom `baseValues` object that will be sent.<br />
+For example, an email service baseValues format could be:
+
+```json
+{
+  "receivedMails": [],
+  "sentMails": []
+}
+```
+
+Both of the fields could then be used by actions to check if they change or not over time.
+
+> [!NOTE]
+> If the user stored credentials (passwords, tokens, etc.) are invalid, expired or simply absent, log the error and return a 400 HTTP status. The code to regenerate them in case of expiration is not supposed to be here.
+
 ## Step 2: The actual action
 
 ## Step 3: Deploying with the database
