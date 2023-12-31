@@ -2,11 +2,19 @@ const express = require("express");
 const router = express.Router();
 const { google } = require("googleapis");
 
-// Not used yet (no actions)
-router.post("/baseValues", async (req, res) => {
-  const { user } = req.body;
-  if (!user) {
-    res.status(400).send("Bad request: no user");
+router.post("/emailReceived", async (req, res) => {
+  /*
+    ACTION:
+    - Returns true if there is a new email in
+      the inbox compared to the baseValues
+    - Returns false otherwise
+
+    Has no side effects
+  */
+  const { user, baseValues } = req.body;
+  const usefulBaseValues = baseValues?.messages;
+  if (!user || !usefulBaseValues) {
+    res.status(400).send("Bad request: no or invalid baseValues");
     return;
   }
 
@@ -45,22 +53,33 @@ router.post("/baseValues", async (req, res) => {
   let access_token = user?.auth?.google?.access_token;
   let refresh_token = user?.auth?.google?.refresh_token;
   if (!access_token || !refresh_token) {
-    res.status(400).send("Bad request: no access token or refresh token");
+    res.status(400).send("Bad request");
     return;
   }
   oauth2Client.setCredentials({
-    access_token: user.auth.google.access_token,
-    refresh_token: user.auth.google.refresh_token,
+    access_token: access_token,
+    refresh_token: refresh_token,
   });
   if (oauth2Client.isTokenExpiring()) {
-    res.status(400).send("Bad request: token expiring");
+    res.status(400).send("Bad request");
     return;
   }
-
-  const messages = await listMessages(oauth2Client);
-  res.send({
-    messages: messages,
-  });
+  try {
+    let messages = await listMessages(oauth2Client);
+    let newMessages = messages.filter((message) => {
+      return !usefulBaseValues.some(
+        (baseMessage) => baseMessage.id === message.id
+      );
+    });
+    res.status(200).send({
+      result: newMessages.length > 0,
+      newBaseValues: messages,
+      baseValuesId: "messages",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("Bad request");
+  }
 });
 
 module.exports = router;
