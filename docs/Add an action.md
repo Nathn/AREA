@@ -4,7 +4,7 @@
 
 This guide outlines the steps to add a new action to a [service](./Add%20a%20service.md) in the AREA project. Follow these instructions to seamlessly integrate your new action into the existing ecosystem.
 
-> This guide assumes that you already have a working project and a properly configured service.
+> This guide assumes that you already have a working project, a properly configured service and at least one working [reaction](./Add%20a%20reaction.md) to test your action with.
 
 ## Prerequisites
 
