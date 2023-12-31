@@ -82,4 +82,84 @@ Both of the fields could then be used by actions to check if they change or not 
 
 ## Step 2: The actual action
 
+Head now to the `actions.js` file you just created and paste this draft in it:
+
+```js
+const express = require("express");
+const router = express.Router();
+
+router.post("/actionName", async (req, res) => {
+  // Replace with your action name
+  const { user, baseValues } = req.body;
+  const usefulBaseValues = baseValues?.relevant_property; // Replace relevant_property with the baseValues property your action will be using
+  if (!user || !usefulBaseValues) {
+    res.status(400).send("Bad request");
+    return;
+  }
+  try {
+    let result = false;
+    let newBaseValues = {};
+
+    /*
+      Check here if the
+      action should be fired
+    */
+
+    res.status(200).send({
+      result: result,
+      newBaseValues: newBaseValues,
+      baseValuesId: "relevant_property",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("Bad request");
+  }
+});
+
+module.exports = router;
+```
+
+Replace `actionName` with the name of your action (ideally in the `nameVerb` format) and replace both occurences of `relevant_property` with baseValues property you're gonna work with.<br />
+The `newBaseValues` returned variable has to be set to the new value of your selected relevant_property.<br />
+For example, in the case of a `mailReceived` action for an email service, we could have:
+
+```js
+const usefulBaseValues = baseValues?.receivedMails;
+
+// Get the received mails from the service API
+let receivedMails = getReceivedMails();
+
+// Compare mails by ID to check if there are new ones
+let newMails = receivedMails.filter((mail) => {
+  return !usefulBaseValues.some((baseMail) => baseMail.id === mail.id);
+});
+
+res.status(200).send({
+  result: newMails.length > 0, // true if newMails is not empty
+  newBaseValues: receivedMails,
+  baseValuesId: "receivedMails",
+});
+```
+
+The returned `result` variable set to true means the action is gonna be fired.
+Both `newBaseValues` and `baseValuesId` ensure the service baseValues is always up to date and prevents an action to be fired multiple times.
+
 ## Step 3: Deploying with the database
+
+All we have left to do is to make the project aknowlegde the existence of your new action, to make it automatically available in the [New action/reaction](http://localhost:8081/new) page of the frontend.<br />
+Open **MongoDB Compass** and connect to the AREA database with your provided credentials. Don't forget to select the `/area` database by selecting it on the left bar once connected.<br />
+Select the `services` collection and find your service's object. Click the **Edit document** button icon. If the `actions` field doesn't exist yet, create it by clicking the little **+** button on the left. Select **Array** as the field's type. Add an item to `actions` (**+** button -> **Add item to reactions**) and populate it like that:
+
+```json
+{
+  "name_long": "Received an email",
+  "name_short": "mailReceived",
+  "description": "The user receives a new e-mail on its Mail account"
+}
+```
+
+Replace the values with your custom ones, and _voilà_ !<br />
+Go check the [frontend](http://localhost:8081/), connect your account with the service if it's not already done then check that the new action successfully appears within the available actions list.
+
+Test it by linking it with a reaction of your choice. <br />
+If you encouters problems, check for errors by opening the **Network** tab of the devlopers tools panel of your browser, or the server's logs with the bash `docker logs -f area-server` command.
