@@ -31,7 +31,7 @@ const baseValues = require("./baseValues");
 const actions = require("./actions");
 
 router.use("/", baseValues);
-router.use("/", actions);
+router.use("/action", actions);
 ```
 
 Let's start with `baseValues.js` as it is the route that's gonna be called first. Here is the draft to paste in it:
@@ -148,7 +148,7 @@ Both `newBaseValues` and `baseValuesId` ensure the service baseValues is always 
 
 All we have left to do is to make the project aknowlegde the existence of your new action, to make it automatically available in the [New action/reaction](http://localhost:8081/new) page of the frontend.<br />
 Open **MongoDB Compass** and connect to the AREA database with your provided credentials. Don't forget to select the `/area` database by selecting it on the left bar once connected.<br />
-Select the `services` collection and find your service's object. Click the **Edit document** button icon. If the `actions` field doesn't exist yet, create it by clicking the little **+** button on the left. Select **Array** as the field's type. Add an item to `actions` (**+** button -> **Add item to reactions**) and populate it like that:
+Select the `services` collection and find your service's object. Click the **Edit document** button icon. If the `actions` field doesn't exist yet, create it by clicking the little **+** button on the left. Select **Array** as the field's type. Add an item to `actions` (**+** button -> **Add item to actions**) and populate it like that:
 
 ```json
 {
