@@ -7,6 +7,7 @@ import "firebase/compat/auth";
 
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
+import expressServer from "./api/express-server";
 
 import Home from "./pages/Home/";
 import Login from "./pages/Login/";
@@ -16,6 +17,7 @@ import Header from "./components/Header";
 
 function App() {
   const [user, setUser] = useState(null);
+  const [services, setServices] = useState([]);
 
   const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -34,17 +36,36 @@ function App() {
   }
 
   useEffect(() => {
-    const cookieValue = document.cookie
+    const userCookieValue = document.cookie
       ?.split("; ")
       ?.find((row) => row.startsWith("user="))
       ?.split("=")[1];
-
-    const userFromCookie = cookieValue
-      ? JSON.parse(decodeURIComponent(cookieValue))
+    const userFromCookie = userCookieValue
+      ? JSON.parse(decodeURIComponent(userCookieValue))
       : null;
     if (userFromCookie) {
       setUser(userFromCookie);
     }
+
+    const servicesCookieValue = document.cookie
+      ?.split("; ")
+      ?.find((row) => row.startsWith("services="))
+      ?.split("=")[1];
+    const servicesFromCookie = servicesCookieValue
+      ? JSON.parse(decodeURIComponent(servicesCookieValue))
+      : null;
+    if (servicesFromCookie) {
+      setServices(servicesFromCookie);
+    }
+
+    expressServer.getServices().then((response) => {
+      setServices(response.data);
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 30);
+      document.cookie = `services=${encodeURIComponent(
+        JSON.stringify(response.data)
+      )}; expires=${expiryDate}; path=/; SameSite=Lax`;
+    });
 
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       setUser(user || null);
@@ -62,7 +83,7 @@ function App() {
       <Router>
         <Header user={user} />
         <Routes>
-          <Route path="/" element={<Home user={user} />} />
+          <Route path="/" element={<Home user={user} services={services} />} />
           <Route path="/new" element={<New user={user} />} />
         </Routes>
       </Router>
@@ -72,7 +93,7 @@ function App() {
       <Router>
         <Header user={user} />
         <Routes>
-          <Route path="/" element={<Home user={user} />} />
+          <Route path="/" element={<Home user={user} services={services} />} />
           <Route path="/new" element={<New user={user} />} />
           <Route path="/login" element={<Login />} />
         </Routes>
