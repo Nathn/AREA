@@ -84,7 +84,10 @@ function App() {
         <Header user={user} />
         <Routes>
           <Route path="/" element={<Home user={user} services={services} />} />
-          <Route path="/new" element={<New user={user} />} />
+          <Route
+            path="/new"
+            element={<New user={user} services={services} />}
+          />
         </Routes>
       </Router>
     );
@@ -94,7 +97,10 @@ function App() {
         <Header user={user} />
         <Routes>
           <Route path="/" element={<Home user={user} services={services} />} />
-          <Route path="/new" element={<New user={user} />} />
+          <Route
+            path="/new"
+            element={<New user={user} services={services} />}
+          />
           <Route path="/login" element={<Login />} />
         </Routes>
       </Router>

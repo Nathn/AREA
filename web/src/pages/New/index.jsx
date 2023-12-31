@@ -11,9 +11,7 @@ import {
 import expressServer from "../../api/express-server";
 import "./index.css";
 
-function App(user) {
-  const [services, setServices] = useState([]);
-
+function App({ user, services }) {
   const [action, setAction] = useState("");
   const [reaction, setReaction] = useState("");
 
@@ -66,26 +64,6 @@ function App(user) {
         getAuthentificationStates(response.data);
         return true;
       });
-
-    const cookie = document.cookie
-      .split(";")
-      .find((c) => c.trim().startsWith("services="));
-    if (cookie) {
-      setServices(JSON.parse(decodeURIComponent(cookie.split("=")[1])));
-    }
-    expressServer.getServices().then((response) => {
-      if (response.status !== 200) {
-        console.warn(response);
-        return false;
-      }
-      const expiryDate = new Date();
-      expiryDate.setDate(expiryDate.getDate() + 30);
-      document.cookie = `services=${encodeURIComponent(
-        JSON.stringify(response.data) || ""
-      )}; expires=${expiryDate}; path=/; SameSite=Lax`;
-      setServices(response.data);
-      return true;
-    });
   }, [user]);
 
   async function googleAuth() {
