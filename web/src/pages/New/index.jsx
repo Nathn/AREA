@@ -16,7 +16,7 @@ function App({ user, services }) {
   const [reaction, setReaction] = useState("");
 
   const [googleAccessTokens, setGoogleAccessTokens] = useState("");
-  const [microsoftAccessTokens, setYammerAccessTokens] = useState("");
+  const [yammerAccessTokens, setYammerAccessTokens] = useState("");
   const [githubAccessTokens, setGithubAccessTokens] = useState("");
 
   const [successMessage, setSuccessMessage] = useState("");
@@ -126,10 +126,10 @@ function App({ user, services }) {
         {/* Yammer */}
         <button
           className={
-            microsoftAccessTokens ? "login-button logged" : "login-button"
+            yammerAccessTokens ? "login-button logged" : "login-button"
           }
           onClick={() => {
-            if (!microsoftAccessTokens) {
+            if (!yammerAccessTokens) {
               MicrosoftAuth();
             }
           }}
@@ -138,7 +138,7 @@ function App({ user, services }) {
             <FontAwesomeIcon icon={faYammer} />
             <span>Yammer</span>
           </div>
-          {microsoftAccessTokens ? "Connected" : "Connect"}
+          {yammerAccessTokens ? "Connected" : "Connect"}
         </button>
 
         {/* GitHub */}
@@ -174,6 +174,8 @@ function App({ user, services }) {
           {services.map(
             (service) =>
               (service.type !== "google" || googleAccessTokens) &&
+              (service.type !== "yammer" || yammerAccessTokens) &&
+              (service.type !== "github" || githubAccessTokens) &&
               service.actions.map((action) => (
                 <option value={`${service.name_short}_${action.name_short}`}>
                   {`${service.name_long} - ${action.name_long}`}
@@ -195,6 +197,8 @@ function App({ user, services }) {
           {services.map(
             (service) =>
               (service.type !== "google" || googleAccessTokens) &&
+              (service.type !== "yammer" || yammerAccessTokens) &&
+              (service.type !== "github" || githubAccessTokens) &&
               service.reactions.map((reaction) => (
                 <option
                   value={`${service.name_short}_${reaction.name_short}`}
