@@ -25,10 +25,13 @@ function App({ user, services }) {
   function getAuthentificationStates(userData) {
     if (userData?.auth?.google?.access_token)
       setGoogleAccessTokens(userData?.auth?.google);
+    else setGoogleAccessTokens("");
     if (userData?.auth?.yammer?.token)
       setYammerAccessTokens(userData?.auth?.yammer);
+    else setYammerAccessTokens("");
     if (userData?.auth?.github?.access_token)
       setGithubAccessTokens(userData?.auth?.github);
+    else setGithubAccessTokens("");
   }
 
   useEffect(() => {
@@ -72,8 +75,8 @@ function App({ user, services }) {
     });
   }
 
-  async function MicrosoftAuth() {
-    await expressServer.MicrosoftAuth().then((response) => {
+  async function yammerAuth() {
+    await expressServer.yammerAuth().then((response) => {
       window.location.assign(response.data);
     });
   }
@@ -81,6 +84,16 @@ function App({ user, services }) {
   async function githubAuth() {
     await expressServer.githubAuth().then((response) => {
       window.location.assign(response.data);
+    });
+  }
+
+  async function logout(service) {
+    await expressServer.logoutFromService(service).then((response) => {
+      if (response.status !== 200) {
+        console.warn(response);
+        return;
+      }
+      getAuthentificationStates(response.data);
     });
   }
 
@@ -113,6 +126,8 @@ function App({ user, services }) {
           onClick={() => {
             if (!googleAccessTokens) {
               googleAuth();
+            } else {
+              logout("google");
             }
           }}
         >
@@ -130,7 +145,9 @@ function App({ user, services }) {
           }
           onClick={() => {
             if (!yammerAccessTokens) {
-              MicrosoftAuth();
+              yammerAuth();
+            } else {
+              logout("yammer");
             }
           }}
         >
@@ -149,6 +166,8 @@ function App({ user, services }) {
           onClick={() => {
             if (!githubAccessTokens) {
               githubAuth();
+            } else {
+              logout("github");
             }
           }}
         >

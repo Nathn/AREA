@@ -212,6 +212,8 @@ And, of course, the actual _Connect_ button:
   onClick={() => {
     if (!serviceAccessTokens) {
       serviceAuth();
+    } else {
+      logout("service"); // replace the argument
     }
   }}
 >

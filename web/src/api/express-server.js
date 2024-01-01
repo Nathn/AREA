@@ -31,12 +31,22 @@ class ExpressServer {
     return this.api.get("/services/google");
   }
 
-  MicrosoftAuth() {
+  yammerAuth() {
     return this.api.get("/services/yammer");
   }
 
   githubAuth() {
     return this.api.get("/services/github");
+  }
+
+  logoutFromService(service) {
+    return this.api.post(
+      "/services/logout/" + service,
+      {},
+      {
+        withCredentials: true,
+      }
+    );
   }
 
   createActionReaction(action, reaction) {
