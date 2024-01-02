@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { google } = require("googleapis");
 
-const User = require("@/models/User");
+const findUserInRequestCookies = require("@/utils/findUserInRequestCookies");
 
 const initGoogleAuthClient = () => {
   return new google.auth.OAuth2(
@@ -10,16 +10,6 @@ const initGoogleAuthClient = () => {
     process.env.GOOGLE_CLIENT_SECRET,
     process.env.GOOGLE_CALLBACK_URL
   );
-};
-
-const findUserInRequestCookies = async (req) => {
-  const cookiesUser = JSON.parse(req.cookies.user);
-  if (!cookiesUser) {
-    return null;
-  }
-
-  const user = await User.findOne({ uid: cookiesUser.uid });
-  return user;
 };
 
 const initUserGoogleAuth = async (user) => {

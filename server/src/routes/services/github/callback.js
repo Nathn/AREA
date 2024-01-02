@@ -1,17 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const User = require("@/models/User");
-
-const findUserInRequestCookies = async (req) => {
-  const cookiesUser = JSON.parse(req.cookies.user);
-  if (!cookiesUser) {
-    return null;
-  }
-
-  const user = await User.findOne({ uid: cookiesUser.uid });
-  return user;
-};
+const findUserInRequestCookies = require("@/utils/findUserInRequestCookies");
 
 const initUserGithubAuth = async (user) => {
   if (!user.auth) {
@@ -29,7 +19,7 @@ const initUserGithubAuth = async (user) => {
   } catch (error) {
     console.log("Error saving user:", error);
   }
-}
+};
 
 router.get("/callback", async (req, res) => {
   const { code } = req.query;
@@ -44,14 +34,23 @@ router.get("/callback", async (req, res) => {
     return;
   }
 
-  const params = "?client_id=" + process.env.GITHUB_CLIENT_ID + "&client_secret=" + process.env.GITHUB_CLIENT_SECRET + "&code=" + code;
+  const params =
+    "?client_id=" +
+    process.env.GITHUB_CLIENT_ID +
+    "&client_secret=" +
+    process.env.GITHUB_CLIENT_SECRET +
+    "&code=" +
+    code;
 
-  const response = await fetch("https://github.com/login/oauth/access_token" + params, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-    },
-  });
+  const response = await fetch(
+    "https://github.com/login/oauth/access_token" + params,
+    {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+    }
+  );
 
   const data = await response.json();
   const { access_token } = data;

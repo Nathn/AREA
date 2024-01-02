@@ -99,14 +99,7 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 
-const User = require("@/models/User");
-
-const findUserInRequestCookies = async (req) => {
-  const cookiesUser = JSON.parse(req.cookies.user);
-  if (!cookiesUser) return null;
-  const user = await User.findOne({ uid: cookiesUser.uid });
-  return user;
-};
+const findUserInRequestCookies = require("@/utils/findUserInRequestCookies");
 
 const initUserAuth = async (user) => {
   try {

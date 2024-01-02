@@ -1,22 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const User = require("@/models/User");
-
-const findUserInRequestCookies = async (req) => {
-  try {
-    const cookiesUser = JSON.parse(req.cookies.user);
-    if (!cookiesUser) {
-      return null;
-    }
-
-    const user = await User.findOne({ uid: cookiesUser.uid });
-    return user;
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
-};
+const findUserInRequestCookies = require("@/utils/findUserInRequestCookies");
 
 router.post("/createActionReaction/:action/:reaction", async (req, res) => {
   const { action, reaction } = req.params;
