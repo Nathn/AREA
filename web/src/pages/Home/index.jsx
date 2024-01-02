@@ -15,34 +15,29 @@ function App({ user, services }) {
   }, []);
 
   useEffect(() => {
-    if (!user || !user.user) {
-      const cookie = document.cookie
-        .split(";")
-        .find((c) => c.trim().startsWith("userData="));
-      if (!cookie) {
-        return;
-      }
+    if (!user) {
+      return;
+    }
+    const cookie = document.cookie
+      .split(";")
+      .find((c) => c.trim().startsWith("userData="));
+    if (cookie) {
       setUserData(JSON.parse(decodeURIComponent(cookie.split("=")[1])));
-      if (!userData) {
-        return;
-      }
     }
     // get user data from db
-    expressServer
-      .getUserData(user?.user?.uid || userData.uid)
-      .then((response) => {
-        if (response.status !== 200) {
-          console.warn(response);
-          return;
-        }
-        const expiryDate = new Date();
-        expiryDate.setDate(expiryDate.getDate() + 30);
-        document.cookie = `userData=${encodeURIComponent(
-          JSON.stringify(response.data) || ""
-        )}; expires=${expiryDate}; path=/; SameSite=Lax`;
-        setUserData(response.data);
+    expressServer.getUserData(user?.uid || userData.uid).then((response) => {
+      if (response.status !== 200) {
+        console.warn(response);
         return;
-      });
+      }
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 30);
+      document.cookie = `userData=${encodeURIComponent(
+        JSON.stringify(response.data) || ""
+      )}; expires=${expiryDate}; path=/; SameSite=Lax`;
+      setUserData(response.data);
+      return;
+    });
   }, [user]);
 
   const deleteActionReaction = (id) => (event) => {
