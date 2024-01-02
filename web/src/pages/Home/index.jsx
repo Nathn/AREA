@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleDot as fasCircleDot } from "@fortawesome/free-solid-svg-icons";
+
 import expressServer from "../../api/express-server";
 import "./index.css";
 
@@ -39,6 +42,22 @@ function App({ user, services }) {
       return;
     });
   }, [user]);
+
+  const updateActionReaction = (id, key, value) => (event) => {
+    expressServer.updateActionReaction(id, key, value).then((response) => {
+      if (response.status !== 200) {
+        console.warn(response);
+        return;
+      }
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 30);
+      document.cookie = `userData=${encodeURIComponent(
+        JSON.stringify(response.data) || ""
+      )}; expires=${expiryDate}; path=/; SameSite=Lax`;
+      setUserData(response.data);
+      return;
+    });
+  };
 
   const deleteActionReaction = (id) => (event) => {
     expressServer.deleteActionReaction(id).then((response) => {
@@ -92,6 +111,11 @@ function App({ user, services }) {
                 <a onClick={deleteActionReaction(ar._id)} href="#">
                   Delete
                 </a>
+                <FontAwesomeIcon
+                  onClick={updateActionReaction(ar._id, "enabled", !ar.enabled)}
+                  className={ar.enabled ? "enabled" : "disabled"}
+                  icon={fasCircleDot}
+                />
               </div>
             ))}
           </div>

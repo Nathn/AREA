@@ -59,6 +59,16 @@ class ExpressServer {
     );
   }
 
+  updateActionReaction(id, key, value) {
+    return this.api.post(
+      "/updateActionReaction/" + id + "/" + key + "/" + value,
+      {},
+      {
+        withCredentials: true,
+      }
+    );
+  }
+
   deleteActionReaction(arId) {
     return this.api.post(
       "/deleteActionReaction/" + arId,

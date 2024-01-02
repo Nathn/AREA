@@ -44,3 +44,13 @@ h1 {
 .arrow {
   font-size: 1.5rem;
 }
+
+.enabled {
+  cursor: pointer;
+  color: #00cc00;
+}
+
+.disabled {
+  cursor: pointer;
+  color: #ff0000;
+}

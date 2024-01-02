@@ -45,6 +45,35 @@ router.post("/createActionReaction/:action/:reaction", async (req, res) => {
   }
 });
 
+router.post("/updateActionReaction/:id/:key/:value", async (req, res) => {
+  const { id, key, value } = req.params;
+  const user = await findUserInRequestCookies(req);
+  if (!user) {
+    res.status(400).send("Bad request");
+    return;
+  }
+  if (
+    !user.action_reactions.some((ar) => {
+      return ar._id.toString() === id;
+    })
+  ) {
+    res.status(201).send("This action/reaction is not active on your account");
+    return;
+  }
+  try {
+    user.action_reactions.forEach((ar) => {
+      if (ar._id.toString() === id) {
+        ar[key] = value;
+      }
+    });
+    await user.save();
+    res.status(200).send(user);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("Bad request");
+  }
+});
+
 router.post("/deleteActionReaction/:id", async (req, res) => {
   const { id } = req.params;
   const user = await findUserInRequestCookies(req);

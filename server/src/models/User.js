@@ -32,56 +32,16 @@ const userSchema = new mongoose.Schema({
   },
   auth: {
     google: {
-      access_token: {
-        type: String,
-        trim: true,
-      },
-      refresh_token: {
-        type: String,
-        trim: true,
-      },
-      scope: {
-        type: String,
-        trim: true,
-      },
-      token_type: {
-        type: String,
-        trim: true,
-      },
-      expiry_date: Number,
+      type: mongoose.Schema.Types.Mixed,
+      trim: true,
     },
     yammer: {
-      user_id: Number,
-      network_id: Number,
-      network_permalink: String,
-      network_name: String,
-      network_canonical: Boolean,
-      network_primary: Boolean,
-      token: String,
-      view_members: Boolean,
-      view_groups: Boolean,
-      view_messages: Boolean,
-      view_subscriptions: Boolean,
-      modify_subscriptions: Boolean,
-      modify_messages: Boolean,
-      view_tags: Boolean,
-      created_at: String,
-      authorized_at: String,
-      expires_at: String,
+      type: mongoose.Schema.Types.Mixed,
+      trim: true,
     },
     github: {
-      access_token: {
-        type: String,
-        trim: true,
-      },
-      scope: {
-        type: String,
-        trim: true,
-      },
-      token_type: {
-        type: String,
-        trim: true,
-      },
+      type: mongoose.Schema.Types.Mixed,
+      trim: true,
     },
   },
   action_reactions: [
@@ -95,6 +55,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
+      },
+      enabled: {
+        type: Boolean,
+        default: true,
       },
     },
   ],

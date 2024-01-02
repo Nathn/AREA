@@ -64,6 +64,9 @@ async function actionsPool() {
       currentStateOfThings[user._id] = {};
     }
     user.action_reactions.forEach(async (ar) => {
+      if (!ar.enabled) {
+        return; // skip this action reaction
+      }
       let service_action = getServiceFromAR(ar.action);
       if (areGoogleServicesInvolved(ar)) {
         const oauth2Client = new google.auth.OAuth2(

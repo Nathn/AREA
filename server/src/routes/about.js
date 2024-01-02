@@ -12,35 +12,40 @@ router.get("/about.json", async (req, res) => {
   const db_services = await Service.find({});
   let services = [];
 
-  db_services.forEach((service) => {
-    services.push({
-      name: service.name_long.toLowerCase().replaceAll(" ", "_"),
-      actions: service.actions.map((action) => {
-        return {
-          name: action.name_long.toLowerCase().replaceAll(" ", "_"),
-          description: action.description,
-        };
-      }),
-      reactions: service.reactions.map((reaction) => {
-        return {
-          name: reaction.name_long.toLowerCase().replaceAll(" ", "_"),
-          description: reaction.description,
-        };
-      }),
+  try {
+    db_services.forEach((service) => {
+      services.push({
+        name: service.name_long.toLowerCase().replaceAll(" ", "_"),
+        actions: service.actions.map((action) => {
+          return {
+            name: action.name_long.toLowerCase().replaceAll(" ", "_"),
+            description: action.description,
+          };
+        }),
+        reactions: service.reactions.map((reaction) => {
+          return {
+            name: reaction.name_long.toLowerCase().replaceAll(" ", "_"),
+            description: reaction.description,
+          };
+        }),
+      });
     });
-  });
 
-  const data = {
-    client: {
-      host: host,
-    },
-    server: {
-      current_time: current_time,
-      services: services,
-    },
-  };
+    const data = {
+      client: {
+        host: host,
+      },
+      server: {
+        current_time: current_time,
+        services: services,
+      },
+    };
 
-  res.json(data);
+    res.json(data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 module.exports = router;
