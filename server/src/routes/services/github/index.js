@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const callback = require("./callback");
+const baseValues = require("./baseValues");
+const actions = require("./actions");
 
 router.get("/", async (req, res) => {
   const rootURL = "https://github.com/login/oauth/authorize";
@@ -29,5 +31,7 @@ router.get("/", async (req, res) => {
 });
 
 router.use("/", callback);
+router.use("/", baseValues);
+router.use("/action", actions);
 
 module.exports = router;
