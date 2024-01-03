@@ -11,8 +11,10 @@ router.post("/baseValues", async (req, res) => {
     }
 
     access_token = user?.auth?.yammer?.token;
-    console.log("ACCESS TOKEN: ", access_token);
-
+    if (!access_token) {
+      res.status(400).send("Bad request");
+      return;
+    }
     // Make a request to the Yammer API to fetch private messages
     const response = await axios.get("https://www.yammer.com/api/v1/messages/private.json", {
       headers: {

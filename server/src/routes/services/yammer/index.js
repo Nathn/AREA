@@ -23,5 +23,6 @@ router.get("/", async (req, res) => {
 
 router.use("/", baseValues);
 router.use("/action", actions);
+router.use("/reaction", reactions);
 
 module.exports = router;
