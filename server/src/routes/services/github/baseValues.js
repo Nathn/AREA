@@ -18,11 +18,6 @@ router.post("/baseValues", async (req, res) => {
 
     let baseValues = {};
 
-    /*
-      Build the baseValues
-      object here
-    */
-
     const githubApiHandler = new GitHubApiHandler(accessToken);
 
     const githubUser = await githubApiHandler.fetchUser();

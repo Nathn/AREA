@@ -3,7 +3,6 @@ const router = express.Router();
 const GitHubApiHandler = require("./utils/GitHubApiHandler");
 
 router.post("/pushCommit", async (req, res) => {
-  // Replace with your action name
   const { user, baseValues } = req.body;
   const userCommits = baseValues?.publicRepositories?.map((repository) => repository?.commits);
   const accesToken = user?.auth?.github?.access_token;
@@ -15,11 +14,6 @@ router.post("/pushCommit", async (req, res) => {
   try {
     let result = false;
     let newBaseValues = {};
-
-    /*
-      Check here if the
-      action should be fired
-    */
 
     const githubApiHandler = new GitHubApiHandler(accesToken);
 
@@ -76,8 +70,6 @@ router.post("/pushCommit", async (req, res) => {
       updatedAt: repo.updated_at,
       commits: publicRepositoriesCommits.find((item) => item.repo_id === repo.id)?.commits,
     }));
-
-    console.log("newCommits", newCommits);
 
     res.status(200).send({
       result: newCommits.length > 0,
