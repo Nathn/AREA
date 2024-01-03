@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const GitHubApiHandler = require("./utils/GitHubApiHandler");
+const DataFormater = require('./utils/DataFormater');
 
 router.post("/pushCommit", async (req, res) => {
   const { user, baseValues } = req.body;
@@ -16,6 +17,7 @@ router.post("/pushCommit", async (req, res) => {
     let newBaseValues = {};
 
     const githubApiHandler = new GitHubApiHandler(accesToken);
+    const dataFormater = new DataFormater(githubApiHandler);
 
     const githubUser = await githubApiHandler.fetchUser();
     if (!githubUser) {
@@ -28,17 +30,8 @@ router.post("/pushCommit", async (req, res) => {
     }
 
     var publicRepositories = await githubApiHandler.getPublicRepositories();
-
-    var publicRepositoriesCommits = await Promise.all(
-      publicRepositories.map(async (repo) => {
-        const commits = await githubApiHandler.getCommitsForPublicRepository(githubUser.login, repo.name);
-        return {
-          repo_id: repo.id,
-          commits: commits,
-        };
-      })
-    );
-    publicRepositoriesCommitsToCheck = publicRepositoriesCommits.map((repository) => repository?.commits);
+    var publicRepositoriesCommits = await dataFormater.formatPublicRepositoriesCommits(publicRepositories, githubUser);
+    var publicRepositoriesCommitsToCheck = publicRepositoriesCommits.map((repository) => repository?.commits);
 
     var newCommits = [];
 
@@ -58,23 +51,77 @@ router.post("/pushCommit", async (req, res) => {
       }
     }
 
-    publicRepositories = publicRepositories.map((repo) => ({
-      id: repo.id,
-      name: repo.name,
-      description: repo.description,
-      url: repo.html_url,
-      language: repo.language,
-      stars: repo.stargazers_count,
-      forks: repo.forks_count,
-      createdAt: repo.created_at,
-      updatedAt: repo.updated_at,
-      commits: publicRepositoriesCommits.find((item) => item.repo_id === repo.id)?.commits,
-    }));
+    publicRepositories = await dataFormater.formatPublicRepositoriesData(publicRepositoriesCommits);
 
     res.status(200).send({
       result: newCommits.length > 0,
       newBaseValues: publicRepositories,
       baseValuesId: "publicRepositories",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("Bad request");
+  }
+});
+
+router.post("/createPullRequest", async (req, res) => {
+  const { user, baseValues } = req.body;
+  const usefulBaseValues = baseValues?.publicRepositoriesPullRequests;
+  const accesToken = user?.auth?.github?.access_token;
+
+  if (!user || !usefulBaseValues || !accesToken) {
+    res.status(400).send("Bad request");
+    return;
+  }
+  try {
+    let result = false;
+    let newBaseValues = {};
+
+    const githubApiHandler = new GitHubApiHandler(accesToken);
+    const dataFormater = new DataFormater(githubApiHandler);
+
+    const githubUser = await githubApiHandler.fetchUser();
+    if (!githubUser) {
+      res.status(200).send({
+        result: result,
+        newBaseValues: newBaseValues,
+        baseValuesId: "",
+      });
+      return;
+    }
+
+    const publicRepositories = await githubApiHandler.getPublicRepositories();
+    const publicRepositoriesPullRequests = await dataFormater.formatPublicRepositoriesPullRequests(publicRepositories, githubUser);
+    const publicRepositoriesPullRequestsToCheck = publicRepositoriesPullRequests.map((repository) => repository?.pullRequests);
+
+    const newPullRequests = [];
+
+    for (let i = 0; i < publicRepositoriesPullRequestsToCheck.length; i++) {
+      const pullRequests = publicRepositoriesPullRequestsToCheck[i];
+
+      for (let j = 0; j < pullRequests.length; j++) {
+        const pullRequest = pullRequests[j];
+
+        const pullRequestInBaseValues = usefulBaseValues
+          .map((repository) => repository.pullRequests)
+          .flat()
+          .map((pullRequest) => pullRequest.id)
+          .includes(pullRequest.id);
+        if (!pullRequestInBaseValues) {
+          newPullRequests.push(pullRequest);
+        }
+      }
+    }
+
+    newBaseValues = publicRepositoriesPullRequests.map((repo) => ({
+      repo_id: repo.repo_id,
+      pullRequests: repo.pullRequests,
+    }));
+
+    res.status(200).send({
+      result: newPullRequests.length > 0,
+      newBaseValues: newBaseValues,
+      baseValuesId: "publicRepositoriesPullRequests",
     });
   } catch (error) {
     console.log(error);

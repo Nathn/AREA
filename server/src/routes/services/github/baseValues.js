@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const GitHubApiHandler = require('./utils/GitHubApiHandler');
+const DataFormater = require('./utils/DataFormater');
 
 router.post("/baseValues", async (req, res) => {
   try {
@@ -19,6 +20,7 @@ router.post("/baseValues", async (req, res) => {
     let baseValues = {};
 
     const githubApiHandler = new GitHubApiHandler(accessToken);
+    const dataFormater = new DataFormater(githubApiHandler);
 
     const githubUser = await githubApiHandler.fetchUser();
     if (!githubUser) {
@@ -27,49 +29,15 @@ router.post("/baseValues", async (req, res) => {
     }
 
     const publicRepositories = await githubApiHandler.getPublicRepositories();
-    const starredRepositories = await githubApiHandler.getStarredRepositories();
-
-    const publicRepositoriesCommits = await Promise.all(
-      publicRepositories.map(async repo => {
-      const commits = await githubApiHandler.getCommitsForPublicRepository(githubUser.login, repo.name);
-        return {
-          repo_id: repo.id,
-          commits: commits,
-        };
-      })
-    );
+    const starredRepositories = await githubApiHandler.getStarredPublicRepositories();
+    const publicRepositoriesCommits = await dataFormater.formatPublicRepositoriesCommits(publicRepositories, githubUser);
+    const publicRepositoriesPullRequests = await dataFormater.formatPublicRepositoriesPullRequests(publicRepositories, githubUser);
 
     baseValues = {
-      user: {
-        id: githubUser.id,
-        name: githubUser.name,
-        username: githubUser.login,
-        avatar: githubUser.avatar_url,
-        url: githubUser.html_url,
-      },
-      publicRepositories: publicRepositories.map(repo => ({
-        id: repo.id,
-        name: repo.name,
-        description: repo.description,
-        url: repo.html_url,
-        language: repo.language,
-        stars: repo.stargazers_count,
-        forks: repo.forks_count,
-        createdAt: repo.created_at,
-        updatedAt: repo.updated_at,
-        commits: publicRepositoriesCommits.find(item => item.repo_id === repo.id)?.commits,
-      })),
-      starredRepositories: starredRepositories.map(repo => ({
-        id: repo.id,
-        name: repo.name,
-        description: repo.description,
-        url: repo.html_url,
-        language: repo.language,
-        stars: repo.stargazers_count,
-        forks: repo.forks_count,
-        createdAt: repo.created_at,
-        updatedAt: repo.updated_at,
-      })),
+      user: dataFormater.formatUser(githubUser),
+      publicRepositories: dataFormater.formatPublicRepositoriesData(publicRepositories, publicRepositoriesCommits),
+      starredRepositories: dataFormater.formatPublicStarredRepositoriesData(starredRepositories),
+      publicRepositoriesPullRequests: publicRepositoriesPullRequests,
     };
 
     res.status(200).send(baseValues);
