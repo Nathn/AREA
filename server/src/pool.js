@@ -135,7 +135,7 @@ async function actionsPool() {
         })
         .catch((error) => {
           console.log(
-            `Error calling action route for action ${ar.action}: ${error} - ${error?.response?.data}`
+            `Error calling action route for action ${ar.action}: ${error}`
           );
         });
     });

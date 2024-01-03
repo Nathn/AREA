@@ -10,12 +10,40 @@ router.post("/baseValues", async (req, res) => {
     return;
   }
 
-  const listMessages = async (auth) => {
+  const listMessagesReceived = async (auth) => {
     const gmail = google.gmail({ version: "v1", auth });
 
     const response = await gmail.users.messages.list({
       userId: "me",
       maxResults: 10,
+    });
+
+    const messages = response.data.messages;
+    if (!messages.length) {
+      console.log("No messages found.");
+      return;
+    }
+
+    const messageDetails = await Promise.all(
+      messages.map(async (message) => {
+        const messageDetails = await gmail.users.messages.get({
+          userId: "me",
+          id: message.id,
+        });
+        return messageDetails.data;
+      })
+    );
+
+    return messageDetails;
+  };
+
+  const listMessagesSent = async (auth) => {
+    const gmail = google.gmail({ version: "v1", auth });
+
+    const response = await gmail.users.messages.list({
+      userId: "me",
+      maxResults: 10,
+      q: "from:me",
     });
 
     const messages = response.data.messages;
@@ -57,9 +85,12 @@ router.post("/baseValues", async (req, res) => {
     return;
   }
 
-  const messages = await listMessages(oauth2Client);
+  const messagesReceived = await listMessagesReceived(oauth2Client);
+  const messagesSent = await listMessagesSent(oauth2Client);
+
   res.send({
-    messages: messages,
+    messagesReceived: messagesReceived,
+    messagesSent: messagesSent,
   });
 });
 
