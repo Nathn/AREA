@@ -1,7 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
+
+import { FaBars, FaTimes } from 'react-icons/fa';
+
+import Button from 'react-bootstrap/Button'
 
 import "./index.css";
 
@@ -22,27 +26,39 @@ if (!firebase.apps.length) {
 }
 
 function Header({ user }) {
+  const navRef = useRef(null);
+
+  const showNavbar = () => {
+    navRef.current.classList.toggle("responsive-nav");
+  }
+
   return (
-    <nav>
-      <Link to="/">
-        <h3>Home</h3>
-      </Link>
-      {!user && (
-        <Link to="/login">
-          <h3>Sign in</h3>
-        </Link>
-      )}
-      {user && (
-        <span>
-          Signed in as <strong>{user.displayName}</strong>
-        </span>
-      )}
-      {user && (
-        <a href="#" onClick={() => firebase.auth().signOut()}>
-          <h3>Sign out</h3>
-        </a>
-      )}
-    </nav>
+    <header id="navHeader">
+      <h3>AREA</h3>
+
+      <nav id="navBar" ref={navRef}>
+        <Link to="/">Home</Link>
+        {user ? (
+          <>
+            <Link to="/new">New</Link>
+            <Link to="/profil">Profil</Link>
+            <Button variant="danger" onClick={() => firebase.auth().signOut()}>
+              Logout
+            </Button>
+          </>
+        ) : (
+          <Button variant="success" onClick={() => window.location.assign("/login")}>
+            Login
+          </Button>
+        )}
+        <button className="nav-btn nav-close-btn" onClick={showNavbar}>
+          <FaTimes />
+        </button>
+      </nav>
+      <button id="navBurger" className="nav-btn" onClick={showNavbar}>
+        <FaBars />
+      </button>
+    </header>
   );
 }
 

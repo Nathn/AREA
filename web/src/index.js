@@ -12,8 +12,11 @@ import expressServer from "./api/express-server";
 import Home from "./pages/Home/";
 import Login from "./pages/Login/";
 import New from "./pages/New/";
+import Profil from "./pages/Profil/";
 
 import Header from "./components/Header";
+
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -78,34 +81,23 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  if (user) {
-    return (
-      <Router>
-        <Header user={user} />
-        <Routes>
-          <Route path="/" element={<Home user={user} services={services} />} />
-          <Route
-            path="/new"
-            element={<New user={user} services={services} />}
-          />
-        </Routes>
-      </Router>
-    );
-  } else {
-    return (
-      <Router>
-        <Header user={user} />
-        <Routes>
-          <Route path="/" element={<Home user={user} services={services} />} />
-          <Route
-            path="/new"
-            element={<New user={user} services={services} />}
-          />
-          <Route path="/login" element={<Login />} />
-        </Routes>
-      </Router>
-    );
-  }
+  return (
+    <Router>
+      <Header user={user} />
+      <Routes>
+        <Route path="/" element={<Home user={user} services={services} />} />
+        <Route
+          path="/new"
+          element={<New user={user} services={services} />}
+        />
+        <Route
+          path="/profil"
+          element={<Profil user={user} />}
+        />
+        {!user && <Route path="/login" element={<Login />} />}
+      </Routes>
+    </Router>
+  );
 }
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<App />);
