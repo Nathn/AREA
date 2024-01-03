@@ -3,6 +3,9 @@ const router = express.Router();
 
 // Add required modules for Yammer authentication
 const axios = require("axios");
+const reactions = require("./reactions");
+const actions = require("./actions");
+const baseValues = require("./baseValues");
 
 // Callback route for Yammer
 router.use("/", require("./callback"));
@@ -17,5 +20,8 @@ router.get("/", async (req, res) => {
   // Redirect the user to the Yammer authentication URL
   res.send(yammerAuthUrl);
 });
+
+router.use("/", baseValues);
+router.use("/action", actions);
 
 module.exports = router;
