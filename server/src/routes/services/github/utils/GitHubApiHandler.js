@@ -31,7 +31,7 @@ class GitHubApiHandler {
     return await this.fetchApi("https://api.github.com/user/repos");
   }
 
-  async getStarredRepositories() {
+  async getStarredPublicRepositories() {
     return await this.fetchApi("https://api.github.com/user/starred");
   }
 

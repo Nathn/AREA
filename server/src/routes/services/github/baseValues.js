@@ -27,7 +27,7 @@ router.post("/baseValues", async (req, res) => {
     }
 
     const publicRepositories = await githubApiHandler.getPublicRepositories();
-    const starredRepositories = await githubApiHandler.getStarredRepositories();
+    const starredRepositories = await githubApiHandler.getStarredPublicRepositories();
 
     const publicRepositoriesCommits = await Promise.all(
       publicRepositories.map(async repo => {
