@@ -6,9 +6,9 @@ const DataFormater = require('./utils/DataFormater');
 router.post("/pushCommit", async (req, res) => {
   const { user, baseValues } = req.body;
   const userCommits = baseValues?.publicRepositories?.map((repository) => repository?.commits);
-  const accesToken = user?.auth?.github?.access_token;
+  const accessToken = user?.auth?.github?.access_token;
 
-  if (!user || !userCommits || !accesToken) {
+  if (!user || !userCommits || !accessToken) {
     res.status(400).send("Bad request");
     return;
   }
@@ -16,7 +16,7 @@ router.post("/pushCommit", async (req, res) => {
     let result = false;
     let newBaseValues = {};
 
-    const githubApiHandler = new GitHubApiHandler(accesToken);
+    const githubApiHandler = new GitHubApiHandler(accessToken);
     const dataFormater = new DataFormater(githubApiHandler);
 
     const githubUser = await githubApiHandler.fetchUser();
@@ -68,9 +68,9 @@ router.post("/createPullRequest", async (req, res) => {
   const { user, baseValues } = req.body;
   const usefulBaseValues = baseValues?.publicRepositoriesPullRequests;
 
-  const accesToken = user?.auth?.github?.access_token;
+  const accessToken = user?.auth?.github?.access_token;
 
-  if (!user || !usefulBaseValues || !accesToken) {
+  if (!user || !usefulBaseValues || !accessToken) {
     res.status(400).send("Bad request");
     return;
   }
@@ -78,7 +78,7 @@ router.post("/createPullRequest", async (req, res) => {
     let result = false;
     let newBaseValues = {};
 
-    const githubApiHandler = new GitHubApiHandler(accesToken);
+    const githubApiHandler = new GitHubApiHandler(accessToken);
     const dataFormater = new DataFormater(githubApiHandler);
 
     const githubUser = await githubApiHandler.fetchUser();
@@ -133,10 +133,10 @@ router.post("/createPullRequest", async (req, res) => {
 router.post("/starRepo", async (req, res) => {
   const { user, baseValues } = req.body;
   const usefulBaseValues = baseValues?.starredRepositories;
-  
-  const accesToken = user?.auth?.github?.access_token;
 
-  if (!user || !usefulBaseValues || !accesToken) {
+  const accessToken = user?.auth?.github?.access_token;
+
+  if (!user || !usefulBaseValues || !accessToken) {
     res.status(400).send("Bad request");
     return;
   }
@@ -144,8 +144,8 @@ router.post("/starRepo", async (req, res) => {
     let result = false;
     let newBaseValues = {};
 
-    const githubApiHandler = new GitHubApiHandler(accesToken);
-    
+    const githubApiHandler = new GitHubApiHandler(accessToken);
+
     const githubUser = await githubApiHandler.fetchUser();
     if (!githubUser) {
       res.status(200).send({
@@ -155,7 +155,7 @@ router.post("/starRepo", async (req, res) => {
       });
       return;
     }
-    
+
     const starredRepositories = await githubApiHandler.getStarredPublicRepositories();
 
     const starredRepositoriesToCheck = starredRepositories.map((repository) => repository?.id);
