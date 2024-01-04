@@ -39,6 +39,11 @@ class GitHubApiHandler {
     const url = `https://api.github.com/repos/${username}/${repository}/commits`;
     return await this.fetchApi(url);
   }
+
+  async getPullRequestsForPublicRepository(username, repository) {
+    const url = `https://api.github.com/repos/${username}/${repository}/pulls`;
+    return await this.fetchApi(url);
+  }
 }
 
 module.exports = GitHubApiHandler;
