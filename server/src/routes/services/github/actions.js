@@ -67,6 +67,7 @@ router.post("/pushCommit", async (req, res) => {
 router.post("/createPullRequest", async (req, res) => {
   const { user, baseValues } = req.body;
   const usefulBaseValues = baseValues?.publicRepositoriesPullRequests;
+
   const accesToken = user?.auth?.github?.access_token;
 
   if (!user || !usefulBaseValues || !accesToken) {
@@ -123,6 +124,70 @@ router.post("/createPullRequest", async (req, res) => {
       newBaseValues: newBaseValues,
       baseValuesId: "publicRepositoriesPullRequests",
     });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("Bad request");
+  }
+});
+
+router.post("/starRepo", async (req, res) => {
+  const { user, baseValues } = req.body;
+  const usefulBaseValues = baseValues?.starredRepositories;
+  
+  const accesToken = user?.auth?.github?.access_token;
+
+  if (!user || !usefulBaseValues || !accesToken) {
+    res.status(400).send("Bad request");
+    return;
+  }
+  try {
+    let result = false;
+    let newBaseValues = {};
+
+    const githubApiHandler = new GitHubApiHandler(accesToken);
+    
+    const githubUser = await githubApiHandler.fetchUser();
+    if (!githubUser) {
+      res.status(200).send({
+        result: result,
+        newBaseValues: newBaseValues,
+        baseValuesId: "",
+      });
+      return;
+    }
+    
+    const starredRepositories = await githubApiHandler.getStarredPublicRepositories();
+
+    const starredRepositoriesToCheck = starredRepositories.map((repository) => repository?.id);
+
+    const newStarredRepositories = [];
+
+    for (let i = 0; i < starredRepositoriesToCheck.length; i++) {
+      const repositoryId = starredRepositoriesToCheck[i];
+
+      const repositoryInBaseValues = usefulBaseValues.map((repository) => repository.id).includes(repositoryId);
+      if (!repositoryInBaseValues) {
+        newStarredRepositories.push(starredRepositories[i]);
+      }
+    }
+
+    newBaseValues = starredRepositories.map((repo) => ({
+      id: repo.id,
+      name: repo.name,
+      description: repo.description,
+      url: repo.html_url,
+      language: repo.language,
+      stars: repo.stargazers_count,
+      forks: repo.forks_count,
+      createdAt: repo.created_at,
+      updatedAt: repo.updated_at,
+    }));
+
+    res.status(200).send({
+      result: newStarredRepositories.length > 0,
+      newBaseValues: newBaseValues,
+      baseValuesId: "starredRepositories",
+     });
   } catch (error) {
     console.log(error);
     res.status(400).send("Bad request");

@@ -30,8 +30,16 @@ router.post("/baseValues", async (req, res) => {
 
     const publicRepositories = await githubApiHandler.getPublicRepositories();
     const starredRepositories = await githubApiHandler.getStarredPublicRepositories();
-    const publicRepositoriesCommits = await dataFormater.formatPublicRepositoriesCommits(publicRepositories, githubUser);
     const publicRepositoriesPullRequests = await dataFormater.formatPublicRepositoriesPullRequests(publicRepositories, githubUser);
+    const publicRepositoriesCommits = await Promise.all(
+      publicRepositories.map(async repo => {
+      const commits = await githubApiHandler.getCommitsForPublicRepository(githubUser.login, repo.name);
+        return {
+          repo_id: repo.id,
+          commits: commits,
+        };
+      })
+    );
 
     baseValues = {
       user: dataFormater.formatUser(githubUser),
