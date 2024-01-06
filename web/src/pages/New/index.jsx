@@ -6,6 +6,7 @@ import {
   faGithub,
   faGoogle,
   faYammer,
+  faMicrosoft,
 } from "@fortawesome/free-brands-svg-icons";
 
 import expressServer from "../../api/express-server";
@@ -18,20 +19,27 @@ function App({ user, services }) {
   const [googleAccessTokens, setGoogleAccessTokens] = useState("");
   const [yammerAccessTokens, setYammerAccessTokens] = useState("");
   const [githubAccessTokens, setGithubAccessTokens] = useState("");
+  const [outlookAccessTokens, setOutlookAccessTokens] = useState("");
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   function getAuthentificationStates(userData) {
-    if (userData?.auth?.google?.access_token)
+    if (userData?.auth?.google && Object.keys(userData.auth.google).length > 0)
       setGoogleAccessTokens(userData?.auth?.google);
     else setGoogleAccessTokens("");
-    if (userData?.auth?.yammer?.token)
+    if (userData?.auth?.yammer && Object.keys(userData.auth.yammer).length > 0)
       setYammerAccessTokens(userData?.auth?.yammer);
     else setYammerAccessTokens("");
-    if (userData?.auth?.github?.access_token)
+    if (userData?.auth?.github && Object.keys(userData.auth.github).length > 0)
       setGithubAccessTokens(userData?.auth?.github);
     else setGithubAccessTokens("");
+    if (
+      userData?.auth?.outlook &&
+      Object.keys(userData.auth.outlook).length > 0
+    )
+      setOutlookAccessTokens(userData?.auth?.outlook);
+    else setOutlookAccessTokens("");
   }
 
   useEffect(() => {
@@ -87,6 +95,12 @@ function App({ user, services }) {
     });
   }
 
+  async function outlookAuth() {
+    await expressServer.outlookAuth().then((response) => {
+      window.location.assign(response.data);
+    });
+  }
+
   async function logout(service) {
     await expressServer.logoutFromService(service).then((response) => {
       if (response.status !== 200) {
@@ -119,6 +133,7 @@ function App({ user, services }) {
     <div className="App">
       <h1>Add an action/reaction</h1>
       <div className="buttons">
+        {/* Google */}
         <button
           className={
             googleAccessTokens ? "login-button logged" : "login-button"
@@ -176,6 +191,26 @@ function App({ user, services }) {
             <span>GitHub</span>
           </div>
           {githubAccessTokens ? "Connected" : "Connect"}
+        </button>
+
+        {/* Outlook */}
+        <button
+          className={
+            outlookAccessTokens ? "login-button logged" : "login-button"
+          }
+          onClick={() => {
+            if (!outlookAccessTokens) {
+              outlookAuth();
+            } else {
+              logout("outlook");
+            }
+          }}
+        >
+          <div className="service-name">
+            <FontAwesomeIcon icon={faMicrosoft} />
+            <span>Outlook</span>
+          </div>
+          {outlookAccessTokens ? "Connected" : "Connect"}
         </button>
       </div>
       <form onSubmit={createActionReaction} className="form-action">

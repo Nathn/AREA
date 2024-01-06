@@ -8,6 +8,7 @@ const Service = require("@/models/Service");
 const google = require("./google");
 const github = require("./github");
 const yammer = require("./yammer");
+const outlook = require("./outlook");
 
 router.get("/", async (req, res) => {
   var services = await Service.find({});
@@ -38,5 +39,6 @@ router.post("/logout/:service", async (req, res) => {
 router.use("/google", google);
 router.use("/github", github);
 router.use("/yammer", yammer);
+router.use("/outlook", outlook);
 
 module.exports = router;

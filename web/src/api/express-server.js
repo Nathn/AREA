@@ -39,6 +39,10 @@ class ExpressServer {
     return this.api.get("/services/github");
   }
 
+  outlookAuth() {
+    return this.api.get("/services/outlook");
+  }
+
   logoutFromService(service) {
     return this.api.post(
       "/services/logout/" + service,
