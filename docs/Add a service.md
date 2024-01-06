@@ -73,7 +73,6 @@ In our new folder, let's first create a file named `index.js` and paste this dra
 
 ```js
 const express = require("express");
-const axios = require("axios");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
