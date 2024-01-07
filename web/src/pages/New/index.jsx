@@ -16,30 +16,19 @@ function App({ user, services }) {
   const [action, setAction] = useState("");
   const [reaction, setReaction] = useState("");
 
-  const [googleAccessTokens, setGoogleAccessTokens] = useState("");
-  const [yammerAccessTokens, setYammerAccessTokens] = useState("");
-  const [githubAccessTokens, setGithubAccessTokens] = useState("");
-  const [outlookAccessTokens, setOutlookAccessTokens] = useState("");
+  const [googleAccess, setGoogleAccess] = useState(false);
+  const [yammerAccess, setYammerAccess] = useState(false);
+  const [githubAccess, setGithubAccess] = useState(false);
+  const [outlookAccess, setOutlookAccess] = useState(false);
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   function getAuthentificationStates(userData) {
-    if (userData?.auth?.google && Object.keys(userData.auth.google).length > 0)
-      setGoogleAccessTokens(userData?.auth?.google);
-    else setGoogleAccessTokens("");
-    if (userData?.auth?.yammer && Object.keys(userData.auth.yammer).length > 0)
-      setYammerAccessTokens(userData?.auth?.yammer);
-    else setYammerAccessTokens("");
-    if (userData?.auth?.github && Object.keys(userData.auth.github).length > 0)
-      setGithubAccessTokens(userData?.auth?.github);
-    else setGithubAccessTokens("");
-    if (
-      userData?.auth?.outlook &&
-      Object.keys(userData.auth.outlook).length > 0
-    )
-      setOutlookAccessTokens(userData?.auth?.outlook);
-    else setOutlookAccessTokens("");
+    setGoogleAccess(userData?.auth?.google);
+    setYammerAccess(userData?.auth?.yammer);
+    setGithubAccess(userData?.auth?.github);
+    setOutlookAccess(userData?.auth?.outlook);
   }
 
   useEffect(() => {
@@ -135,11 +124,9 @@ function App({ user, services }) {
       <div className="buttons">
         {/* Google */}
         <button
-          className={
-            googleAccessTokens ? "login-button logged" : "login-button"
-          }
+          className={googleAccess ? "login-button logged" : "login-button"}
           onClick={() => {
-            if (!googleAccessTokens) {
+            if (!googleAccess) {
               googleAuth();
             } else {
               logout("google");
@@ -150,16 +137,14 @@ function App({ user, services }) {
             <FontAwesomeIcon icon={faGoogle} />
             <span>Google services</span>
           </div>
-          {googleAccessTokens ? "Connected" : "Connect"}
+          {googleAccess ? "Connected" : "Connect"}
         </button>
 
         {/* Yammer */}
         <button
-          className={
-            yammerAccessTokens ? "login-button logged" : "login-button"
-          }
+          className={yammerAccess ? "login-button logged" : "login-button"}
           onClick={() => {
-            if (!yammerAccessTokens) {
+            if (!yammerAccess) {
               yammerAuth();
             } else {
               logout("yammer");
@@ -170,16 +155,14 @@ function App({ user, services }) {
             <FontAwesomeIcon icon={faYammer} />
             <span>Yammer</span>
           </div>
-          {yammerAccessTokens ? "Connected" : "Connect"}
+          {yammerAccess ? "Connected" : "Connect"}
         </button>
 
         {/* GitHub */}
         <button
-          className={
-            githubAccessTokens ? "login-button logged" : "login-button"
-          }
+          className={githubAccess ? "login-button logged" : "login-button"}
           onClick={() => {
-            if (!githubAccessTokens) {
+            if (!githubAccess) {
               githubAuth();
             } else {
               logout("github");
@@ -190,16 +173,14 @@ function App({ user, services }) {
             <FontAwesomeIcon icon={faGithub} />
             <span>GitHub</span>
           </div>
-          {githubAccessTokens ? "Connected" : "Connect"}
+          {githubAccess ? "Connected" : "Connect"}
         </button>
 
         {/* Outlook */}
         <button
-          className={
-            outlookAccessTokens ? "login-button logged" : "login-button"
-          }
+          className={outlookAccess ? "login-button logged" : "login-button"}
           onClick={() => {
-            if (!outlookAccessTokens) {
+            if (!outlookAccess) {
               outlookAuth();
             } else {
               logout("outlook");
@@ -210,7 +191,7 @@ function App({ user, services }) {
             <FontAwesomeIcon icon={faMicrosoft} />
             <span>Outlook</span>
           </div>
-          {outlookAccessTokens ? "Connected" : "Connect"}
+          {outlookAccess ? "Connected" : "Connect"}
         </button>
       </div>
       <form onSubmit={createActionReaction} className="form-action">
@@ -227,9 +208,10 @@ function App({ user, services }) {
           </option>
           {services.map(
             (service) =>
-              (service.type !== "google" || googleAccessTokens) &&
-              (service.type !== "yammer" || yammerAccessTokens) &&
-              (service.type !== "github" || githubAccessTokens) &&
+              (service.type !== "google" || googleAccess) &&
+              (service.type !== "yammer" || yammerAccess) &&
+              (service.type !== "github" || githubAccess) &&
+              (service.type !== "outlook" || outlookAccess) &&
               service.actions.map((action) => (
                 <option value={`${service.name_short}_${action.name_short}`}>
                   {`${service.name_long} - ${action.name_long}`}
@@ -250,9 +232,9 @@ function App({ user, services }) {
           </option>
           {services.map(
             (service) =>
-              (service.type !== "google" || googleAccessTokens) &&
-              (service.type !== "yammer" || yammerAccessTokens) &&
-              (service.type !== "github" || githubAccessTokens) &&
+              (service.type !== "google" || googleAccess) &&
+              (service.type !== "yammer" || yammerAccess) &&
+              (service.type !== "github" || githubAccess) &&
               service.reactions.map((reaction) => (
                 <option
                   value={`${service.name_short}_${reaction.name_short}`}
