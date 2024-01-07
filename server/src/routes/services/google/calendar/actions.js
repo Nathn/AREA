@@ -57,6 +57,7 @@ router.post("/eventCreation", async (req, res) => {
       result: newEvents.length > 0,
       newBaseValues: events,
       baseValuesId: "events",
+      reactionNeededBaseValues: null,
     });
   } catch (error) {
     console.log(error);

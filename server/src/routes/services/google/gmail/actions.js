@@ -75,6 +75,7 @@ router.post("/emailReceived", async (req, res) => {
       result: newMessages.length > 0,
       newBaseValues: messages,
       baseValuesId: "messagesReceived",
+      reactionNeededBaseValues: null,
     });
   } catch (error) {
     console.log(error);
@@ -156,6 +157,7 @@ router.post("/emailSent", async (req, res) => {
       result: newMessages.length > 0,
       newBaseValues: messages,
       baseValuesId: "messagesSent",
+      reactionNeededBaseValues: null,
     });
   } catch (error) {
     console.log(error);

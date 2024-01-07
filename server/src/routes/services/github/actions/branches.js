@@ -50,6 +50,7 @@ const handleBranchOperation = async (req, res, operationType) => {
       result: result,
       newBaseValues: branches,
       baseValuesId: "branches",
+      reactionNeededBaseValues: null,
     });
   } catch (error) {
     console.log(error);

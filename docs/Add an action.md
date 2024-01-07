@@ -109,6 +109,7 @@ router.post("/actionName", async (req, res) => {
       result: result,
       newBaseValues: newBaseValues,
       baseValuesId: "relevant_property",
+      reactionNeededBaseValues: "relevant_property" // Optional
     });
   } catch (error) {
     console.log(error);

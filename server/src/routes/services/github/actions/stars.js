@@ -59,6 +59,7 @@ router.post("/starRepo", async (req, res) => {
       result: newStarredRepositories.length > 0,
       newBaseValues: newBaseValues,
       baseValuesId: "starredRepositories",
+      reactionNeededBaseValues: null,
     });
   } catch (error) {
     console.log(error);

@@ -62,6 +62,7 @@ router.post("/createPullRequest", async (req, res) => {
       result: newPullRequests.length > 0,
       newBaseValues: newBaseValues,
       baseValuesId: "publicRepositoriesPullRequests",
+      reactionNeededBaseValues: null,
     });
   } catch (error) {
     console.log(error);
