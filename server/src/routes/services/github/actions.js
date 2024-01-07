@@ -256,7 +256,18 @@ const handleBranchOperation = async (req, res, operationType) => {
 
     const newBranchesSize = branches.map((repository) => repository?.length).reduce((a, b) => a + b, 0);
 
-    const result = operationType === "create" ? newBranchesSize > prevBranchesSize : newBranchesSize < prevBranchesSize;
+    let result = false;
+
+    switch (operationType) {
+      case "create":
+        result = newBranchesSize > prevBranchesSize;
+        break;
+      case "delete":
+        result = newBranchesSize < prevBranchesSize;
+        break;
+      default:
+        break;
+    }
 
     res.status(200).send({
       result: result,
