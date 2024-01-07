@@ -54,11 +54,25 @@ router.post("/pushCommit", async (req, res) => {
 
     publicRepositories = await dataFormater.formatPublicRepositoriesData(publicRepositories, publicRepositoriesCommits);
 
+    let reactionNeededBaseValues = [];
+    for (let i = 0; i < newCommits.length; i++) {
+      const commitSha = newCommits[i].sha;
+      for (let j = 0; j < publicRepositoriesCommitsToCheck.length; j++) {
+        const commitInBaseValues = publicRepositoriesCommitsToCheck[j].map((commit) => commit.sha).includes(commitSha);
+        if (commitInBaseValues) {
+          reactionNeededBaseValues.push({
+            repository: publicRepositories[j],
+            commit: newCommits[i],
+          });
+        }
+      }
+    }
+
     res.status(200).send({
       result: newCommits.length > 0,
       newBaseValues: publicRepositories,
       baseValuesId: "publicRepositories",
-      reactionNeededBaseValues: null,
+      reactionNeededBaseValues: reactionNeededBaseValues,
     });
   } catch (error) {
     console.log(error);

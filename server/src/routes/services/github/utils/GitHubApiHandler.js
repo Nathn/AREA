@@ -5,7 +5,10 @@ class GitHubApiHandler {
     this.api = axios.create({
       baseURL: 'https://api.github.com',
       headers: {
-        Authorization: `token ${accessToken}`,
+        "Authorization": `Bearer ${accessToken}`,
+        "Accept": `application/vnd.github+json`,
+        "Content-Type": `application/json`,
+        "X-GitHub-Api-Version": `2022-11-28`,
       },
     });
   }
@@ -85,6 +88,14 @@ class GitHubApiHandler {
       branches.push(repositoryBranches);
     }
     return branches;
+  }
+
+  async updateRepositoryDescription(username, repository, description) {
+    const url = `/repos/${username}/${repository}`;
+    const data = {
+      description: description,
+    };
+    return await this.patchApi(url, data);
   }
 }
 
