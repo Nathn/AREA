@@ -27,20 +27,8 @@ class ExpressServer {
     return this.api.get("/users/" + uid);
   }
 
-  googleAuth() {
-    return this.api.get("/services/google");
-  }
-
-  yammerAuth() {
-    return this.api.get("/services/yammer");
-  }
-
-  githubAuth() {
-    return this.api.get("/services/github");
-  }
-
-  outlookAuth() {
-    return this.api.get("/services/outlook");
+  serviceAuth(service) {
+    return this.api.get(`/services/${service}`);
   }
 
   logoutFromService(service) {

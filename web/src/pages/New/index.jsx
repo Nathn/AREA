@@ -66,26 +66,12 @@ function App({ user, services }) {
       });
   }, [user]);
 
-  async function googleAuth() {
-    await expressServer.googleAuth().then((response) => {
-      window.location.assign(response.data);
-    });
-  }
-
-  async function yammerAuth() {
-    await expressServer.yammerAuth().then((response) => {
-      window.location.assign(response.data);
-    });
-  }
-
-  async function githubAuth() {
-    await expressServer.githubAuth().then((response) => {
-      window.location.assign(response.data);
-    });
-  }
-
-  async function outlookAuth() {
-    await expressServer.outlookAuth().then((response) => {
+  async function auth(service) {
+    await expressServer.serviceAuth(service).then((response) => {
+      if (response.status !== 200) {
+        console.warn(response);
+        return;
+      }
       window.location.assign(response.data);
     });
   }
@@ -127,7 +113,7 @@ function App({ user, services }) {
           className={googleAccess ? "login-button logged" : "login-button"}
           onClick={() => {
             if (!googleAccess) {
-              googleAuth();
+              auth("google");
             } else {
               logout("google");
             }
@@ -145,7 +131,7 @@ function App({ user, services }) {
           className={yammerAccess ? "login-button logged" : "login-button"}
           onClick={() => {
             if (!yammerAccess) {
-              yammerAuth();
+              auth("yammer");
             } else {
               logout("yammer");
             }
@@ -163,7 +149,7 @@ function App({ user, services }) {
           className={githubAccess ? "login-button logged" : "login-button"}
           onClick={() => {
             if (!githubAccess) {
-              githubAuth();
+              auth("github");
             } else {
               logout("github");
             }
@@ -181,7 +167,7 @@ function App({ user, services }) {
           className={outlookAccess ? "login-button logged" : "login-button"}
           onClick={() => {
             if (!outlookAccess) {
-              outlookAuth();
+              auth("outlook");
             } else {
               logout("outlook");
             }
@@ -235,6 +221,7 @@ function App({ user, services }) {
               (service.type !== "google" || googleAccess) &&
               (service.type !== "yammer" || yammerAccess) &&
               (service.type !== "github" || githubAccess) &&
+              (service.type !== "outlook" || outlookAccess) &&
               service.reactions.map((reaction) => (
                 <option
                   value={`${service.name_short}_${reaction.name_short}`}
