@@ -206,17 +206,14 @@ router.post("/forkRepo", async (req, res) => {
     return;
   }
   try {
-    let result = false;
-    let newUserForks = {};
-
     const prevForkSize = userForks.map((repository) => repository.length).reduce((a, b) => a + b, 0);
     console.log(prevForkSize);
 
     const githubApiHandler = new GitHubApiHandler(accessToken);
     const userPublicRepositories = await githubApiHandler.getPublicRepositories();
-    const newForks = await githubApiHandler.getForksForPublicRepositories(userPublicRepositories);
+    const newUserForks = await githubApiHandler.getForksForPublicRepositories(userPublicRepositories);
 
-    const newForkSize = newForks.map((repository) => repository.length).reduce((a, b) => a + b, 0);
+    const newForkSize = newUserForks.map((repository) => repository.length).reduce((a, b) => a + b, 0);
 
     res.status(200).send({
       result: newForkSize > prevForkSize,
