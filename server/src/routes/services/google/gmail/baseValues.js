@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const { google } = require("googleapis");
 
-// Not used yet (no actions)
 router.post("/baseValues", async (req, res) => {
   const { user } = req.body;
   if (!user) {
