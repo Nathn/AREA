@@ -207,7 +207,6 @@ router.post("/forkRepo", async (req, res) => {
   }
   try {
     const prevForkSize = userForks.map((repository) => repository.length).reduce((a, b) => a + b, 0);
-    console.log(prevForkSize);
 
     const githubApiHandler = new GitHubApiHandler(accessToken);
     const userPublicRepositories = await githubApiHandler.getPublicRepositories();
