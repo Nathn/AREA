@@ -41,6 +41,7 @@ router.post("/baseValues", async (req, res) => {
       })
     );
     const forks = await githubApiHandler.getForksForPublicRepositories(publicRepositories);
+    const branches = await githubApiHandler.getBranchesForAllPublicRepositories(githubUser.login, publicRepositories);
 
     baseValues = {
       user: dataFormater.formatUser(githubUser),
@@ -48,6 +49,7 @@ router.post("/baseValues", async (req, res) => {
       starredRepositories: dataFormater.formatPublicStarredRepositoriesData(starredRepositories),
       publicRepositoriesPullRequests: publicRepositoriesPullRequests,
       forks: forks,
+      branches: branches,
     };
 
     res.status(200).send(baseValues);

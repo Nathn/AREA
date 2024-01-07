@@ -225,4 +225,44 @@ router.post("/forkRepo", async (req, res) => {
   }
 });
 
+router.post("/createBranch", async (req, res) => {
+  const { user, baseValues } = req.body;
+  const userBranches = baseValues?.branches;
+
+  const accessToken = user?.auth?.github?.access_token;
+
+  if (!user || !userBranches || !accessToken) {
+    res.status(400).send("Bad request");
+    return;
+  }
+  try {
+    const prevBranchesSize = userBranches.map((repository) => repository?.length).reduce((a, b) => a + b, 0);
+
+    const githubApiHandler = new GitHubApiHandler(accessToken);
+    const githubUser = await githubApiHandler.fetchUser();
+    if (!githubUser) {
+      res.status(200).send({
+        result: result,
+        newBaseValues: newBaseValues,
+        baseValuesId: "",
+      });
+      return;
+    }
+
+    const publicRepositories = await githubApiHandler.getPublicRepositories();
+    const branches = await githubApiHandler.getBranchesForAllPublicRepositories(githubUser.login, publicRepositories);
+
+    const newBranchesSize = branches.map((repository) => repository?.length).reduce((a, b) => a + b, 0);
+
+    res.status(200).send({
+      result: newBranchesSize > prevBranchesSize,
+      newBaseValues: branches,
+      baseValuesId: "branches",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("Bad request");
+  }
+});
+
 module.exports = router;
