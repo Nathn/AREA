@@ -25,6 +25,7 @@ router.post("/forkRepo", async (req, res) => {
       result: newForkSize > prevForkSize,
       newBaseValues: newUserForks,
       baseValuesId: "forks",
+      reactionNeededBaseValues: null,
     });
   } catch (error) {
     console.log(error);

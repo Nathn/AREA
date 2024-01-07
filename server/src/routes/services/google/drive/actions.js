@@ -49,6 +49,7 @@ router.post("/fileUpload", async (req, res) => {
       result: newFiles.length > 0,
       newBaseValues: files,
       baseValuesId: "files",
+      reactionNeededBaseValues: null,
     });
   } catch (error) {
     console.log(error);

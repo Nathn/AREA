@@ -58,6 +58,7 @@ router.post("/pushCommit", async (req, res) => {
       result: newCommits.length > 0,
       newBaseValues: publicRepositories,
       baseValuesId: "publicRepositories",
+      reactionNeededBaseValues: null,
     });
   } catch (error) {
     console.log(error);

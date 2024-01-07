@@ -122,6 +122,7 @@ async function actionsPool() {
                 }/reaction/${getIdFromAR(ar.reaction)}`,
                 {
                   user: user,
+                  baseValues: response.data?.reactionNeededBaseValues,
                 }
               )
               .then((response) => {

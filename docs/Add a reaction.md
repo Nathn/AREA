@@ -26,7 +26,7 @@ const router = express.Router();
 
 router.post("/reactionName", async (req, res) => {
   // Replace reactionName with your reaction name
-  const { user } = req.body;
+  const { user, baseValues } = req.body; // baseValues is optional and can be null
   if (!user) {
     res.status(400).send("Bad request");
     return;
