@@ -1,22 +1,39 @@
-const fetch = require('node-fetch');
+const axios = require('axios');
 
 class GitHubApiHandler {
   constructor(accessToken) {
-    this.accessToken = accessToken;
+    this.api = axios.create({
+      baseURL: 'https://api.github.com',
+      headers: {
+        Authorization: `token ${accessToken}`,
+      },
+    });
   }
 
-  async fetchApi(url) {
+  async getApi(url) {
     try {
-      const options = {
-        headers: {
-          Authorization: `token ${this.accessToken}`,
-        },
-      };
+      const response = await this.api.get(url);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
 
-      const response = await fetch(url, options);
-      const data = await response.json();
+  async postApi(url, data) {
+    try {
+      const response = await this.api.post(url, data);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
 
-      return data;
+  async patchApi(url, data) {
+    try {
+      const response = await this.api.patch(url, data);
+      return response.data;
     } catch (error) {
       console.log(error);
       return null;
@@ -24,40 +41,40 @@ class GitHubApiHandler {
   }
 
   async fetchUser() {
-    return await this.fetchApi("https://api.github.com/user");
+    return await this.getApi("/user");
   }
 
   async getPublicRepositories() {
-    return await this.fetchApi("https://api.github.com/user/repos");
+    return await this.getApi("/user/repos");
   }
 
   async getStarredPublicRepositories() {
-    return await this.fetchApi("https://api.github.com/user/starred");
+    return await this.getApi("/user/starred");
   }
 
   async getCommitsForPublicRepository(username, repository) {
-    const url = `https://api.github.com/repos/${username}/${repository}/commits`;
-    return await this.fetchApi(url);
+    const url = `/repos/${username}/${repository}/commits`;
+    return await this.getApi(url);
   }
 
   async getPullRequestsForPublicRepository(username, repository) {
-    const url = `https://api.github.com/repos/${username}/${repository}/pulls`;
-    return await this.fetchApi(url);
+    const url = `/repos/${username}/${repository}/pulls`;
+    return await this.getApi(url);
   }
 
   async getForksForPublicRepositories(publicRepositories) {
     const forks = [];
     for (const repo of publicRepositories) {
-      const url = `https://api.github.com/repos/${repo.owner.login}/${repo.name}/forks`;
-      const data = await this.fetchApi(url);
+      const url = `/repos/${repo.owner.login}/${repo.name}/forks`;
+      const data = await this.getApi(url);
       forks.push(data);
     }
     return forks;
   }
 
   async getBranchesForPublicRepository(username, repository) {
-    const url = `https://api.github.com/repos/${username}/${repository}/branches`;
-    return await this.fetchApi(url);
+    const url = `/repos/${username}/${repository}/branches`;
+    return await this.getApi(url);
   }
 
   async getBranchesForAllPublicRepositories(username, repositories) {
