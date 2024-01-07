@@ -6,6 +6,7 @@ const DataFormater = require('./utils/DataFormater');
 router.post("/pushCommit", async (req, res) => {
   const { user, baseValues } = req.body;
   const userCommits = baseValues?.publicRepositories?.map((repository) => repository?.commits);
+
   const accessToken = user?.auth?.github?.access_token;
 
   if (!user || !userCommits || !accessToken) {
@@ -187,7 +188,37 @@ router.post("/starRepo", async (req, res) => {
       result: newStarredRepositories.length > 0,
       newBaseValues: newBaseValues,
       baseValuesId: "starredRepositories",
-     });
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("Bad request");
+  }
+});
+
+router.post("/forkRepo", async (req, res) => {
+  const { user, baseValues } = req.body;
+  const userForks = baseValues?.forks;
+
+  const accessToken = user?.auth?.github?.access_token;
+
+  if (!user || !userForks || !accessToken) {
+    res.status(400).send("Bad request");
+    return;
+  }
+  try {
+    const prevForkSize = userForks.map((repository) => repository.length).reduce((a, b) => a + b, 0);
+
+    const githubApiHandler = new GitHubApiHandler(accessToken);
+    const userPublicRepositories = await githubApiHandler.getPublicRepositories();
+    const newUserForks = await githubApiHandler.getForksForPublicRepositories(userPublicRepositories);
+
+    const newForkSize = newUserForks.map((repository) => repository.length).reduce((a, b) => a + b, 0);
+
+    res.status(200).send({
+      result: newForkSize > prevForkSize,
+      newBaseValues: newForks,
+      baseValuesId: "forks",
+    });
   } catch (error) {
     console.log(error);
     res.status(400).send("Bad request");

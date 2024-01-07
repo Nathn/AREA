@@ -40,12 +40,14 @@ router.post("/baseValues", async (req, res) => {
         };
       })
     );
+    const forks = await githubApiHandler.getForksForPublicRepositories(publicRepositories);
 
     baseValues = {
       user: dataFormater.formatUser(githubUser),
       publicRepositories: dataFormater.formatPublicRepositoriesData(publicRepositories, publicRepositoriesCommits),
       starredRepositories: dataFormater.formatPublicStarredRepositoriesData(starredRepositories),
       publicRepositoriesPullRequests: publicRepositoriesPullRequests,
+      forks: forks,
     };
 
     res.status(200).send(baseValues);
