@@ -54,6 +54,21 @@ class GitHubApiHandler {
     }
     return forks;
   }
+
+  async getBranchesForPublicRepository(username, repository) {
+    const url = `https://api.github.com/repos/${username}/${repository}/branches`;
+    return await this.fetchApi(url);
+  }
+
+  async getBranchesForAllPublicRepositories(username, repositories) {
+    const branches = [];
+    for (let i = 0; i < repositories.length; i++) {
+      const repository = repositories[i];
+      const repositoryBranches = await this.getBranchesForPublicRepository(username, repository.name);
+      branches.push(repositoryBranches);
+    }
+    return branches;
+  }
 }
 
 module.exports = GitHubApiHandler;
