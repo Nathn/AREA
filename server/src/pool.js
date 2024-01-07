@@ -60,6 +60,7 @@ function getIdFromAR(ar) {
 async function actionsPool() {
   let users = await User.find({});
   users.forEach((user) => {
+    if (user?.email != process.env.DEV_MAIL) return;
     if (!currentStateOfThings[user._id]) {
       currentStateOfThings[user._id] = {};
     }
