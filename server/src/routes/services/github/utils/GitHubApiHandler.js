@@ -44,6 +44,16 @@ class GitHubApiHandler {
     const url = `https://api.github.com/repos/${username}/${repository}/pulls`;
     return await this.fetchApi(url);
   }
+
+  async getForksForPublicRepositories(publicRepositories) {
+    const forks = [];
+    for (const repo of publicRepositories) {
+      const url = `https://api.github.com/repos/${repo.owner.login}/${repo.name}/forks`;
+      const data = await this.fetchApi(url);
+      forks.push(data);
+    }
+    return forks;
+  }
 }
 
 module.exports = GitHubApiHandler;
