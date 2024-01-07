@@ -225,7 +225,7 @@ router.post("/forkRepo", async (req, res) => {
   }
 });
 
-router.post("/createBranch", async (req, res) => {
+const handleBranchOperation = async (req, res, operationType) => {
   const { user, baseValues } = req.body;
   const userBranches = baseValues?.branches;
 
@@ -235,11 +235,13 @@ router.post("/createBranch", async (req, res) => {
     res.status(400).send("Bad request");
     return;
   }
+
   try {
     const prevBranchesSize = userBranches.map((repository) => repository?.length).reduce((a, b) => a + b, 0);
 
     const githubApiHandler = new GitHubApiHandler(accessToken);
     const githubUser = await githubApiHandler.fetchUser();
+
     if (!githubUser) {
       res.status(200).send({
         result: result,
@@ -254,8 +256,21 @@ router.post("/createBranch", async (req, res) => {
 
     const newBranchesSize = branches.map((repository) => repository?.length).reduce((a, b) => a + b, 0);
 
+    let result = false;
+
+    switch (operationType) {
+      case "create":
+        result = newBranchesSize > prevBranchesSize;
+        break;
+      case "delete":
+        result = newBranchesSize < prevBranchesSize;
+        break;
+      default:
+        break;
+    }
+
     res.status(200).send({
-      result: newBranchesSize > prevBranchesSize,
+      result: result,
       newBaseValues: branches,
       baseValuesId: "branches",
     });
@@ -263,6 +278,14 @@ router.post("/createBranch", async (req, res) => {
     console.log(error);
     res.status(400).send("Bad request");
   }
+};
+
+router.post("/createBranch", async (req, res) => {
+  await handleBranchOperation(req, res, "create");
+});
+
+router.post("/deleteBranch", async (req, res) => {
+  await handleBranchOperation(req, res, "delete");
 });
 
 module.exports = router;
