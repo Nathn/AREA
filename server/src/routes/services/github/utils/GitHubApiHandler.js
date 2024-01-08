@@ -97,6 +97,15 @@ class GitHubApiHandler {
     };
     return await this.patchApi(url, data);
   }
+
+  async commentPullRequest(username, repository, pullRequestNumber, comment) {
+    const url = `/repos/${username}/${repository}/issues/${pullRequestNumber}/comments`;
+    console.log("url", url);
+    const data = {
+      body: comment,
+    };
+    return await this.postApi(url, data);
+  }
 }
 
 module.exports = GitHubApiHandler;
