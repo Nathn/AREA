@@ -14,6 +14,16 @@ const discord = require("./discord");
 
 router.get("/", async (req, res) => {
   var services = await Service.find({});
+  // Remove route, _id and __v from each service
+  services = services.map((service) => {
+    return {
+      name_long: service.name_long,
+      name_short: service.name_short,
+      type: service.type,
+      actions: service.actions,
+      reactions: service.reactions,
+    };
+  });
   res.send(services);
 });
 

@@ -243,7 +243,10 @@ function App({ user, services }) {
               (service.type !== "discord" || discordAccess) &&
               (service.type !== "facebook" || facebookAccess) &&
               service.actions.map((action) => (
-                <option value={`${service.name_short}_${action.name_short}`}>
+                <option
+                  value={`${service.name_short}_${action.name_short}`}
+                  key={`${service.name_short}_${action.name_short}`}
+                >
                   {`${service.name_long} - ${action.name_long}`}
                 </option>
               ))
@@ -271,6 +274,7 @@ function App({ user, services }) {
               service.reactions.map((reaction) => (
                 <option
                   value={`${service.name_short}_${reaction.name_short}`}
+                  key={`${service.name_short}_${reaction.name_short}`}
                 >{`${service.name_long} - ${reaction.name_long}`}</option>
               ))
           )}
