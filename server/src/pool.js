@@ -123,6 +123,7 @@ async function actionsPool() {
                 {
                   user: user,
                   baseValues: response.data?.reactionNeededBaseValues,
+                  callingAction: ar.action,
                 }
               )
               .then((response) => {
