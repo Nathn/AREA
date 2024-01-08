@@ -58,11 +58,13 @@ router.post("/createPullRequest", async (req, res) => {
       pullRequests: repo.pullRequests,
     }));
 
+    let reactionNeededBaseValues = newPullRequests;
+
     res.status(200).send({
       result: newPullRequests.length > 0,
       newBaseValues: newBaseValues,
       baseValuesId: "publicRepositoriesPullRequests",
-      reactionNeededBaseValues: null,
+      reactionNeededBaseValues: reactionNeededBaseValues,
     });
   } catch (error) {
     console.log(error);
