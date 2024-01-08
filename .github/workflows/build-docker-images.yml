@@ -1,0 +1,22 @@
+name: "Build Docker Images"
+
+on:
+  pull_request:
+    branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+  schedule:
+    - cron: "0 2 * * 1-5"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build Docker Images
+        run: |
+          docker build -t client_web:latest -f ./docker/Dockerfile.react .
+          docker build -t server:latest -f ./docker/Dockerfile.express .
+#          docker build -t client_mobile:latest -f ./docker/Dockerfile.react-native . # TODO: Uncomment when mobile is ready
