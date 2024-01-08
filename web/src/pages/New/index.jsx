@@ -240,6 +240,8 @@ function App({ user, services }) {
               (service.type !== "yammer" || yammerAccess) &&
               (service.type !== "github" || githubAccess) &&
               (service.type !== "outlook" || outlookAccess) &&
+              (service.type !== "discord" || discordAccess) &&
+              (service.type !== "facebook" || facebookAccess) &&
               service.actions.map((action) => (
                 <option value={`${service.name_short}_${action.name_short}`}>
                   {`${service.name_long} - ${action.name_long}`}
@@ -264,6 +266,8 @@ function App({ user, services }) {
               (service.type !== "yammer" || yammerAccess) &&
               (service.type !== "github" || githubAccess) &&
               (service.type !== "outlook" || outlookAccess) &&
+              (service.type !== "discord" || discordAccess) &&
+              (service.type !== "facebook" || facebookAccess) &&
               service.reactions.map((reaction) => (
                 <option
                   value={`${service.name_short}_${reaction.name_short}`}
