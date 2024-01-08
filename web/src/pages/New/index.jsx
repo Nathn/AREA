@@ -7,6 +7,7 @@ import {
   faGoogle,
   faYammer,
   faMicrosoft,
+  faFacebook,
 } from "@fortawesome/free-brands-svg-icons";
 
 import expressServer from "../../api/express-server";
@@ -20,6 +21,7 @@ function App({ user, services }) {
   const [yammerAccess, setYammerAccess] = useState(false);
   const [githubAccess, setGithubAccess] = useState(false);
   const [outlookAccess, setOutlookAccess] = useState(false);
+  const [facebookAccess, setFacebookAccess] = useState(false);
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -29,6 +31,7 @@ function App({ user, services }) {
     setYammerAccess(userData?.auth?.yammer);
     setGithubAccess(userData?.auth?.github);
     setOutlookAccess(userData?.auth?.outlook);
+    setFacebookAccess(userData?.auth?.facebook);
   }
 
   useEffect(() => {
@@ -179,6 +182,25 @@ function App({ user, services }) {
           </div>
           {outlookAccess ? "Connected" : "Connect"}
         </button>
+
+        {/* Facebook */}
+        <button
+          className={facebookAccess ? "login-button logged" : "login-button"}
+          onClick={() => {
+            if (!facebookAccess) {
+              auth("facebook");
+            } else {
+              logout("facebook");
+            }
+          }}
+        >
+          <div className="service-name">
+            <FontAwesomeIcon icon={faFacebook} />
+            <span>Facebook</span>
+          </div>
+          {facebookAccess ? "Connected" : "Connect"}
+        </button>
+
       </div>
       <form onSubmit={createActionReaction} className="form-action">
         <label htmlFor="action">Action</label>
