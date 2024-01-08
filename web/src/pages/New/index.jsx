@@ -7,6 +7,7 @@ import {
   faGoogle,
   faYammer,
   faMicrosoft,
+  faDiscord,
 } from "@fortawesome/free-brands-svg-icons";
 
 import expressServer from "../../api/express-server";
@@ -20,6 +21,7 @@ function App({ user, services }) {
   const [yammerAccess, setYammerAccess] = useState(false);
   const [githubAccess, setGithubAccess] = useState(false);
   const [outlookAccess, setOutlookAccess] = useState(false);
+  const [discordAccess, setDiscordAccess] = useState(false);
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -29,6 +31,7 @@ function App({ user, services }) {
     setYammerAccess(userData?.auth?.yammer);
     setGithubAccess(userData?.auth?.github);
     setOutlookAccess(userData?.auth?.outlook);
+    setDiscordAccess(userData?.auth?.discord);
   }
 
   useEffect(() => {
@@ -178,6 +181,24 @@ function App({ user, services }) {
             <span>Outlook</span>
           </div>
           {outlookAccess ? "Connected" : "Connect"}
+        </button>
+
+        {/* Discord */}
+        <button
+          className={discordAccess ? "login-button logged" : "login-button"}
+          onClick={() => {
+            if (!discordAccess) {
+              auth("discord");
+            } else {
+              logout("discord");
+            }
+          }}
+        >
+          <div className="service-name">
+            <FontAwesomeIcon icon={faDiscord} />
+            <span>Discord</span>
+          </div>
+          {discordAccess ? "Connected" : "Connect"}
         </button>
       </div>
       <form onSubmit={createActionReaction} className="form-action">

@@ -9,6 +9,7 @@ const google = require("./google");
 const github = require("./github");
 const yammer = require("./yammer");
 const outlook = require("./outlook");
+const discord = require("./discord");
 
 router.get("/", async (req, res) => {
   var services = await Service.find({});
@@ -40,5 +41,6 @@ router.use("/google", google);
 router.use("/github", github);
 router.use("/yammer", yammer);
 router.use("/outlook", outlook);
+router.use("/discord", discord);
 
 module.exports = router;
