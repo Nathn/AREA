@@ -5,6 +5,7 @@ const findUserInRequestCookies = require("@/utils/findUserInRequestCookies");
 
 const Service = require("@/models/Service");
 
+const facebook = require("./facebook");
 const google = require("./google");
 const github = require("./github");
 const yammer = require("./yammer");
@@ -37,6 +38,7 @@ router.post("/logout/:service", async (req, res) => {
   }
 });
 
+router.use("/facebook", facebook);
 router.use("/google", google);
 router.use("/github", github);
 router.use("/yammer", yammer);
