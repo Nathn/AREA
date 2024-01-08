@@ -10,6 +10,7 @@ import {
   faDiscord,
   faFacebook,
   faReddit,
+  faStackOverflow,
 } from "@fortawesome/free-brands-svg-icons";
 
 import expressServer from "../../api/express-server";
@@ -26,6 +27,7 @@ function App({ user, services }) {
   const [discordAccess, setDiscordAccess] = useState(false);
   const [facebookAccess, setFacebookAccess] = useState(false);
   const [redditAccess, setRedditAccess] = useState(false);
+  const [stackOverflowAccess, setStackOverflowAccess] = useState(false);
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -38,6 +40,7 @@ function App({ user, services }) {
     setDiscordAccess(userData?.auth?.discord);
     setFacebookAccess(userData?.auth?.facebook);
     setRedditAccess(userData?.auth?.reddit);
+    setStackOverflowAccess(userData?.auth?.stackoverflow);
   }
 
   useEffect(() => {
@@ -241,6 +244,26 @@ function App({ user, services }) {
             <span>Reddit</span>
           </div>
           {redditAccess ? "Connected" : "Connect"}
+        </button>
+
+        {/* StackOverflow */}
+        <button
+          className={
+            stackOverflowAccess ? "login-button logged" : "login-button"
+          }
+          onClick={() => {
+            if (!stackOverflowAccess) {
+              auth("stackoverflow");
+            } else {
+              logout("stackoverflow");
+            }
+          }}
+        >
+          <div className="service-name">
+            <FontAwesomeIcon icon={faStackOverflow} />
+            <span>StackOverflow</span>
+          </div>
+          {stackOverflowAccess ? "Connected" : "Connect"}
         </button>
       </div>
       <form onSubmit={createActionReaction} className="form-action">
