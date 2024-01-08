@@ -55,6 +55,10 @@ const userSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.Mixed,
       trim: true,
     },
+    reddit: {
+      type: mongoose.Schema.Types.Mixed,
+      trim: true,
+    },
   },
   action_reactions: [
     {

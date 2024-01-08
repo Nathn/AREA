@@ -9,6 +9,7 @@ import {
   faMicrosoft,
   faDiscord,
   faFacebook,
+  faReddit,
 } from "@fortawesome/free-brands-svg-icons";
 
 import expressServer from "../../api/express-server";
@@ -24,6 +25,7 @@ function App({ user, services }) {
   const [outlookAccess, setOutlookAccess] = useState(false);
   const [discordAccess, setDiscordAccess] = useState(false);
   const [facebookAccess, setFacebookAccess] = useState(false);
+  const [redditAccess, setRedditAccess] = useState(false);
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -35,6 +37,7 @@ function App({ user, services }) {
     setOutlookAccess(userData?.auth?.outlook);
     setDiscordAccess(userData?.auth?.discord);
     setFacebookAccess(userData?.auth?.facebook);
+    setRedditAccess(userData?.auth?.reddit);
   }
 
   useEffect(() => {
@@ -220,6 +223,24 @@ function App({ user, services }) {
             <span>Facebook</span>
           </div>
           {facebookAccess ? "Connected" : "Connect"}
+        </button>
+
+        {/* Reddit */}
+        <button
+          className={redditAccess ? "login-button logged" : "login-button"}
+          onClick={() => {
+            if (!redditAccess) {
+              auth("reddit");
+            } else {
+              logout("reddit");
+            }
+          }}
+        >
+          <div className="service-name">
+            <FontAwesomeIcon icon={faReddit} />
+            <span>Reddit</span>
+          </div>
+          {redditAccess ? "Connected" : "Connect"}
         </button>
       </div>
       <form onSubmit={createActionReaction} className="form-action">

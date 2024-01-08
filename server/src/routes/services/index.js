@@ -5,12 +5,13 @@ const findUserInRequestCookies = require("@/utils/findUserInRequestCookies");
 
 const Service = require("@/models/Service");
 
+const discord = require("./discord");
 const facebook = require("./facebook");
 const google = require("./google");
 const github = require("./github");
-const yammer = require("./yammer");
+const reddit = require("./reddit");
 const outlook = require("./outlook");
-const discord = require("./discord");
+const yammer = require("./yammer");
 
 router.get("/", async (req, res) => {
   var services = await Service.find({});
@@ -48,11 +49,12 @@ router.post("/logout/:service", async (req, res) => {
   }
 });
 
+router.use("/discord", discord);
 router.use("/facebook", facebook);
 router.use("/google", google);
 router.use("/github", github);
-router.use("/yammer", yammer);
+router.use("/reddit", reddit);
 router.use("/outlook", outlook);
-router.use("/discord", discord);
+router.use("/yammer", yammer);
 
 module.exports = router;
