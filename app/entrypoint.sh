@@ -1,11 +1,23 @@
 #!/bin/bash
 
+APK_PATH=/app/build/app/outputs/apk/release/app-release.apk
+DEST_PATH=/apk/client.apk
+
 # If an apk already exists, copy it to /apk
-if [ -f /app/build/app/outputs/apk/release/app-release.apk ]; then
-  cp /app/build/app/outputs/apk/release/app-release.apk /apk/client.apk
+if [ -f "$APK_PATH" ]; then
+  cp "$APK_PATH" "$DEST_PATH"
+  echo "Existing APK copied to $DEST_PATH"
+else
+  echo "No existing APK found at $APK_PATH"
 fi
 
-sh -c "cd android && ./gradlew assembleRelease > /dev/null 2>&1 && cd .. && cp /app/android/app/build/outputs/apk/release/app-release.apk /apk/client.apk" &
+# Build new apk
+flutter build apk
 
-# Run the app
-npm install --legacy-peer-deps && npx expo start --tunnel
+# Check if the new apk exists and copy it to /apk
+if [ -f "$APK_PATH" ]; then
+  cp "$APK_PATH" "$DEST_PATH"
+  echo "Newly built APK copied to $DEST_PATH"
+else
+  echo "Error: APK not found at $APK_PATH. Build might have failed."
+fi
