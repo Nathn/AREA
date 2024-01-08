@@ -48,8 +48,22 @@ router.post("/baseValues", async (req, res) => {
       nextPageToken = response.data.nextPageToken;
       if (!nextPageToken) break;
     }
+    let comments = [];
+    nextPageToken = "";
+    while (true) {
+      response = await youtube.commentThreads.list({
+        part: "snippet",
+        allThreadsRelatedToChannelId: channel.id,
+        maxResults: 50,
+        pageToken: nextPageToken,
+      });
+      comments = comments.concat(response.data.items);
+      nextPageToken = response.data.nextPageToken;
+      if (!nextPageToken) break;
+    }
     res.status(200).send({
       videosUploaded: videos,
+      commentsOnChannel: comments,
     });
   } catch (error) {
     console.log(error);

@@ -19,6 +19,7 @@ router.get("/", async (req, res) => {
     "https://www.googleapis.com/auth/drive",
     "https://www.googleapis.com/auth/calendar.events",
     "https://www.googleapis.com/auth/youtube",
+    "https://www.googleapis.com/auth/youtube.force-ssl",
   ];
   const url = oauth2Client.generateAuthUrl({
     access_type: "offline",
