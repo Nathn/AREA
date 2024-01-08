@@ -15,8 +15,6 @@ router.get("/", async (req, res) => {
 
   const url = rootURL + "?" + qsString;
 
-  console.log(url);
-
   res.send(url);
 });
 
