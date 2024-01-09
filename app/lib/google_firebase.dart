@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'password_firebase.dart';
+import 'homescreen.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -21,7 +22,20 @@ class _GoogleSignInScreenState extends State<GoogleSignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('AREA')),
+      // IF authenticated, show user profile image in the app bar
+        appBar: AppBar(title: const Text('AREA'), actions: [
+          ValueListenableBuilder(
+              valueListenable: userCredential,
+              builder: (context, value, child) {
+                return (userCredential.value == '' ||
+                    userCredential.value == null)
+                    ? Container()
+                    : CircleAvatar(
+                  backgroundImage: NetworkImage(
+                      userCredential.value.user!.photoURL.toString()),
+                );
+              }),
+        ]),
         body: ValueListenableBuilder(
             valueListenable: userCredential,
             builder: (context, value, child) {
@@ -45,8 +59,9 @@ class _GoogleSignInScreenState extends State<GoogleSignInScreen> {
                           ),
                           onPressed: () async {
                             userCredential.value = await signInWithGoogle();
-                            if (userCredential.value != null)
+                            if (userCredential.value != null) {
                               print(userCredential.value.user!.email);
+                            }
                           },
                         ),
                       ),
@@ -58,7 +73,7 @@ class _GoogleSignInScreenState extends State<GoogleSignInScreen> {
                         ),
                         child: IconButton(
                           iconSize: 40,
-                          icon: Icon(Icons.email), // You can change the icon
+                          icon: const Icon(Icons.email), // You can change the icon
                           onPressed: () {
                             // Navigate to the AuthenticationScreen
                             Navigator.pushNamed(
@@ -76,33 +91,29 @@ class _GoogleSignInScreenState extends State<GoogleSignInScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                              width: 1.5, color: Colors.black54)),
-                      child: Image.network(
-                          userCredential.value.user!.photoURL.toString()),
-                    ),
+                    Text("Welcome ${userCredential.value.user!.displayName} !", style: TextStyle(fontSize: 30),),
                     const SizedBox(
                       height: 20,
                     ),
-                    Text(userCredential.value.user!.displayName
-                        .toString()),
+
+                    ElevatedButton(
+                        onPressed: () async {
+                          Navigator.pushNamed(
+                            context,
+                            HomeScreen.routeName,
+                          );
+                        },
+                        child: const Text('Home Screen'))
+                    ,
                     const SizedBox(
                       height: 20,
-                    ),
-                    Text(userCredential.value.user!.email.toString()),
-                    const SizedBox(
-                      height: 30,
                     ),
                     ElevatedButton(
                         onPressed: () async {
                           bool result = await signOutFromGoogle();
                           if (result) userCredential.value = '';
                         },
-                        child: const Text('Logout'))
+                        child: const Text('Logout')),
                   ],
                 ),
               );
