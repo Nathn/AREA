@@ -37,7 +37,7 @@ router.get("/callback", async (req, res) => {
   params.append("code", code);
   params.append("grant_type", "authorization_code");
   params.append("redirect_uri", process.env.TWITCH_CALLBACK_URL);
-  params.append("scope", "channel:read:subscriptions");
+  params.append("scope", "channel:read:subscriptions user:read:follows");
 
   const config = {
     headers: {
