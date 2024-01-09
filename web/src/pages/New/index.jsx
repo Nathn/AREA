@@ -7,6 +7,9 @@ import {
   faGoogle,
   faYammer,
   faMicrosoft,
+  faDiscord,
+  faFacebook,
+  faReddit,
 } from "@fortawesome/free-brands-svg-icons";
 
 import expressServer from "../../api/express-server";
@@ -20,6 +23,9 @@ function App({ user, services }) {
   const [yammerAccess, setYammerAccess] = useState(false);
   const [githubAccess, setGithubAccess] = useState(false);
   const [outlookAccess, setOutlookAccess] = useState(false);
+  const [discordAccess, setDiscordAccess] = useState(false);
+  const [facebookAccess, setFacebookAccess] = useState(false);
+  const [redditAccess, setRedditAccess] = useState(false);
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -29,6 +35,9 @@ function App({ user, services }) {
     setYammerAccess(userData?.auth?.yammer);
     setGithubAccess(userData?.auth?.github);
     setOutlookAccess(userData?.auth?.outlook);
+    setDiscordAccess(userData?.auth?.discord);
+    setFacebookAccess(userData?.auth?.facebook);
+    setRedditAccess(userData?.auth?.reddit);
   }
 
   useEffect(() => {
@@ -179,6 +188,60 @@ function App({ user, services }) {
           </div>
           {outlookAccess ? "Connected" : "Connect"}
         </button>
+
+        {/* Discord */}
+        <button
+          className={discordAccess ? "login-button logged" : "login-button"}
+          onClick={() => {
+            if (!discordAccess) {
+              auth("discord");
+            } else {
+              logout("discord");
+            }
+          }}
+        >
+          <div className="service-name">
+            <FontAwesomeIcon icon={faDiscord} />
+            <span>Discord</span>
+          </div>
+          {discordAccess ? "Connected" : "Connect"}
+        </button>
+
+        {/* Facebook */}
+        <button
+          className={facebookAccess ? "login-button logged" : "login-button"}
+          onClick={() => {
+            if (!facebookAccess) {
+              auth("facebook");
+            } else {
+              logout("facebook");
+            }
+          }}
+        >
+          <div className="service-name">
+            <FontAwesomeIcon icon={faFacebook} />
+            <span>Facebook</span>
+          </div>
+          {facebookAccess ? "Connected" : "Connect"}
+        </button>
+
+        {/* Reddit */}
+        <button
+          className={redditAccess ? "login-button logged" : "login-button"}
+          onClick={() => {
+            if (!redditAccess) {
+              auth("reddit");
+            } else {
+              logout("reddit");
+            }
+          }}
+        >
+          <div className="service-name">
+            <FontAwesomeIcon icon={faReddit} />
+            <span>Reddit</span>
+          </div>
+          {redditAccess ? "Connected" : "Connect"}
+        </button>
       </div>
       <form onSubmit={createActionReaction} className="form-action">
         <label htmlFor="action">Action</label>
@@ -198,8 +261,13 @@ function App({ user, services }) {
               (service.type !== "yammer" || yammerAccess) &&
               (service.type !== "github" || githubAccess) &&
               (service.type !== "outlook" || outlookAccess) &&
+              (service.type !== "discord" || discordAccess) &&
+              (service.type !== "facebook" || facebookAccess) &&
               service.actions.map((action) => (
-                <option value={`${service.name_short}_${action.name_short}`}>
+                <option
+                  value={`${service.name_short}_${action.name_short}`}
+                  key={`${service.name_short}_${action.name_short}`}
+                >
                   {`${service.name_long} - ${action.name_long}`}
                 </option>
               ))
@@ -222,9 +290,12 @@ function App({ user, services }) {
               (service.type !== "yammer" || yammerAccess) &&
               (service.type !== "github" || githubAccess) &&
               (service.type !== "outlook" || outlookAccess) &&
+              (service.type !== "discord" || discordAccess) &&
+              (service.type !== "facebook" || facebookAccess) &&
               service.reactions.map((reaction) => (
                 <option
                   value={`${service.name_short}_${reaction.name_short}`}
+                  key={`${service.name_short}_${reaction.name_short}`}
                 >{`${service.name_long} - ${reaction.name_long}`}</option>
               ))
           )}

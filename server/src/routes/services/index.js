@@ -5,13 +5,26 @@ const findUserInRequestCookies = require("@/utils/findUserInRequestCookies");
 
 const Service = require("@/models/Service");
 
-const google = require("./google");
+const discord = require("./discord");
+const facebook = require("./facebook");
 const github = require("./github");
-const yammer = require("./yammer");
+const google = require("./google");
 const outlook = require("./outlook");
+const reddit = require("./reddit");
+const yammer = require("./yammer");
 
 router.get("/", async (req, res) => {
   var services = await Service.find({});
+  // Remove route, _id and __v from each service
+  services = services.map((service) => {
+    return {
+      name_long: service.name_long,
+      name_short: service.name_short,
+      type: service.type,
+      actions: service.actions,
+      reactions: service.reactions,
+    };
+  });
   res.send(services);
 });
 
@@ -36,9 +49,12 @@ router.post("/logout/:service", async (req, res) => {
   }
 });
 
-router.use("/google", google);
+router.use("/discord", discord);
+router.use("/facebook", facebook);
 router.use("/github", github);
-router.use("/yammer", yammer);
+router.use("/google", google);
 router.use("/outlook", outlook);
+router.use("/reddit", reddit);
+router.use("/yammer", yammer);
 
 module.exports = router;
