@@ -12,6 +12,7 @@ const google = require("./google");
 const outlook = require("./outlook");
 const reddit = require("./reddit");
 const stackoverflow = require("./stackoverflow");
+const twitch = require("./twitch");
 const yammer = require("./yammer");
 
 router.get("/", async (req, res) => {
@@ -57,6 +58,7 @@ router.use("/google", google);
 router.use("/outlook", outlook);
 router.use("/reddit", reddit);
 router.use("/stackoverflow", stackoverflow);
+router.use("/twitch", twitch);
 router.use("/yammer", yammer);
 
 module.exports = router;

@@ -11,6 +11,7 @@ import {
   faFacebook,
   faReddit,
   faStackOverflow,
+  faTwitch,
 } from "@fortawesome/free-brands-svg-icons";
 
 import expressServer from "../../api/express-server";
@@ -28,6 +29,7 @@ function App({ user, services }) {
   const [facebookAccess, setFacebookAccess] = useState(false);
   const [redditAccess, setRedditAccess] = useState(false);
   const [stackOverflowAccess, setStackOverflowAccess] = useState(false);
+  const [twitchAccess, setTwitchAccess] = useState(false);
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -41,6 +43,7 @@ function App({ user, services }) {
     setFacebookAccess(userData?.auth?.facebook);
     setRedditAccess(userData?.auth?.reddit);
     setStackOverflowAccess(userData?.auth?.stackoverflow);
+    setTwitchAccess(userData?.auth?.twitch);
   }
 
   useEffect(() => {
@@ -264,6 +267,24 @@ function App({ user, services }) {
             <span>StackOverflow</span>
           </div>
           {stackOverflowAccess ? "Connected" : "Connect"}
+        </button>
+
+        {/* Reddit */}
+        <button
+          className={twitchAccess ? "login-button logged" : "login-button"}
+          onClick={() => {
+            if (!twitchAccess) {
+              auth("twitch");
+            } else {
+              logout("twitch");
+            }
+          }}
+        >
+          <div className="service-name">
+            <FontAwesomeIcon icon={faTwitch} />
+            <span>Twitch</span>
+          </div>
+          {twitchAccess ? "Connected" : "Connect"}
         </button>
       </div>
       <form onSubmit={createActionReaction} className="form-action">
