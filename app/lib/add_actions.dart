@@ -23,7 +23,6 @@ class _AddActionScreenState extends State<AddActionScreen> {
     'discord': false,
     'facebook': false,
     'reddit': false,
-    'stackoverflow': false,
   };
   String successMessage = '';
   String errorMessage = '';
@@ -45,7 +44,6 @@ class _AddActionScreenState extends State<AddActionScreen> {
             _buildServiceButton('discord', 'Discord', 'assets/images/discord.png'),
             _buildServiceButton('facebook', 'Facebook', 'assets/images/facebook.png'),
             _buildServiceButton('reddit', 'Reddit', 'assets/images/reddit.png'),
-            _buildServiceButton('stackoverflow', 'StackOverflow', 'assets/images/stackoverflow.png'),
 
             // Your create button
             ElevatedButton(

@@ -59,10 +59,6 @@ const userSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.Mixed,
       trim: true,
     },
-    stackoverflow: {
-      type: mongoose.Schema.Types.Mixed,
-      trim: true,
-    },
     twitch: {
       type: mongoose.Schema.Types.Mixed,
       trim: true,
