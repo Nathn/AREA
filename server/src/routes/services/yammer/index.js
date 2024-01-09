@@ -2,14 +2,12 @@ const express = require("express");
 const router = express.Router();
 
 // Add required modules for Yammer authentication
-const axios = require("axios");
-const reactions = require("./reactions");
 const actions = require("./actions");
 const baseValues = require("./baseValues");
+const callback = require("./callback");
+const reactions = require("./reactions");
 
 // Callback route for Yammer
-router.use("/", require("./callback"));
-
 router.get("/", async (req, res) => {
   // Check if the user is already authenticated or implement your authentication logic
 
@@ -21,8 +19,9 @@ router.get("/", async (req, res) => {
   res.send(yammerAuthUrl);
 });
 
-router.use("/", baseValues);
 router.use("/action", actions);
+router.use("/", baseValues);
+router.use("/", callback);
 router.use("/reaction", reactions);
 
 module.exports = router;

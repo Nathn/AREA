@@ -14,15 +14,13 @@ services:
   client_mobile:
     build:
       context: .
-      dockerfile: ./docker/Dockerfile.react-native
+      dockerfile: ./docker/Dockerfile.flutter
     container_name: area-client-mobile
     depends_on:
       - server
     volumes:
       - ./app:/app
       - common:/apk
-    tty: true
-    stdin_open: true
 
   client_web:
     build:

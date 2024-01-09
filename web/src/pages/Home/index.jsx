@@ -91,7 +91,7 @@ function App({ user, services }) {
                   service.actions.map((action) =>
                     service.name_short + "_" + action.name_short ===
                     ar.action ? (
-                      <span>
+                      <span key={index}>
                         {service.name_long} - {action.name_long}
                       </span>
                     ) : null
@@ -102,7 +102,7 @@ function App({ user, services }) {
                   service.reactions.map((reaction) =>
                     service.name_short + "_" + reaction.name_short ===
                     ar.reaction ? (
-                      <span>
+                      <span key={index}>
                         {service.name_long} - {reaction.name_long}
                       </span>
                     ) : null

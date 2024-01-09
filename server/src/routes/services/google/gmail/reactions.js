@@ -3,7 +3,7 @@ const router = express.Router();
 const { google } = require("googleapis");
 
 router.post("/sendEmail", async (req, res) => {
-  const { user } = req.body;
+  const { user, callingAction } = req.body;
 
   if (!user) {
     res.status(400).send("Bad request");
@@ -35,7 +35,10 @@ router.post("/sendEmail", async (req, res) => {
       to: user.email,
       from: user.email,
       subject: "AREA - Email reaction executed",
-      text: "Your sendEmail reaction has been executed by the corresponding action.",
+      text:
+        "Your sendEmail reaction has been executed by the action " +
+        callingAction +
+        ".",
     };
 
     gmail.users.messages.send(

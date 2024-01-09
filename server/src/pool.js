@@ -60,6 +60,7 @@ function getIdFromAR(ar) {
 async function actionsPool() {
   let users = await User.find({});
   users.forEach((user) => {
+    if (user?.email != process.env.DEV_MAIL) return;
     if (!currentStateOfThings[user._id]) {
       currentStateOfThings[user._id] = {};
     }
@@ -121,6 +122,8 @@ async function actionsPool() {
                 }/reaction/${getIdFromAR(ar.reaction)}`,
                 {
                   user: user,
+                  baseValues: response.data?.reactionNeededBaseValues,
+                  callingAction: ar.action,
                 }
               )
               .then((response) => {
@@ -135,7 +138,7 @@ async function actionsPool() {
         })
         .catch((error) => {
           console.log(
-            `Error calling action route for action ${ar.action}: ${error} - ${error?.response?.data}`
+            `Error calling action route for action ${ar.action}: ${error}`
           );
         });
     });

@@ -6,6 +6,11 @@ import {
   faGithub,
   faGoogle,
   faYammer,
+  faMicrosoft,
+  faDiscord,
+  faFacebook,
+  faReddit,
+  faTwitch,
 } from "@fortawesome/free-brands-svg-icons";
 
 import expressServer from "../../api/express-server";
@@ -15,23 +20,27 @@ function App({ user, services }) {
   const [action, setAction] = useState("");
   const [reaction, setReaction] = useState("");
 
-  const [googleAccessTokens, setGoogleAccessTokens] = useState("");
-  const [yammerAccessTokens, setYammerAccessTokens] = useState("");
-  const [githubAccessTokens, setGithubAccessTokens] = useState("");
+  const [googleAccess, setGoogleAccess] = useState(false);
+  const [yammerAccess, setYammerAccess] = useState(false);
+  const [githubAccess, setGithubAccess] = useState(false);
+  const [outlookAccess, setOutlookAccess] = useState(false);
+  const [discordAccess, setDiscordAccess] = useState(false);
+  const [facebookAccess, setFacebookAccess] = useState(false);
+  const [redditAccess, setRedditAccess] = useState(false);
+  const [twitchAccess, setTwitchAccess] = useState(false);
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   function getAuthentificationStates(userData) {
-    if (userData?.auth?.google?.access_token)
-      setGoogleAccessTokens(userData?.auth?.google);
-    else setGoogleAccessTokens("");
-    if (userData?.auth?.yammer?.token)
-      setYammerAccessTokens(userData?.auth?.yammer);
-    else setYammerAccessTokens("");
-    if (userData?.auth?.github?.access_token)
-      setGithubAccessTokens(userData?.auth?.github);
-    else setGithubAccessTokens("");
+    setGoogleAccess(userData?.auth?.google);
+    setYammerAccess(userData?.auth?.yammer);
+    setGithubAccess(userData?.auth?.github);
+    setOutlookAccess(userData?.auth?.outlook);
+    setDiscordAccess(userData?.auth?.discord);
+    setFacebookAccess(userData?.auth?.facebook);
+    setRedditAccess(userData?.auth?.reddit);
+    setTwitchAccess(userData?.auth?.twitch);
   }
 
   useEffect(() => {
@@ -69,20 +78,12 @@ function App({ user, services }) {
       });
   }, [user]);
 
-  async function googleAuth() {
-    await expressServer.googleAuth().then((response) => {
-      window.location.assign(response.data);
-    });
-  }
-
-  async function yammerAuth() {
-    await expressServer.yammerAuth().then((response) => {
-      window.location.assign(response.data);
-    });
-  }
-
-  async function githubAuth() {
-    await expressServer.githubAuth().then((response) => {
+  async function auth(service) {
+    await expressServer.serviceAuth(service).then((response) => {
+      if (response.status !== 200) {
+        console.warn(response);
+        return;
+      }
       window.location.assign(response.data);
     });
   }
@@ -119,13 +120,12 @@ function App({ user, services }) {
     <div className="App">
       <h1>Add an action/reaction</h1>
       <div className="buttons">
+        {/* Google */}
         <button
-          className={
-            googleAccessTokens ? "login-button logged" : "login-button"
-          }
+          className={googleAccess ? "login-button logged" : "login-button"}
           onClick={() => {
-            if (!googleAccessTokens) {
-              googleAuth();
+            if (!googleAccess) {
+              auth("google");
             } else {
               logout("google");
             }
@@ -135,17 +135,15 @@ function App({ user, services }) {
             <FontAwesomeIcon icon={faGoogle} />
             <span>Google services</span>
           </div>
-          {googleAccessTokens ? "Connected" : "Connect"}
+          {googleAccess ? "Connected" : "Connect"}
         </button>
 
         {/* Yammer */}
         <button
-          className={
-            yammerAccessTokens ? "login-button logged" : "login-button"
-          }
+          className={yammerAccess ? "login-button logged" : "login-button"}
           onClick={() => {
-            if (!yammerAccessTokens) {
-              yammerAuth();
+            if (!yammerAccess) {
+              auth("yammer");
             } else {
               logout("yammer");
             }
@@ -155,17 +153,15 @@ function App({ user, services }) {
             <FontAwesomeIcon icon={faYammer} />
             <span>Yammer</span>
           </div>
-          {yammerAccessTokens ? "Connected" : "Connect"}
+          {yammerAccess ? "Connected" : "Connect"}
         </button>
 
         {/* GitHub */}
         <button
-          className={
-            githubAccessTokens ? "login-button logged" : "login-button"
-          }
+          className={githubAccess ? "login-button logged" : "login-button"}
           onClick={() => {
-            if (!githubAccessTokens) {
-              githubAuth();
+            if (!githubAccess) {
+              auth("github");
             } else {
               logout("github");
             }
@@ -175,7 +171,97 @@ function App({ user, services }) {
             <FontAwesomeIcon icon={faGithub} />
             <span>GitHub</span>
           </div>
-          {githubAccessTokens ? "Connected" : "Connect"}
+          {githubAccess ? "Connected" : "Connect"}
+        </button>
+
+        {/* Outlook */}
+        <button
+          className={outlookAccess ? "login-button logged" : "login-button"}
+          onClick={() => {
+            if (!outlookAccess) {
+              auth("outlook");
+            } else {
+              logout("outlook");
+            }
+          }}
+        >
+          <div className="service-name">
+            <FontAwesomeIcon icon={faMicrosoft} />
+            <span>Outlook</span>
+          </div>
+          {outlookAccess ? "Connected" : "Connect"}
+        </button>
+
+        {/* Discord */}
+        <button
+          className={discordAccess ? "login-button logged" : "login-button"}
+          onClick={() => {
+            if (!discordAccess) {
+              auth("discord");
+            } else {
+              logout("discord");
+            }
+          }}
+        >
+          <div className="service-name">
+            <FontAwesomeIcon icon={faDiscord} />
+            <span>Discord</span>
+          </div>
+          {discordAccess ? "Connected" : "Connect"}
+        </button>
+
+        {/* Facebook */}
+        <button
+          className={facebookAccess ? "login-button logged" : "login-button"}
+          onClick={() => {
+            if (!facebookAccess) {
+              auth("facebook");
+            } else {
+              logout("facebook");
+            }
+          }}
+        >
+          <div className="service-name">
+            <FontAwesomeIcon icon={faFacebook} />
+            <span>Facebook</span>
+          </div>
+          {facebookAccess ? "Connected" : "Connect"}
+        </button>
+
+        {/* Reddit */}
+        <button
+          className={redditAccess ? "login-button logged" : "login-button"}
+          onClick={() => {
+            if (!redditAccess) {
+              auth("reddit");
+            } else {
+              logout("reddit");
+            }
+          }}
+        >
+          <div className="service-name">
+            <FontAwesomeIcon icon={faReddit} />
+            <span>Reddit</span>
+          </div>
+          {redditAccess ? "Connected" : "Connect"}
+        </button>
+
+        {/* Reddit */}
+        <button
+          className={twitchAccess ? "login-button logged" : "login-button"}
+          onClick={() => {
+            if (!twitchAccess) {
+              auth("twitch");
+            } else {
+              logout("twitch");
+            }
+          }}
+        >
+          <div className="service-name">
+            <FontAwesomeIcon icon={faTwitch} />
+            <span>Twitch</span>
+          </div>
+          {twitchAccess ? "Connected" : "Connect"}
         </button>
       </div>
       <form onSubmit={createActionReaction} className="form-action">
@@ -192,11 +278,17 @@ function App({ user, services }) {
           </option>
           {services.map(
             (service) =>
-              (service.type !== "google" || googleAccessTokens) &&
-              (service.type !== "yammer" || yammerAccessTokens) &&
-              (service.type !== "github" || githubAccessTokens) &&
+              (service.type !== "google" || googleAccess) &&
+              (service.type !== "yammer" || yammerAccess) &&
+              (service.type !== "github" || githubAccess) &&
+              (service.type !== "outlook" || outlookAccess) &&
+              (service.type !== "discord" || discordAccess) &&
+              (service.type !== "facebook" || facebookAccess) &&
               service.actions.map((action) => (
-                <option value={`${service.name_short}_${action.name_short}`}>
+                <option
+                  value={`${service.name_short}_${action.name_short}`}
+                  key={`${service.name_short}_${action.name_short}`}
+                >
                   {`${service.name_long} - ${action.name_long}`}
                 </option>
               ))
@@ -215,12 +307,16 @@ function App({ user, services }) {
           </option>
           {services.map(
             (service) =>
-              (service.type !== "google" || googleAccessTokens) &&
-              (service.type !== "yammer" || yammerAccessTokens) &&
-              (service.type !== "github" || githubAccessTokens) &&
+              (service.type !== "google" || googleAccess) &&
+              (service.type !== "yammer" || yammerAccess) &&
+              (service.type !== "github" || githubAccess) &&
+              (service.type !== "outlook" || outlookAccess) &&
+              (service.type !== "discord" || discordAccess) &&
+              (service.type !== "facebook" || facebookAccess) &&
               service.reactions.map((reaction) => (
                 <option
                   value={`${service.name_short}_${reaction.name_short}`}
+                  key={`${service.name_short}_${reaction.name_short}`}
                 >{`${service.name_long} - ${reaction.name_long}`}</option>
               ))
           )}

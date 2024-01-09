@@ -43,6 +43,26 @@ const userSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.Mixed,
       trim: true,
     },
+    outlook: {
+      type: mongoose.Schema.Types.Mixed,
+      trim: true,
+    },
+    discord: {
+      type: mongoose.Schema.Types.Mixed,
+      trim: true,
+    },
+    facebook: {
+      type: mongoose.Schema.Types.Mixed,
+      trim: true,
+    },
+    reddit: {
+      type: mongoose.Schema.Types.Mixed,
+      trim: true,
+    },
+    twitch: {
+      type: mongoose.Schema.Types.Mixed,
+      trim: true,
+    },
   },
   action_reactions: [
     {

@@ -30,6 +30,14 @@ router.post("/register", async (req, res) => {
 router.get("/users/:uid", async (req, res) => {
   var user = await User.findOne({ uid: req.params.uid });
 
+  for (var service in user.auth) {
+    if (user.auth[service] && Object.keys(user.auth[service]).length > 0) {
+      user.auth[service] = true;
+    } else {
+      user.auth[service] = false;
+    }
+  }
+
   res.send(user);
 });
 

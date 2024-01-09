@@ -40,7 +40,8 @@ router.get("/callback", async (req, res) => {
     "&client_secret=" +
     process.env.GITHUB_CLIENT_SECRET +
     "&code=" +
-    code;
+    code +
+    "&scope=user%20public_repo";
 
   const response = await fetch(
     "https://github.com/login/oauth/access_token" + params,
