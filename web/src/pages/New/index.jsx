@@ -21,6 +21,8 @@ function App({ user, services }) {
   const [action, setAction] = useState("");
   const [reaction, setReaction] = useState("");
 
+  const [uid, setUid] = useState("");
+
   const [googleAccess, setGoogleAccess] = useState(false);
   const [yammerAccess, setYammerAccess] = useState(false);
   const [githubAccess, setGithubAccess] = useState(false);
@@ -61,6 +63,7 @@ function App({ user, services }) {
         window.location.assign("/login");
         return false;
       }
+      setUid(userData._id);
       getAuthentificationStates(userData);
     }
     // get user data from db
@@ -76,13 +79,14 @@ function App({ user, services }) {
         document.cookie = `userData=${encodeURIComponent(
           JSON.stringify(response.data) || ""
         )}; expires=${expiryDate}; path=/; SameSite=Lax`;
+        setUid(response.data._id);
         getAuthentificationStates(response.data);
         return true;
       });
   }, [user]);
 
   async function auth(service) {
-    await expressServer.serviceAuth(service).then((response) => {
+    await expressServer.serviceAuth(service, uid).then((response) => {
       if (response.status !== 200) {
         console.warn(response);
         return;

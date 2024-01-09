@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 
-const findUserInRequestCookies = require("@/utils/findUserInRequestCookies");
+const User = require("@/models/User");
 
 const initUserFacebookAuth = async (user) => {
   if (!user.auth) {
@@ -23,7 +23,12 @@ const initUserFacebookAuth = async (user) => {
 };
 
 router.get("/callback", async (req, res) => {
-  const user = await findUserInRequestCookies(req);
+  const state = req.query.state;
+  if (!state) {
+    res.status(400).send("Bad request");
+    return;
+  }
+  const user = await User.findOne({ _id: state });
   if (!user) {
     res.status(400).send("User not found");
     return;

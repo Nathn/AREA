@@ -76,12 +76,18 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
+  if (!req.query.user_id) {
+    res.status(400).send("Bad request");
+    return;
+  }
   let url = ``;
 
   /*
     Build the OAuth URL
     for the service here
   */
+
+  url += `&state=${req.query.user_id}`; // Always keep this line at the end
 
   res.send(url);
 });
@@ -98,7 +104,7 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 
-const findUserInRequestCookies = require("@/utils/findUserInRequestCookies");
+const User = require("@/models/User");
 
 const initUserAuth = async (user) => {
   try {
@@ -114,6 +120,17 @@ const initUserAuth = async (user) => {
 };
 
 router.get("/callback", async (req, res) => {
+  const state = req.query.state;
+  if (!state) {
+    res.status(400).send("Bad request");
+    return;
+  }
+  const user = await User.findOne({ _id: state });
+  if (!user) {
+    res.status(400).send("User not found");
+    return;
+  }
+
   const {} = req.query; // To use in the case of URL parameters
   try {
     let accessTokens = {};
@@ -123,11 +140,6 @@ router.get("/callback", async (req, res) => {
       the service here
     */
 
-    const user = await findUserInRequestCookies(req);
-    if (!user) {
-      res.status(400).send("User not found");
-      return;
-    }
     if (!user.auth) await initUserAuth(user);
     user.auth.newservice = accessTokens;
     await user.save();

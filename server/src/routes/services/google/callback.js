@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { google } = require("googleapis");
 
-const findUserInRequestCookies = require("@/utils/findUserInRequestCookies");
+const User = require("@/models/User");
 
 const initGoogleAuthClient = () => {
   return new google.auth.OAuth2(
@@ -27,14 +27,18 @@ const initUserGoogleAuth = async (user) => {
 };
 
 router.get("/callback", async (req, res) => {
-  const { code, scope } = req.query;
-  if (!code) {
+  const state = req.query.state;
+  if (!state) {
     res.status(400).send("Bad request");
     return;
   }
-
-  const user = await findUserInRequestCookies(req);
+  const user = await User.findOne({ _id: state });
   if (!user) {
+    res.status(400).send("User not found");
+    return;
+  }
+  const { code, scope } = req.query;
+  if (!code) {
     res.status(400).send("Bad request");
     return;
   }

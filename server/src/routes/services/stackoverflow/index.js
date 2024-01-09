@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
+  if (!req.query.user_id) {
+    res.status(400).send("Bad request");
+    return;
+  }
   const rootURL = "https://stackoverflow.com/oauth";
 
   const params = {
@@ -11,7 +15,8 @@ router.get("/", async (req, res) => {
   };
 
   const qs = new URLSearchParams(params).toString();
-  const url = `${rootURL}?${qs}`;
+  let url = `${rootURL}?${qs}`;
+  url += `&state=${req.query.user_id}`;
 
   res.send(url);
 });

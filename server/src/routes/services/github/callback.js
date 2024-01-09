@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const findUserInRequestCookies = require("@/utils/findUserInRequestCookies");
+const User = require("@/models/User");
 
 const initUserGithubAuth = async (user) => {
   if (!user.auth) {
@@ -22,14 +22,18 @@ const initUserGithubAuth = async (user) => {
 };
 
 router.get("/callback", async (req, res) => {
-  const { code } = req.query;
-  if (!code) {
+  const state = req.query.state;
+  if (!state) {
     res.status(400).send("Bad request");
     return;
   }
-
-  const user = await findUserInRequestCookies(req);
+  const user = await User.findOne({ _id: state });
   if (!user) {
+    res.status(400).send("User not found");
+    return;
+  }
+  const { code } = req.query;
+  if (!code) {
     res.status(400).send("Bad request");
     return;
   }

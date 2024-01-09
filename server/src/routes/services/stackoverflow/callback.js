@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 
-const findUserInRequestCookies = require("@/utils/findUserInRequestCookies");
+const User = require("@/models/User");
 
 const initUserStackoverflowAuth = async (user) => {
   if (!user.auth) {
@@ -23,7 +23,12 @@ const initUserStackoverflowAuth = async (user) => {
 };
 
 router.get("/callback", async (req, res) => {
-  const user = await findUserInRequestCookies(req);
+  const state = req.query.state;
+  if (!state) {
+    res.status(400).send("Bad request");
+    return;
+  }
+  const user = await User.findOne({ _id: state });
   if (!user) {
     res.status(400).send("User not found");
     return;
@@ -42,11 +47,15 @@ router.get("/callback", async (req, res) => {
     redirect_uri: process.env.STACKOVERFLOW_CALLBACK_URL,
   };
 
-  const response = await axios.post("https://stackoverflow.com/oauth/access_token/json", qs, {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-  });
+  const response = await axios.post(
+    "https://stackoverflow.com/oauth/access_token/json",
+    qs,
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    }
+  );
 
   const data = response.data;
   const { access_token } = data;

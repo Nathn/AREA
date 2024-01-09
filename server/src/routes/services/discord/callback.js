@@ -3,7 +3,7 @@ const axios = require("axios");
 
 const router = express.Router();
 
-const findUserInRequestCookies = require("@/utils/findUserInRequestCookies");
+const User = require("@/models/User");
 
 const initUserAuth = async (user) => {
   try {
@@ -19,6 +19,16 @@ const initUserAuth = async (user) => {
 };
 
 router.get("/callback", async (req, res) => {
+  const state = req.query.state;
+  if (!state) {
+    res.status(400).send("Bad request");
+    return;
+  }
+  const user = await User.findOne({ _id: state });
+  if (!user) {
+    res.status(400).send("User not found");
+    return;
+  }
   const code = req.query.code;
   try {
     let data = `client_id=${process.env.DISCORD_CLIENT_ID}&client_secret=${process.env.DISCORD_CLIENT_SECRET}&grant_type=authorization_code&code=${code}&redirect_uri=${process.env.DISCORD_CALLBACK_URL}&scope=identify`;
@@ -33,11 +43,6 @@ router.get("/callback", async (req, res) => {
         console.log(err);
       });
     const accessTokens = response.data;
-    const user = await findUserInRequestCookies(req);
-    if (!user) {
-      res.status(400).send("User not found");
-      return;
-    }
     if (!user.auth) await initUserAuth(user);
     user.auth.discord = accessTokens;
     await user.save();

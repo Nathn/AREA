@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 
-const findUserInRequestCookies = require("@/utils/findUserInRequestCookies");
+const User = require("@/models/User");
 
 const initUserYammerAuth = async (user) => {
   if (!user.auth) {
@@ -19,8 +19,22 @@ const initUserYammerAuth = async (user) => {
 };
 
 router.get("/callback", async (req, res) => {
-  const code = req.query.code;
+  const state = req.query.state;
+  if (!state) {
+    res.status(400).send("Bad request");
+    return;
+  }
+  const user = await User.findOne({ _id: state });
+  if (!user) {
+    res.status(400).send("User not found");
+    return;
+  }
 
+  const code = req.query.code;
+  if (!code) {
+    res.status(400).send("Bad request");
+    return;
+  }
   try {
     const response = await axios.post(
       "https://www.yammer.com/oauth2/access_token",
@@ -33,12 +47,6 @@ router.get("/callback", async (req, res) => {
     );
 
     const accessTokens = response.data.access_token;
-
-    const user = await findUserInRequestCookies(req);
-    if (!user) {
-      res.status(400).send("User not found");
-      return;
-    }
 
     if (!user.auth) await initUserYammerAuth(user);
 
