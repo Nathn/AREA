@@ -1,10 +1,11 @@
 const express = require("express");
-
 const router = express.Router();
 
+const actions = require("./actions");
+const baseValues = require("./baseValues");
+const callback = require("./callback");
+
 router.get("/", async (req, res) => {
-  console.log("client id:", process.env.REDDIT_CLIENT_ID);
-  console.log("callback url:", process.env.REDDIT_CALLBACK_URL);
   const rootURL = "https://www.reddit.com/api/v1/authorize";
   const params = {
     client_id: process.env.REDDIT_CLIENT_ID,
@@ -12,7 +13,7 @@ router.get("/", async (req, res) => {
     state: "random_string",
     redirect_uri: process.env.REDDIT_CALLBACK_URL,
     duration: "permanent",
-    scope: "identity",
+    scope: "account creddits edit flair history identity livemanage modconfig modcontributors modflair modlog modothers modposts modself modwiki mysubreddits privatemessages read report save structuredstyles submit subscribe vote wikiedit wikiread",
   };
 
   const qs = new URLSearchParams(params).toString();
@@ -22,6 +23,8 @@ router.get("/", async (req, res) => {
   res.send(url);
 });
 
-router.use("/", require("./callback"));
+router.use("/action", actions);
+router.use("/", baseValues);
+router.use("/", callback);
 
 module.exports = router;
