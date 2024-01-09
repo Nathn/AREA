@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         GoogleSignInScreen.routeName: (context) => const GoogleSignInScreen(),
         AuthenticationScreen.routeName: (context) => const AuthenticationScreen(),
         HomeScreen.routeName: (context) => const HomeScreen(),
-        AddActionScreen.routeName: (context) => AddActionScreen(),
+        AddActionScreen.routeName: (context) => const AddActionScreen(),
       },
     );
   }

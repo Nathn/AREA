@@ -32,7 +32,7 @@ class WelcomeScreen extends StatelessWidget {
                     TextSpan(
                       text: 'OM',
                       style: TextStyle(
-                        color: Colors.purple,
+                        color: Colors.blue,
                       ),
                     ),
                   ],
@@ -62,7 +62,7 @@ class WelcomeScreen extends StatelessWidget {
                 Navigator.pushNamed(context, '/google-sign-in');
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.purple,
+                backgroundColor: Colors.blue,
               ),
               child: const Text(
                 'Get Started',

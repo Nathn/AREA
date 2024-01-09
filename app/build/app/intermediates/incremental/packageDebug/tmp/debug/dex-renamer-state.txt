@@ -1,7 +1,10 @@
-#Tue Jan 09 09:47:58 CET 2024
+#Tue Jan 09 16:26:27 CET 2024
+base.2=/home/noahcherel/StudioProjects/area/app/build/app/intermediates/dex/debug/mergeDexDebug/classes3.dex
+path.2=classes3.dex
 base.1=/home/noahcherel/StudioProjects/area/app/build/app/intermediates/dex/debug/mergeDexDebug/classes2.dex
 path.1=classes2.dex
 base.0=/home/noahcherel/StudioProjects/area/app/build/app/intermediates/dex/debug/mergeDexDebug/classes.dex
+renamed.2=classes3.dex
 renamed.1=classes2.dex
 renamed.0=classes.dex
 path.0=classes.dex

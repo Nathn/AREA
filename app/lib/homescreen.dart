@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/password_firebase.dart';
 import 'add_actions.dart';
-import 'google_firebase.dart';
 
 class HomeScreen extends StatelessWidget {
   static const routeName = '/home';

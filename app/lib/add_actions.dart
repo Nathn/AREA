@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'api.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:oauth2_client/google_oauth2_client.dart';
 
 class AddActionScreen extends StatefulWidget {
   static const routeName = '/add-action';
+
+  const AddActionScreen({super.key});
 
   @override
   _AddActionScreenState createState() => _AddActionScreenState();
@@ -26,38 +30,39 @@ class _AddActionScreenState extends State<AddActionScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(title: const Text('AREA')),
       body: Center(
         child: Column(
           children: [
-            Text("Add an action/reaction"),
+            const Text("Add an action/reaction"),
             // Render your service buttons
-            _buildServiceButton('google', 'Google services'),
-            _buildServiceButton('yammer', 'Yammer'),
-            _buildServiceButton('github', 'GitHub'),
-            _buildServiceButton('outlook', 'Outlook'),
-            _buildServiceButton('discord', 'Discord'),
-            _buildServiceButton('facebook', 'Facebook'),
-            _buildServiceButton('reddit', 'Reddit'),
-            _buildServiceButton('stackoverflow', 'StackOverflow'),
+            _buildServiceButton('google', 'Google services', 'assets/images/google.png'),
+            _buildServiceButton('yammer', 'Yammer', 'assets/images/yammer.png'),
+            _buildServiceButton('github', 'GitHub', 'assets/images/github.png'),
+            _buildServiceButton('outlook', 'Outlook', 'assets/images/outlook.png'),
+            _buildServiceButton('discord', 'Discord', 'assets/images/discord.png'),
+            _buildServiceButton('facebook', 'Facebook', 'assets/images/facebook.png'),
+            _buildServiceButton('reddit', 'Reddit', 'assets/images/reddit.png'),
+            _buildServiceButton('stackoverflow', 'StackOverflow', 'assets/images/stackoverflow.png'),
 
             // Your create button
             ElevatedButton(
               onPressed: createActionReaction,
-              child: Text('Create'),
+              child: const Text('Create'),
             ),
 
             // Display success and error messages
             if (successMessage.isNotEmpty)
               Text(
                 successMessage,
-                style: TextStyle(color: Colors.green),
+                style: const TextStyle(color: Colors.green),
               ),
             if (errorMessage.isNotEmpty)
               Text(
                 errorMessage,
-                style: TextStyle(color: Colors.red),
+                style: const TextStyle(color: Colors.red),
               ),
           ],
         ),
@@ -65,7 +70,7 @@ class _AddActionScreenState extends State<AddActionScreen> {
     );
   }
 
-  Widget _buildServiceButton(String service, String serviceName) {
+  Widget _buildServiceButton(String service, String serviceName, String serviceImage) {
     return ElevatedButton(
       onPressed: () {
         if (!accessStates[service]!) {
@@ -74,11 +79,19 @@ class _AddActionScreenState extends State<AddActionScreen> {
           logout(service);
         }
       },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: accessStates[service]! ? Colors.green[100] : Colors.red[100],
+      ),
       child: Row(
         children: [
+          Image.asset(
+            serviceImage,
+            height: 30,
+            width: 30,
+          ),
+          const SizedBox(width: 10),
           Text(serviceName),
-          const Spacer(),
-          Text(!accessStates[service]! ? 'Logout' : 'Login'),
+          const SizedBox(width: 10),
         ],
       ),
     );
@@ -90,6 +103,8 @@ class _AddActionScreenState extends State<AddActionScreen> {
         print(response);
         return;
       }
+      redirectToUrl(response.body);
+
       setState(() {
         accessStates[service] = true;
       });
@@ -108,28 +123,6 @@ class _AddActionScreenState extends State<AddActionScreen> {
     });
   }
 
-/*
-
-  const createActionReaction = (event) => {
-    event.preventDefault();
-    expressServer.createActionReaction(action, reaction).then((response) => {
-      if (response.status !== 200) {
-        console.warn(response);
-        setErrorMessage(response.data);
-        return;
-      }
-      setSuccessMessage("Action/reaction successfully created.");
-      const expiryDate = new Date();
-      expiryDate.setDate(expiryDate.getDate() + 30);
-      document.cookie = `userData=${encodeURIComponent(
-        JSON.stringify(response.data) || ""
-      )}; expires=${expiryDate}; path=/; SameSite=Lax`;
-      return;
-    });
-  };
-
-*/
-
   void createActionReaction() async {
     await ExpressServer()
         .createActionReaction(action, reaction)
@@ -145,5 +138,12 @@ class _AddActionScreenState extends State<AddActionScreen> {
         successMessage = "Action/reaction successfully created.";
       });
         });
+  }
+
+  void redirectToUrl(String url) async {
+    final Uri theUrl = Uri.parse(url);
+    if (!await launchUrl(theUrl)) {
+      throw Exception('Could not launch $url');
+    }
   }
 }

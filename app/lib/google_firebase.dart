@@ -91,7 +91,7 @@ class _GoogleSignInScreenState extends State<GoogleSignInScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Welcome ${userCredential.value.user!.displayName} !", style: TextStyle(fontSize: 30),),
+                    Text("Welcome ${userCredential.value.user!.displayName} !", style: const TextStyle(fontSize: 30),),
                     const SizedBox(
                       height: 20,
                     ),
