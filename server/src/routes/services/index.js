@@ -11,6 +11,7 @@ const github = require("./github");
 const google = require("./google");
 const outlook = require("./outlook");
 const reddit = require("./reddit");
+const stackoverflow = require("./stackoverflow");
 const yammer = require("./yammer");
 
 router.get("/", async (req, res) => {
@@ -55,6 +56,7 @@ router.use("/github", github);
 router.use("/google", google);
 router.use("/outlook", outlook);
 router.use("/reddit", reddit);
+router.use("/stackoverflow", stackoverflow);
 router.use("/yammer", yammer);
 
 module.exports = router;
