@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleDot as fasCircleDot } from "@fortawesome/free-solid-svg-icons";
@@ -77,16 +76,28 @@ function App({ user, services }) {
 
   return (
     <div className="App">
-      <h1>AREA ({process.env.NODE_ENV} mode)</h1>
-      <Link className="main-button" to={user ? "/new" : "/login"}>
-        Create a new action/reaction
-      </Link>
+      <h1 className="title">AREA ({process.env.NODE_ENV} mode)</h1>
+      <h2 className="subtitle promo">
+        <span className="highlight">{services.length}</span> services available
+      </h2>
+      <h2 className="subtitle promo">
+        <span className="highlight">
+          {services.map((s) => s.actions.length).reduce((a, b) => a + b, 0)}
+        </span>{" "}
+        actions
+      </h2>
+      <h2 className="subtitle promo">
+        <span className="highlight">
+          {services.map((s) => s.reactions.length).reduce((a, b) => a + b, 0)}
+        </span>{" "}
+        reactions
+      </h2>
       {user ? (
         <div className="main">
-          <h2>My active action/reactions</h2>
+          <h2 className="subtitle">My automations</h2>
           <div className="actions">
             {userData?.action_reactions?.map((ar, index) => (
-              <div className="action active" key={index}>
+              <div className="action" key={index}>
                 {services.map((service) =>
                   service.actions.map((action) =>
                     service.name_short + "_" + action.name_short ===
@@ -114,6 +125,7 @@ function App({ user, services }) {
                 <FontAwesomeIcon
                   onClick={updateActionReaction(ar._id, "enabled", !ar.enabled)}
                   className={ar.enabled ? "enabled" : "disabled"}
+                  title={ar.enabled ? "Enabled" : "Disabled"}
                   icon={fasCircleDot}
                 />
               </div>
@@ -124,8 +136,12 @@ function App({ user, services }) {
         <div>
           {about ? (
             <div className="main">
-              <h2>Client host: {about.client.host}</h2>
-              <h2>Server current time: {about.server.current_time}</h2>
+              <h2>
+                Client host: <code>{about.client.host}</code>
+              </h2>
+              <h2>
+                Server current time: <code>{about.server.current_time}</code>
+              </h2>
             </div>
           ) : (
             <div className="main">
