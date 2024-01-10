@@ -24,6 +24,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  padding-right: 10%;
 }
 
 #navBar a {
@@ -53,7 +54,7 @@
     align-items: center;
     justify-content: center;
     gap: 1.5rem;
-    background-color: #000000;
+    background-color: #07124f;
     transition: 1s;
   }
 
