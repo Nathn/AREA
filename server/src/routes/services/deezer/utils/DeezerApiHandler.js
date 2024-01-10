@@ -41,6 +41,28 @@ class DeezerApiHandler {
 
     return await this.getApi(url, params);
   }
+
+  async getMyPlaylists() {
+    const url = "/user/me/playlists";
+    const params = {
+      params: {
+        access_token: this.accessToken,
+      },
+    };
+
+    return await this.getApi(url, params);
+  }
+
+  async getMyArtists() {
+    const url = "/user/me/artists";
+    const params = {
+      params: {
+        access_token: this.accessToken,
+      },
+    };
+
+    return await this.getApi(url, params);
+  }
 }
 
 module.exports = DeezerApiHandler;
