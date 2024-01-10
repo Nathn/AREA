@@ -152,7 +152,7 @@ function App({ user, services }) {
           </option>
           {
             services.sort((a, b) => a.name_long.localeCompare(b.name_long)).map((service) =>
-              allServicesNames.includes(service.type) &&
+              allServicesNames.includes(service.type) && servicesData[service.type].access &&
               service.actions.map((action) => (
                 <option value={`${service.name_short}_${action.name_short}`} key={`${service.name_short}_${action.name_short}`}>
                   {`${service.name_long} - ${action.name_long}`}
@@ -168,7 +168,7 @@ function App({ user, services }) {
           </option>
           {
             services.sort((a, b) => a.name_long.localeCompare(b.name_long)).map((service) =>
-              allServicesNames.includes(service.type) &&
+              allServicesNames.includes(service.type) && servicesData[service.type].access &&
               service.reactions.map((reaction) => (
                 <option value={`${service.name_short}_${reaction.name_short}`} key={`${service.name_short}_${reaction.name_short}`}>
                   {`${service.name_long} - ${reaction.name_long}`}
