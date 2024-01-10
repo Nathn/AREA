@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+const actions = require("./actions");
+const baseValues = require("./baseValues");
 const callback = require("./callback");
 
 router.get("/", async (req, res) => {
@@ -18,6 +20,8 @@ router.get("/", async (req, res) => {
   res.send(url);
 });
 
+router.use("/action", actions);
+router.use("/", baseValues);
 router.use("/", callback);
 
 module.exports = router;
