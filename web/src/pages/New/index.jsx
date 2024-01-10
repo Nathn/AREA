@@ -7,8 +7,8 @@ import { faDeezer, faDiscord, faFacebook, faGithub, faGoogle, faMicrosoft, faRed
 import expressServer from "../../api/express-server";
 import "./index.css";
 
-async function auth(service) {
-  await expressServer.serviceAuth(service).then((response) => {
+async function auth(service, uid) {
+  await expressServer.serviceAuth(service, uid).then((response) => {
     if (response.status !== 200) {
       console.warn(response);
       return;
@@ -27,9 +27,9 @@ async function logout(service, servicesData, setServicesData) {
   });
 }
 
-const manageButtonState = (service, servicesData, setServicesData) => {
+const manageButtonState = (service, uid, servicesData, setServicesData) => {
   if (!servicesData[service].access) {
-    auth(servicesData[service].service_name);
+    auth(servicesData[service].service_name, uid);
   } else {
     logout(servicesData[service].service_name, servicesData, setServicesData);
   }
@@ -62,6 +62,9 @@ const getAuthentificationStates = (userData, servicesData, setServicesData) => {
 function App({ user, services }) {
   const [action, setAction] = useState("");
   const [reaction, setReaction] = useState("");
+
+  const [uid, setUid] = useState("");
+
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -80,13 +83,32 @@ function App({ user, services }) {
   const allServicesNames = Object.keys(servicesData).map((service) => servicesData[service].service_name);
 
   useEffect(() => {
+    let userData = null;
     if (!user || !user.user) {
-      const userData = getUserData();
+      userData = getUserData();
       if (!userData) {
         return false;
       }
+      setUid(userData._id);
       getAuthentificationStates(userData, servicesData, setServicesData);
     }
+    // get user data from db
+    expressServer
+      .getUserData(user?.user?.uid || userData.uid)
+      .then((response) => {
+        if (response.status !== 200) {
+          console.warn(response);
+          return false;
+        }
+        const expiryDate = new Date();
+        expiryDate.setDate(expiryDate.getDate() + 30);
+        document.cookie = `userData=${encodeURIComponent(
+          JSON.stringify(response.data) || ""
+        )}; expires=${expiryDate}; path=/; SameSite=Lax`;
+        setUid(response.data._id);
+        getAuthentificationStates(response.data, servicesData, setServicesData);
+        return true;
+      });
   }, [user]);
 
   const createActionReaction = (event) => {
@@ -112,7 +134,7 @@ function App({ user, services }) {
       <h1>Add an action/reaction</h1>
       <div className="buttons">
         {Object.keys(servicesData).map((service, index) => (
-          <button className={servicesData[service].access ? "login-button logged" : "login-button"} onClick={() => manageButtonState(service, servicesData, setServicesData)} key={index}>
+          <button className={servicesData[service].access ? "login-button logged" : "login-button"} onClick={() => manageButtonState(service, uid, servicesData, setServicesData)} key={index}>
             <div className="service-name">
               <FontAwesomeIcon icon={servicesData[service].icon} />
               <span>{servicesData[service].display_name}</span>

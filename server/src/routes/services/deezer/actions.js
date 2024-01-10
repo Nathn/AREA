@@ -14,15 +14,12 @@ router.post("/addAlbum", async (req, res) => {
   }
   try {
     const prevAlbumsLength = userAlbums?.total;
-    console.log("prevAlbumsLength", prevAlbumsLength);
 
     const deezerApiHandler = new DeezerApiHandler(accessToken);
     const albums = await deezerApiHandler.getMyAlbums();
 
     const newUserAlbums = albums;
-
     const newAlbumsLength = newUserAlbums?.total;
-    console.log("newAlbumsLength", newAlbumsLength);
 
     res.status(200).send({
       result: newAlbumsLength > prevAlbumsLength,

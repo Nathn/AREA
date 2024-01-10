@@ -6,11 +6,17 @@ const baseValues = require("./baseValues");
 const callback = require("./callback");
 
 router.get("/", async (req, res) => {
+  if (!req.query.user_id) {
+    res.status(400).send("Bad request");
+    return;
+  }
+
   const rootURL = "https://connect.deezer.com/oauth/auth.php";
   const params = {
     app_id: process.env.DEEZER_CLIENT_ID,
     redirect_uri: process.env.DEEZER_CALLBACK_URL,
     perms: "basic_access,email,offline_access,manage_library,manage_community,delete_library,listening_history",
+    state: req.query.user_id,
   };
 
   const qs = new URLSearchParams(params).toString();
