@@ -1,1 +1,0 @@
- /home/noahcherel/StudioProjects/area/app/.dart_tool/flutter_build/5ab02d2fc172e676eda99fe22130cf80/native_assets.yaml: 
