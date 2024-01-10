@@ -4,15 +4,15 @@ const axios = require("axios");
 
 const User = require("@/models/User");
 
-const initUserStackoverflowAuth = async (user) => {
+const initUserDeezerAuth = async (user) => {
   if (!user.auth) {
     user.auth = {
-      stackoverflow: {},
+      deezer: {},
     };
   }
 
-  if (!user.auth.stackoverflow) {
-    user.auth.stackoverflow = {};
+  if (!user.auth.deezer) {
+    user.auth.deezer = {};
   }
 
   try {
@@ -24,6 +24,7 @@ const initUserStackoverflowAuth = async (user) => {
 
 router.get("/callback", async (req, res) => {
   const state = req.query.state;
+  console.log("state", state);
   if (!state) {
     res.status(400).send("Bad request");
     return;
@@ -40,20 +41,17 @@ router.get("/callback", async (req, res) => {
     return;
   }
 
-  const qs = {
-    client_id: process.env.STACKOVERFLOW_CLIENT_ID,
-    client_secret: process.env.STACKOVERFLOW_CLIENT_SECRET,
-    code: code,
-    redirect_uri: process.env.STACKOVERFLOW_CALLBACK_URL,
+  const params = {
+    app_id: process.env.DEEZER_CLIENT_ID,
+    secret: process.env.DEEZER_CLIENT_SECRET,
+    code,
+    output: "json",
   };
 
-  const response = await axios.post(
-    "https://stackoverflow.com/oauth/access_token/json",
-    qs,
+  const response = await axios.get(
+    "https://connect.deezer.com/oauth/access_token.php",
     {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
+      params,
     }
   );
 
@@ -65,16 +63,16 @@ router.get("/callback", async (req, res) => {
   }
 
   try {
-    if (!user.auth) await initUserStackoverflowAuth(user);
+    if (!user.auth) await initUserDeezerAuth(user);
 
-    user.auth.stackoverflow = data;
+    user.auth.deezer = data;
 
     await user.save();
 
     res.redirect(`${process.env.FRONT_URL}/new`);
   } catch (error) {
-    console.error("Stack Overflow authentication error:", error.message);
-    res.status(400).send("Bad request in Stack Overflow callback");
+    console.error("Reddit authentication error:", error.message);
+    res.status(400).send("Bad request in Reddit callback");
   }
 });
 

@@ -59,11 +59,11 @@ const userSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.Mixed,
       trim: true,
     },
-    stackoverflow: {
+    twitch: {
       type: mongoose.Schema.Types.Mixed,
       trim: true,
     },
-    twitch: {
+    deezer: {
       type: mongoose.Schema.Types.Mixed,
       trim: true,
     },

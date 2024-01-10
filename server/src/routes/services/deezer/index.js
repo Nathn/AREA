@@ -11,19 +11,17 @@ router.get("/", async (req, res) => {
     return;
   }
 
-  const rootURL = "https://www.reddit.com/api/v1/authorize";
+  const rootURL = "https://connect.deezer.com/oauth/auth.php";
   const params = {
-    client_id: process.env.REDDIT_CLIENT_ID,
-    response_type: "code",
-    redirect_uri: process.env.REDDIT_CALLBACK_URL,
-    duration: "permanent",
-    scope: "account creddits edit flair history identity livemanage modconfig modcontributors modflair modlog modothers modposts modself modwiki mysubreddits privatemessages read report save structuredstyles submit subscribe vote wikiedit wikiread",
+    app_id: process.env.DEEZER_CLIENT_ID,
+    redirect_uri: process.env.DEEZER_CALLBACK_URL,
+    perms: "basic_access,email,offline_access,manage_library,manage_community,delete_library,listening_history",
+    state: req.query.user_id,
   };
 
   const qs = new URLSearchParams(params).toString();
 
-  let url = `${rootURL}?${qs}`;
-  url += `&state=${req.query.user_id}`;
+  const url = `${rootURL}?${qs}`;
 
   res.send(url);
 });

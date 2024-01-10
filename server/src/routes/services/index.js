@@ -5,13 +5,13 @@ const findUserInRequestCookies = require("@/utils/findUserInRequestCookies");
 
 const Service = require("@/models/Service");
 
+const deezer = require("./deezer");
 const discord = require("./discord");
 const facebook = require("./facebook");
 const github = require("./github");
 const google = require("./google");
 const outlook = require("./outlook");
 const reddit = require("./reddit");
-const stackoverflow = require("./stackoverflow");
 const twitch = require("./twitch");
 const yammer = require("./yammer");
 
@@ -51,13 +51,13 @@ router.post("/logout/:service", async (req, res) => {
   }
 });
 
+router.use("/deezer", deezer);
 router.use("/discord", discord);
 router.use("/facebook", facebook);
 router.use("/github", github);
 router.use("/google", google);
 router.use("/outlook", outlook);
 router.use("/reddit", reddit);
-router.use("/stackoverflow", stackoverflow);
 router.use("/twitch", twitch);
 router.use("/yammer", yammer);
 
