@@ -6,6 +6,10 @@ const baseValues = require("./baseValues");
 const callback = require("./callback");
 
 router.get("/", async (req, res) => {
+  if (!req.query.user_id) {
+    res.status(400).send("Bad request");
+    return;
+  }
   const rootURL = "https://www.facebook.com/v10.0/dialog/oauth";
 
   const options = {
@@ -17,8 +21,8 @@ router.get("/", async (req, res) => {
   const qs = new URLSearchParams(options);
   const qsString = qs.toString();
 
-  const url = rootURL + "?" + qsString;
-
+  let url = rootURL + "?" + qsString;
+  url += `&state=${req.query.user_id}`;
   res.send(url);
 });
 

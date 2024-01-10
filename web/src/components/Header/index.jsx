@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { useRef } from "react";
+import { NavLink } from "react-router-dom";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 
-import { FaBars, FaTimes } from 'react-icons/fa';
+import { FaBars, FaTimes } from "react-icons/fa";
 
-import Button from 'react-bootstrap/Button'
+import Button from "react-bootstrap/Button";
 
 import "./index.css";
 
@@ -30,24 +30,30 @@ function Header({ user }) {
 
   const showNavbar = () => {
     navRef.current.classList.toggle("responsive-nav");
-  }
+  };
 
   return (
     <header id="navHeader">
-      <h3>AREA</h3>
+      <div style={{ display: "flex", alignItems: "center", gap: "25px" }}>
+        <img src="/logo512.png" alt="logo" width="50" height="50" />
+        <h2 style={{ fontStyle: "italic", fontWeight: "bold" }}>AREA</h2>
+      </div>
 
       <nav id="navBar" ref={navRef}>
-        <Link to="/">Home</Link>
+        <NavLink to="/">Home</NavLink>
         {user ? (
           <>
-            <Link to="/new">New</Link>
-            <Link to="/profil">Profil</Link>
+            <NavLink to="/new">New</NavLink>
+            <NavLink to="/profil">Profil</NavLink>
             <Button variant="danger" onClick={() => firebase.auth().signOut()}>
               Logout
             </Button>
           </>
         ) : (
-          <Button variant="success" onClick={() => window.location.assign("/login")}>
+          <Button
+            variant="success"
+            onClick={() => window.location.assign("/login")}
+          >
             Login
           </Button>
         )}

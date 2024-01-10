@@ -27,8 +27,8 @@ class ExpressServer {
     return this.api.get("/users/" + uid);
   }
 
-  serviceAuth(service) {
-    return this.api.get(`/services/${service}`);
+  serviceAuth(service, uid) {
+    return this.api.get(`/services/${service}?user_id=${uid}`);
   }
 
   logoutFromService(service) {

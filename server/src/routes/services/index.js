@@ -5,6 +5,7 @@ const findUserInRequestCookies = require("@/utils/findUserInRequestCookies");
 
 const Service = require("@/models/Service");
 
+const deezer = require("./deezer");
 const discord = require("./discord");
 const facebook = require("./facebook");
 const github = require("./github");
@@ -50,6 +51,7 @@ router.post("/logout/:service", async (req, res) => {
   }
 });
 
+router.use("/deezer", deezer);
 router.use("/discord", discord);
 router.use("/facebook", facebook);
 router.use("/github", github);

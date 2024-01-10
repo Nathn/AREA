@@ -1,21 +1,27 @@
 const express = require("express");
 const router = express.Router();
 
-// Add required modules for Yammer authentication
 const actions = require("./actions");
 const baseValues = require("./baseValues");
 const callback = require("./callback");
-const reactions = require("./reactions");
 
-// Callback route for Yammer
 router.get("/", async (req, res) => {
   if (!req.query.user_id) {
     res.status(400).send("Bad request");
     return;
   }
 
-  let url = `https://www.yammer.com/oauth2/authorize?client_id=${process.env.YAMMER_CLIENT_ID}&response_type=code&redirect_uri=${process.env.YAMMER_CALLBACK_URL}`;
-  url += `&state=${req.query.user_id}`;
+  const rootURL = "https://connect.deezer.com/oauth/auth.php";
+  const params = {
+    app_id: process.env.DEEZER_CLIENT_ID,
+    redirect_uri: process.env.DEEZER_CALLBACK_URL,
+    perms: "basic_access,email,offline_access,manage_library,manage_community,delete_library,listening_history",
+    state: req.query.user_id,
+  };
+
+  const qs = new URLSearchParams(params).toString();
+
+  const url = `${rootURL}?${qs}`;
 
   res.send(url);
 });
@@ -23,6 +29,5 @@ router.get("/", async (req, res) => {
 router.use("/action", actions);
 router.use("/", baseValues);
 router.use("/", callback);
-router.use("/reaction", reactions);
 
 module.exports = router;

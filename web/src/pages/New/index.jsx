@@ -2,63 +2,95 @@ import React, { useState, useEffect } from "react";
 import "firebase/compat/auth";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faGithub,
-  faGoogle,
-  faYammer,
-  faMicrosoft,
-  faDiscord,
-  faFacebook,
-  faReddit,
-  faTwitch,
-} from "@fortawesome/free-brands-svg-icons";
+import { faDeezer, faDiscord, faFacebook, faGithub, faGoogle, faMicrosoft, faReddit, faTwitch, faYammer } from "@fortawesome/free-brands-svg-icons";
 
 import expressServer from "../../api/express-server";
 import "./index.css";
+
+async function auth(service, uid) {
+  await expressServer.serviceAuth(service, uid).then((response) => {
+    if (response.status !== 200) {
+      console.warn(response);
+      return;
+    }
+    window.location.assign(response.data);
+  });
+}
+
+async function logout(service, servicesData, setServicesData) {
+  await expressServer.logoutFromService(service).then((response) => {
+    if (response.status !== 200) {
+      console.warn(response);
+      return;
+    }
+    getAuthentificationStates(response.data, servicesData, setServicesData);
+  });
+}
+
+const manageButtonState = (service, uid, servicesData, setServicesData) => {
+  if (!servicesData[service].access) {
+    auth(servicesData[service].service_name, uid);
+  } else {
+    logout(servicesData[service].service_name, servicesData, setServicesData);
+  }
+}
+
+const getUserData = () => {
+  const cookie = document.cookie.split(";").find((c) => c.trim().startsWith("userData="));
+  if (!cookie) {
+    window.location.assign("/login");
+    return false;
+  }
+
+  const userData = JSON.parse(decodeURIComponent(cookie.split("=")[1]));
+  if (!userData) {
+    window.location.assign("/login");
+    return false;
+  }
+
+  return userData;
+};
+
+const getAuthentificationStates = (userData, servicesData, setServicesData) => {
+  const servicesDataCopy = { ...servicesData };
+  Object.keys(servicesDataCopy).forEach((service) => {
+    servicesDataCopy[service].access = userData?.auth?.[service];
+  });
+  setServicesData(servicesDataCopy);
+}
 
 function App({ user, services }) {
   const [action, setAction] = useState("");
   const [reaction, setReaction] = useState("");
 
-  const [googleAccess, setGoogleAccess] = useState(false);
-  const [yammerAccess, setYammerAccess] = useState(false);
-  const [githubAccess, setGithubAccess] = useState(false);
-  const [outlookAccess, setOutlookAccess] = useState(false);
-  const [discordAccess, setDiscordAccess] = useState(false);
-  const [facebookAccess, setFacebookAccess] = useState(false);
-  const [redditAccess, setRedditAccess] = useState(false);
-  const [twitchAccess, setTwitchAccess] = useState(false);
+  const [uid, setUid] = useState("");
 
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  function getAuthentificationStates(userData) {
-    setGoogleAccess(userData?.auth?.google);
-    setYammerAccess(userData?.auth?.yammer);
-    setGithubAccess(userData?.auth?.github);
-    setOutlookAccess(userData?.auth?.outlook);
-    setDiscordAccess(userData?.auth?.discord);
-    setFacebookAccess(userData?.auth?.facebook);
-    setRedditAccess(userData?.auth?.reddit);
-    setTwitchAccess(userData?.auth?.twitch);
-  }
+  const [servicesData, setServicesData] = useState({
+    deezer: { icon: faDeezer, display_name: "Deezer", service_name: "deezer", access: null },
+    discord: { icon: faDiscord, display_name: "Discord", service_name: "discord", access: null },
+    facebook: { icon: faFacebook, display_name: "Facebook", service_name: "facebook", access: null },
+    github: { icon: faGithub, display_name: "GitHub", service_name: "github", access: null },
+    google: { icon: faGoogle, display_name: "Google", service_name: "google", access: null },
+    outlook: { icon: faMicrosoft, display_name: "Outlook", service_name: "outlook", access: null },
+    reddit: { icon: faReddit, display_name: "Reddit", service_name: "reddit", access: null },
+    twitch: { icon: faTwitch, display_name: "Twitch", service_name: "twitch", access: null },
+    yammer: { icon: faYammer, display_name: "Yammer", service_name: "yammer", access: null },
+  });
+
+  const allServicesNames = Object.keys(servicesData).map((service) => servicesData[service].service_name);
 
   useEffect(() => {
     let userData = null;
     if (!user || !user.user) {
-      const cookie = document.cookie
-        .split(";")
-        .find((c) => c.trim().startsWith("userData="));
-      if (!cookie) {
-        window.location.assign("/login");
-        return false;
-      }
-      userData = JSON.parse(decodeURIComponent(cookie.split("=")[1]));
+      userData = getUserData();
       if (!userData) {
-        window.location.assign("/login");
         return false;
       }
-      getAuthentificationStates(userData);
+      setUid(userData._id);
+      getAuthentificationStates(userData, servicesData, setServicesData);
     }
     // get user data from db
     expressServer
@@ -73,30 +105,11 @@ function App({ user, services }) {
         document.cookie = `userData=${encodeURIComponent(
           JSON.stringify(response.data) || ""
         )}; expires=${expiryDate}; path=/; SameSite=Lax`;
-        getAuthentificationStates(response.data);
+        setUid(response.data._id);
+        getAuthentificationStates(response.data, servicesData, setServicesData);
         return true;
       });
   }, [user]);
-
-  async function auth(service) {
-    await expressServer.serviceAuth(service).then((response) => {
-      if (response.status !== 200) {
-        console.warn(response);
-        return;
-      }
-      window.location.assign(response.data);
-    });
-  }
-
-  async function logout(service) {
-    await expressServer.logoutFromService(service).then((response) => {
-      if (response.status !== 200) {
-        console.warn(response);
-        return;
-      }
-      getAuthentificationStates(response.data);
-    });
-  }
 
   const createActionReaction = (event) => {
     event.preventDefault();
@@ -120,206 +133,49 @@ function App({ user, services }) {
     <div className="App">
       <h1>Add an action/reaction</h1>
       <div className="buttons">
-        {/* Google */}
-        <button
-          className={googleAccess ? "login-button logged" : "login-button"}
-          onClick={() => {
-            if (!googleAccess) {
-              auth("google");
-            } else {
-              logout("google");
-            }
-          }}
-        >
-          <div className="service-name">
-            <FontAwesomeIcon icon={faGoogle} />
-            <span>Google services</span>
-          </div>
-          {googleAccess ? "Connected" : "Connect"}
-        </button>
-
-        {/* Yammer */}
-        <button
-          className={yammerAccess ? "login-button logged" : "login-button"}
-          onClick={() => {
-            if (!yammerAccess) {
-              auth("yammer");
-            } else {
-              logout("yammer");
-            }
-          }}
-        >
-          <div className="service-name">
-            <FontAwesomeIcon icon={faYammer} />
-            <span>Yammer</span>
-          </div>
-          {yammerAccess ? "Connected" : "Connect"}
-        </button>
-
-        {/* GitHub */}
-        <button
-          className={githubAccess ? "login-button logged" : "login-button"}
-          onClick={() => {
-            if (!githubAccess) {
-              auth("github");
-            } else {
-              logout("github");
-            }
-          }}
-        >
-          <div className="service-name">
-            <FontAwesomeIcon icon={faGithub} />
-            <span>GitHub</span>
-          </div>
-          {githubAccess ? "Connected" : "Connect"}
-        </button>
-
-        {/* Outlook */}
-        <button
-          className={outlookAccess ? "login-button logged" : "login-button"}
-          onClick={() => {
-            if (!outlookAccess) {
-              auth("outlook");
-            } else {
-              logout("outlook");
-            }
-          }}
-        >
-          <div className="service-name">
-            <FontAwesomeIcon icon={faMicrosoft} />
-            <span>Outlook</span>
-          </div>
-          {outlookAccess ? "Connected" : "Connect"}
-        </button>
-
-        {/* Discord */}
-        <button
-          className={discordAccess ? "login-button logged" : "login-button"}
-          onClick={() => {
-            if (!discordAccess) {
-              auth("discord");
-            } else {
-              logout("discord");
-            }
-          }}
-        >
-          <div className="service-name">
-            <FontAwesomeIcon icon={faDiscord} />
-            <span>Discord</span>
-          </div>
-          {discordAccess ? "Connected" : "Connect"}
-        </button>
-
-        {/* Facebook */}
-        <button
-          className={facebookAccess ? "login-button logged" : "login-button"}
-          onClick={() => {
-            if (!facebookAccess) {
-              auth("facebook");
-            } else {
-              logout("facebook");
-            }
-          }}
-        >
-          <div className="service-name">
-            <FontAwesomeIcon icon={faFacebook} />
-            <span>Facebook</span>
-          </div>
-          {facebookAccess ? "Connected" : "Connect"}
-        </button>
-
-        {/* Reddit */}
-        <button
-          className={redditAccess ? "login-button logged" : "login-button"}
-          onClick={() => {
-            if (!redditAccess) {
-              auth("reddit");
-            } else {
-              logout("reddit");
-            }
-          }}
-        >
-          <div className="service-name">
-            <FontAwesomeIcon icon={faReddit} />
-            <span>Reddit</span>
-          </div>
-          {redditAccess ? "Connected" : "Connect"}
-        </button>
-
-        {/* Reddit */}
-        <button
-          className={twitchAccess ? "login-button logged" : "login-button"}
-          onClick={() => {
-            if (!twitchAccess) {
-              auth("twitch");
-            } else {
-              logout("twitch");
-            }
-          }}
-        >
-          <div className="service-name">
-            <FontAwesomeIcon icon={faTwitch} />
-            <span>Twitch</span>
-          </div>
-          {twitchAccess ? "Connected" : "Connect"}
-        </button>
+        {Object.keys(servicesData).map((service, index) => (
+          <button className={servicesData[service].access ? "login-button logged" : "login-button"} onClick={() => manageButtonState(service, uid, servicesData, setServicesData)} key={index}>
+            <div className="service-name">
+              <FontAwesomeIcon icon={servicesData[service].icon} />
+              <span>{servicesData[service].display_name}</span>
+            </div>
+            {servicesData[service].access ? "Connected" : "Connect"}
+          </button>
+        ))}
       </div>
+
       <form onSubmit={createActionReaction} className="form-action">
         <label htmlFor="action">Action</label>
-        <select
-          name="action"
-          id="action"
-          defaultValue=""
-          required
-          onChange={(e) => setAction(e.target.value)}
-        >
+        <select name="action" id="action" defaultValue="" required onChange={(e) => setAction(e.target.value)}>
           <option value="" disabled>
             Select an action
           </option>
-          {services.map(
-            (service) =>
-              (service.type !== "google" || googleAccess) &&
-              (service.type !== "yammer" || yammerAccess) &&
-              (service.type !== "github" || githubAccess) &&
-              (service.type !== "outlook" || outlookAccess) &&
-              (service.type !== "discord" || discordAccess) &&
-              (service.type !== "facebook" || facebookAccess) &&
+          {
+            services.sort((a, b) => a.name_long.localeCompare(b.name_long)).map((service) =>
+              allServicesNames.includes(service.type) && servicesData[service.type].access &&
               service.actions.map((action) => (
-                <option
-                  value={`${service.name_short}_${action.name_short}`}
-                  key={`${service.name_short}_${action.name_short}`}
-                >
+                <option value={`${service.name_short}_${action.name_short}`} key={`${service.name_short}_${action.name_short}`}>
                   {`${service.name_long} - ${action.name_long}`}
                 </option>
               ))
-          )}
+            )
+          }
         </select>
         <label htmlFor="reaction">Reaction</label>
-        <select
-          name="reaction"
-          id="reaction"
-          defaultValue=""
-          required
-          onChange={(e) => setReaction(e.target.value)}
-        >
+        <select name="reaction" id="reaction" defaultValue="" required onChange={(e) => setReaction(e.target.value)}>
           <option value="" disabled>
             Select a reaction
           </option>
-          {services.map(
-            (service) =>
-              (service.type !== "google" || googleAccess) &&
-              (service.type !== "yammer" || yammerAccess) &&
-              (service.type !== "github" || githubAccess) &&
-              (service.type !== "outlook" || outlookAccess) &&
-              (service.type !== "discord" || discordAccess) &&
-              (service.type !== "facebook" || facebookAccess) &&
+          {
+            services.sort((a, b) => a.name_long.localeCompare(b.name_long)).map((service) =>
+              allServicesNames.includes(service.type) && servicesData[service.type].access &&
               service.reactions.map((reaction) => (
-                <option
-                  value={`${service.name_short}_${reaction.name_short}`}
-                  key={`${service.name_short}_${reaction.name_short}`}
-                >{`${service.name_long} - ${reaction.name_long}`}</option>
+                <option value={`${service.name_short}_${reaction.name_short}`} key={`${service.name_short}_${reaction.name_short}`}>
+                  {`${service.name_long} - ${reaction.name_long}`}
+                </option>
               ))
-          )}
+            )
+          }
         </select>
         <button>Create</button>
       </form>

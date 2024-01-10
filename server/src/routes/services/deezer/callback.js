@@ -1,17 +1,18 @@
 const express = require("express");
 const router = express.Router();
+const axios = require("axios");
 
 const User = require("@/models/User");
 
-const initUserGithubAuth = async (user) => {
+const initUserDeezerAuth = async (user) => {
   if (!user.auth) {
     user.auth = {
-      github: {},
+      deezer: {},
     };
   }
 
-  if (!user.auth.github) {
-    user.auth.github = {};
+  if (!user.auth.deezer) {
+    user.auth.deezer = {};
   }
 
   try {
@@ -23,6 +24,7 @@ const initUserGithubAuth = async (user) => {
 
 router.get("/callback", async (req, res) => {
   const state = req.query.state;
+  console.log("state", state);
   if (!state) {
     res.status(400).send("Bad request");
     return;
@@ -32,32 +34,28 @@ router.get("/callback", async (req, res) => {
     res.status(400).send("User not found");
     return;
   }
+
   const { code } = req.query;
   if (!code) {
     res.status(400).send("Bad request");
     return;
   }
 
-  const params =
-    "?client_id=" +
-    process.env.GITHUB_CLIENT_ID +
-    "&client_secret=" +
-    process.env.GITHUB_CLIENT_SECRET +
-    "&code=" +
-    code +
-    "&scope=user%20public_repo";
+  const params = {
+    app_id: process.env.DEEZER_CLIENT_ID,
+    secret: process.env.DEEZER_CLIENT_SECRET,
+    code,
+    output: "json",
+  };
 
-  const response = await fetch(
-    "https://github.com/login/oauth/access_token" + params,
+  const response = await axios.get(
+    "https://connect.deezer.com/oauth/access_token.php",
     {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-      },
+      params,
     }
   );
 
-  const data = await response.json();
+  const data = response.data;
   const { access_token } = data;
   if (!access_token) {
     res.status(400).send("Bad request");
@@ -65,16 +63,16 @@ router.get("/callback", async (req, res) => {
   }
 
   try {
-    if (!user.auth) await initUserGithubAuth(user);
+    if (!user.auth) await initUserDeezerAuth(user);
 
-    user.auth.github = data;
+    user.auth.deezer = data;
 
     await user.save();
 
     res.redirect(`${process.env.FRONT_URL}/new`);
   } catch (error) {
-    console.log("Error saving user:", error);
-    res.status(500).send("Internal server error");
+    console.error("Reddit authentication error:", error.message);
+    res.status(400).send("Bad request in Reddit callback");
   }
 });
 

@@ -9,6 +9,10 @@ const calendar = require("./calendar");
 const youtube = require("./youtube");
 
 router.get("/", async (req, res) => {
+  if (!req.query.user_id) {
+    res.status(400).send("Bad request");
+    return;
+  }
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
@@ -21,11 +25,12 @@ router.get("/", async (req, res) => {
     "https://www.googleapis.com/auth/youtube",
     "https://www.googleapis.com/auth/youtube.force-ssl",
   ];
-  const url = oauth2Client.generateAuthUrl({
+  let url = oauth2Client.generateAuthUrl({
     access_type: "offline",
     scope: scopes,
     prompt: "consent",
   });
+  url += `&state=${req.query.user_id}`;
   res.send(url);
 });
 

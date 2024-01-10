@@ -6,6 +6,10 @@ const baseValues = require("./baseValues");
 const callback = require("./callback");
 
 router.get("/", async (req, res) => {
+  if (!req.query.user_id) {
+    res.status(400).send("Bad request");
+    return;
+  }
   const baseURL = "https://discord.com/api/oauth2/authorize";
 
   const params = new URLSearchParams({
@@ -15,8 +19,8 @@ router.get("/", async (req, res) => {
     scope: "identify",
   });
 
-  const url = `${baseURL}?${params}`;
-
+  let url = `${baseURL}?${params}`;
+  url += `&state=${req.query.user_id}`;
   res.send(url);
 });
 

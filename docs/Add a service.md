@@ -76,12 +76,18 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
+  if (!req.query.user_id) {
+    res.status(400).send("Bad request");
+    return;
+  }
   let url = ``;
 
   /*
     Build the OAuth URL
     for the service here
   */
+
+  url += `&state=${req.query.user_id}`; // Always keep this line at the end
 
   res.send(url);
 });
@@ -98,7 +104,7 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 
-const findUserInRequestCookies = require("@/utils/findUserInRequestCookies");
+const User = require("@/models/User");
 
 const initUserAuth = async (user) => {
   try {
@@ -114,6 +120,17 @@ const initUserAuth = async (user) => {
 };
 
 router.get("/callback", async (req, res) => {
+  const state = req.query.state;
+  if (!state) {
+    res.status(400).send("Bad request");
+    return;
+  }
+  const user = await User.findOne({ _id: state });
+  if (!user) {
+    res.status(400).send("User not found");
+    return;
+  }
+
   const {} = req.query; // To use in the case of URL parameters
   try {
     let accessTokens = {};
@@ -123,11 +140,6 @@ router.get("/callback", async (req, res) => {
       the service here
     */
 
-    const user = await findUserInRequestCookies(req);
-    if (!user) {
-      res.status(400).send("User not found");
-      return;
-    }
     if (!user.auth) await initUserAuth(user);
     user.auth.newservice = accessTokens;
     await user.save();
@@ -154,76 +166,17 @@ You will have to add here the code that gets the access_token(s) or other types 
 Close the `/server` folder and open `/web/src` instead.
 
 Open [`/pages/New/index.jsx`](/web/src/pages/New/index.jsx).
-There, you'll have to add: <br />
+There, you'll have to add the service to the React frontend: <br />
 
-- a variable declaration at the top of the App(user) function:
-
-```jsx
-const [serviceAccess, setServiceAccess] = useState("");
-```
-
-- a new statement in `getAuthentificationStates`:
 
 ```jsx
-function getAuthentificationStates(userData) {
-  // Keep the other services statements
-  setServiceAccess(userData?.auth?.name_short);
-  // replace name_short !
-}
-```
+// Import the icon of your service if needed at the top of the files
 
-- of course, the actual _Connect_ button:
-
-```jsx
-<button
-  className={
-    serviceAccess ? "login-button logged" : "login-button"
-  }
-  onClick={() => {
-    if (!serviceAccess) {
-      auth("service"); // replace the argument here
-    } else {
-      logout("service"); // and here
-    }
-  }}
->
-  <div className="service-name"> <!-- do not change the class name -->
-    <span>New Service</span>
-  </div>
-  {serviceAccessTokens ? "Connected" : "Connect"}
-</button>
-```
-
-- conditions in both `<select>` tags (to avoid future actions and reactions to appear in the lists if the user is not connected to the related service):
-
-```jsx
-{services.map(
-    (service) =>
-      (service.type !== "google" || googleAccess) &&
-      (service.type !== "github" || githubAccess) &&
-      // Add yours here !
-      service.actions.map((action) => (
-        <option value={`${service.name_short}_${action.name_short}`}>
-          {`${service.name_long} - ${action.name_long}`}
-        </option>
-      ))
-  );
-}
-
-// ...
-
-{services.map(
-    (service) =>
-      (service.type !== "google" || googleAccess) &&
-      (service.type !== "github" || githubAccess) &&
-      // Add yours here !
-      service.reactions.map((reaction) => (
-        <option
-          value={`${service.name_short}_${reaction.name_short}`}
-        >{`${service.name_long} - ${reaction.name_long}`}</option>
-      ))
-  );
-}
+const [servicesData, setServicesData] = useState({
+    deezer: { icon: faDeezer, display_name: "Deezer", service_name: "deezer", access: null },
+    discord: { icon: faDiscord, display_name: "Discord", service_name: "discord", access: null },
+    // Add your service with the same pattern
+  });
 ```
 
 You can now head to [localhost:8081/new](http://localhost:8081/new) (connected as a user) and try to click the button.<br />

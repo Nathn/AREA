@@ -7,6 +7,10 @@ const actions = require("./actions");
 const reactions = require("./reactions");
 
 router.get("/", async (req, res) => {
+  if (!req.query.user_id) {
+    res.status(400).send("Bad request");
+    return;
+  }
   const rootURL = "https://github.com/login/oauth/authorize";
 
   const options = {
@@ -18,16 +22,16 @@ router.get("/", async (req, res) => {
   const qs = new URLSearchParams(options);
 
   var qsString = qs.toString();
-  const qsArray = qsString.split('&');
+  const qsArray = qsString.split("&");
   for (let i = 0; i < qsArray.length; i++) {
-    if (qsArray[i].includes('redirect_uri')) {
+    if (qsArray[i].includes("redirect_uri")) {
       qsArray.splice(i, 1);
     }
   }
-  qsString = qsArray.join('&');
+  qsString = qsArray.join("&");
 
-  const url = rootURL + "?" + qsString;
-
+  let url = rootURL + "?" + qsString;
+  url += `&state=${req.query.user_id}`;
   res.send(url);
 });
 
