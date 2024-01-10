@@ -63,6 +63,10 @@ const userSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.Mixed,
       trim: true,
     },
+    deezer: {
+      type: mongoose.Schema.Types.Mixed,
+      trim: true,
+    },
   },
   action_reactions: [
     {

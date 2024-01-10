@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "firebase/compat/auth";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDiscord, faFacebook, faGithub, faGoogle, faMicrosoft, faReddit, faTwitch, faYammer } from "@fortawesome/free-brands-svg-icons";
+import { faDeezer, faDiscord, faFacebook, faGithub, faGoogle, faMicrosoft, faReddit, faTwitch, faYammer } from "@fortawesome/free-brands-svg-icons";
 
 import expressServer from "../../api/express-server";
 import "./index.css";
@@ -66,6 +66,7 @@ function App({ user, services }) {
   const [errorMessage, setErrorMessage] = useState("");
 
   const [servicesData, setServicesData] = useState({
+    deezer: { icon: faDeezer, display_name: "Deezer", service_name: "deezer", access: null },
     discord: { icon: faDiscord, display_name: "Discord", service_name: "discord", access: null },
     facebook: { icon: faFacebook, display_name: "Facebook", service_name: "facebook", access: null },
     github: { icon: faGithub, display_name: "GitHub", service_name: "github", access: null },
