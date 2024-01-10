@@ -20,9 +20,11 @@ router.post("/baseValues", async (req, res) => {
 
     const deezerApiHandler = new DeezerApiHandler(accessToken);
     const albums = await deezerApiHandler.getMyAlbums();
+    const playlists = await deezerApiHandler.getMyPlaylists();
 
     baseValues = {
       albums: albums,
+      playlists: playlists,
     }
 
     res.status(200).send(baseValues);
