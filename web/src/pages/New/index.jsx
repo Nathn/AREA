@@ -2,7 +2,17 @@ import React, { useState, useEffect } from "react";
 import "firebase/compat/auth";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDeezer, faDiscord, faFacebook, faGithub, faGoogle, faMicrosoft, faReddit, faTwitch, faYammer } from "@fortawesome/free-brands-svg-icons";
+import {
+  faDeezer,
+  faDiscord,
+  faFacebook,
+  faGithub,
+  faGoogle,
+  faMicrosoft,
+  faReddit,
+  faTwitch,
+  faYammer,
+} from "@fortawesome/free-brands-svg-icons";
 
 import expressServer from "../../api/express-server";
 import "./index.css";
@@ -33,10 +43,12 @@ const manageButtonState = (service, uid, servicesData, setServicesData) => {
   } else {
     logout(servicesData[service].service_name, servicesData, setServicesData);
   }
-}
+};
 
 const getUserData = () => {
-  const cookie = document.cookie.split(";").find((c) => c.trim().startsWith("userData="));
+  const cookie = document.cookie
+    .split(";")
+    .find((c) => c.trim().startsWith("userData="));
   if (!cookie) {
     window.location.assign("/login");
     return false;
@@ -57,7 +69,7 @@ const getAuthentificationStates = (userData, servicesData, setServicesData) => {
     servicesDataCopy[service].access = userData?.auth?.[service];
   });
   setServicesData(servicesDataCopy);
-}
+};
 
 function App({ user, services }) {
   const [action, setAction] = useState("");
@@ -69,18 +81,65 @@ function App({ user, services }) {
   const [errorMessage, setErrorMessage] = useState("");
 
   const [servicesData, setServicesData] = useState({
-    deezer: { icon: faDeezer, display_name: "Deezer", service_name: "deezer", access: null },
-    discord: { icon: faDiscord, display_name: "Discord", service_name: "discord", access: null },
-    facebook: { icon: faFacebook, display_name: "Facebook", service_name: "facebook", access: null },
-    github: { icon: faGithub, display_name: "GitHub", service_name: "github", access: null },
-    google: { icon: faGoogle, display_name: "Google", service_name: "google", access: null },
-    outlook: { icon: faMicrosoft, display_name: "Outlook", service_name: "outlook", access: null },
-    reddit: { icon: faReddit, display_name: "Reddit", service_name: "reddit", access: null },
-    twitch: { icon: faTwitch, display_name: "Twitch", service_name: "twitch", access: null },
-    yammer: { icon: faYammer, display_name: "Yammer", service_name: "yammer", access: null },
+    deezer: {
+      icon: faDeezer,
+      display_name: "Deezer",
+      service_name: "deezer",
+      access: null,
+    },
+    discord: {
+      icon: faDiscord,
+      display_name: "Discord",
+      service_name: "discord",
+      access: null,
+    },
+    facebook: {
+      icon: faFacebook,
+      display_name: "Facebook",
+      service_name: "facebook",
+      access: null,
+    },
+    github: {
+      icon: faGithub,
+      display_name: "GitHub",
+      service_name: "github",
+      access: null,
+    },
+    google: {
+      icon: faGoogle,
+      display_name: "Google",
+      service_name: "google",
+      access: null,
+    },
+    outlook: {
+      icon: faMicrosoft,
+      display_name: "Outlook",
+      service_name: "outlook",
+      access: null,
+    },
+    reddit: {
+      icon: faReddit,
+      display_name: "Reddit",
+      service_name: "reddit",
+      access: null,
+    },
+    twitch: {
+      icon: faTwitch,
+      display_name: "Twitch",
+      service_name: "twitch",
+      access: null,
+    },
+    yammer: {
+      icon: faYammer,
+      display_name: "Yammer",
+      service_name: "yammer",
+      access: null,
+    },
   });
 
-  const allServicesNames = Object.keys(servicesData).map((service) => servicesData[service].service_name);
+  const allServicesNames = Object.keys(servicesData).map(
+    (service) => servicesData[service].service_name
+  );
 
   useEffect(() => {
     let userData = null;
@@ -131,10 +190,20 @@ function App({ user, services }) {
 
   return (
     <div className="App">
-      <h1>Add an action/reaction</h1>
+      <h1 className="title">Add an automation</h1>
       <div className="buttons">
         {Object.keys(servicesData).map((service, index) => (
-          <button className={servicesData[service].access ? "login-button logged" : "login-button"} onClick={() => manageButtonState(service, uid, servicesData, setServicesData)} key={index}>
+          <button
+            className={
+              servicesData[service].access
+                ? "login-button logged"
+                : "login-button"
+            }
+            onClick={() =>
+              manageButtonState(service, uid, servicesData, setServicesData)
+            }
+            key={index}
+          >
             <div className="service-name">
               <FontAwesomeIcon icon={servicesData[service].icon} />
               <span>{servicesData[service].display_name}</span>
@@ -146,36 +215,58 @@ function App({ user, services }) {
 
       <form onSubmit={createActionReaction} className="form-action">
         <label htmlFor="action">Action</label>
-        <select name="action" id="action" defaultValue="" required onChange={(e) => setAction(e.target.value)}>
+        <select
+          name="action"
+          id="action"
+          defaultValue=""
+          required
+          onChange={(e) => setAction(e.target.value)}
+        >
           <option value="" disabled>
             Select an action
           </option>
-          {
-            services.sort((a, b) => a.name_long.localeCompare(b.name_long)).map((service) =>
-              allServicesNames.includes(service.type) && servicesData[service.type].access &&
-              service.actions.map((action) => (
-                <option value={`${service.name_short}_${action.name_short}`} key={`${service.name_short}_${action.name_short}`}>
-                  {`${service.name_long} - ${action.name_long}`}
-                </option>
-              ))
-            )
-          }
+          {services
+            .sort((a, b) => a.name_long.localeCompare(b.name_long))
+            .map(
+              (service) =>
+                allServicesNames.includes(service.type) &&
+                servicesData[service.type].access &&
+                service.actions.map((action) => (
+                  <option
+                    value={`${service.name_short}_${action.name_short}`}
+                    key={`${service.name_short}_${action.name_short}`}
+                  >
+                    {`${service.name_long} - ${action.name_long}`}
+                  </option>
+                ))
+            )}
         </select>
         <label htmlFor="reaction">Reaction</label>
-        <select name="reaction" id="reaction" defaultValue="" required onChange={(e) => setReaction(e.target.value)}>
+        <select
+          name="reaction"
+          id="reaction"
+          defaultValue=""
+          required
+          onChange={(e) => setReaction(e.target.value)}
+        >
           <option value="" disabled>
             Select a reaction
           </option>
-          {
-            services.sort((a, b) => a.name_long.localeCompare(b.name_long)).map((service) =>
-              allServicesNames.includes(service.type) && servicesData[service.type].access &&
-              service.reactions.map((reaction) => (
-                <option value={`${service.name_short}_${reaction.name_short}`} key={`${service.name_short}_${reaction.name_short}`}>
-                  {`${service.name_long} - ${reaction.name_long}`}
-                </option>
-              ))
-            )
-          }
+          {services
+            .sort((a, b) => a.name_long.localeCompare(b.name_long))
+            .map(
+              (service) =>
+                allServicesNames.includes(service.type) &&
+                servicesData[service.type].access &&
+                service.reactions.map((reaction) => (
+                  <option
+                    value={`${service.name_short}_${reaction.name_short}`}
+                    key={`${service.name_short}_${reaction.name_short}`}
+                  >
+                    {`${service.name_long} - ${reaction.name_long}`}
+                  </option>
+                ))
+            )}
         </select>
         <button>Create</button>
       </form>

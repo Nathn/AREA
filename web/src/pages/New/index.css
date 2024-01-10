@@ -29,8 +29,10 @@ select {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 20px;
+  margin: 0 auto 30px;
   align-items: center;
+  max-width: 60%;
+  flex-wrap: wrap;
 }
 
 button,

@@ -58,7 +58,11 @@ function Login() {
   };
   return (
     <div className="App">
-      <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+      <StyledFirebaseAuth
+        uiConfig={uiConfig}
+        firebaseAuth={firebase.auth()}
+        className="title"
+      />
     </div>
   );
 }
