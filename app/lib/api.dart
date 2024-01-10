@@ -29,8 +29,8 @@ class ExpressServer {
     return http.get(Uri.parse('$baseUrl/users/$uid'));
   }
 
-  Future<http.Response> serviceAuth(String service) {
-    return http.get(Uri.parse('$baseUrl/services/$service'));
+  Future<http.Response> serviceAuth(String service, String uid) {
+    return http.get(Uri.parse('$baseUrl/services/$service?user_id=$uid'));
   }
 
   Future<http.Response> logoutFromService(String service) {
