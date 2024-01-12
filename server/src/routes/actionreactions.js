@@ -1,11 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
-const findUserInRequestCookies = require("@/utils/findUserInRequestCookies");
-
 router.post("/createActionReaction/:action/:reaction", async (req, res) => {
   const { action, reaction } = req.params;
-  const user = await findUserInRequestCookies(req);
+  if (!req.query.user_id) {
+    res.status(400).send("Bad request");
+    return;
+  }
+  const user = await User.findOne({ _id: req.query.user_id });
   if (!user) {
     res.status(400).send("Bad request");
     return;
@@ -32,7 +34,11 @@ router.post("/createActionReaction/:action/:reaction", async (req, res) => {
 
 router.post("/updateActionReaction/:id/:key/:value", async (req, res) => {
   const { id, key, value } = req.params;
-  const user = await findUserInRequestCookies(req);
+  if (!req.query.user_id) {
+    res.status(400).send("Bad request");
+    return;
+  }
+  const user = await User.findOne({ _id: req.query.user_id });
   if (!user) {
     res.status(400).send("Bad request");
     return;
@@ -61,7 +67,11 @@ router.post("/updateActionReaction/:id/:key/:value", async (req, res) => {
 
 router.post("/deleteActionReaction/:id", async (req, res) => {
   const { id } = req.params;
-  const user = await findUserInRequestCookies(req);
+  if (!req.query.user_id) {
+    res.status(400).send("Bad request");
+    return;
+  }
+  const user = await User.findOne({ _id: req.query.user_id });
   if (!user) {
     res.status(400).send("Bad request");
     return;
