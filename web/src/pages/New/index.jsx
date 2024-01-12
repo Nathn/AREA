@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "firebase/compat/auth";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import {
   faDeezer,
   faDiscord,
@@ -250,6 +251,20 @@ function App({ user, services }) {
                 ))
             )}
         </select>
+        {action && action.split("_")[0] && action.split("_")[1] && (
+          <span className="info">
+            <FontAwesomeIcon
+              icon={faCircleInfo}
+              style={{ marginRight: "5px" }}
+            />
+            {
+              services
+                .find((a) => a.name_short === action.split("_")[0])
+                ?.actions.find((a) => a.name_short === action.split("_")[1])
+                ?.description
+            }
+          </span>
+        )}
         <label htmlFor="reaction">Reaction</label>
         <select
           name="reaction"
@@ -277,10 +292,32 @@ function App({ user, services }) {
                 ))
             )}
         </select>
+        {reaction && reaction.split("_")[0] && reaction.split("_")[1] && (
+          <span className="info">
+            <FontAwesomeIcon
+              icon={faCircleInfo}
+              style={{ marginRight: "5px" }}
+            />
+            {
+              services
+                .find((a) => a.name_short === reaction.split("_")[0])
+                ?.reactions.find((a) => a.name_short === reaction.split("_")[1])
+                ?.description
+            }
+          </span>
+        )}
         <button>Create</button>
       </form>
-      {successMessage && <p className="success">{successMessage}</p>}
-      {errorMessage && <p className="error">{errorMessage}</p>}
+      {successMessage && (
+        <p className="success" style={{ marginTop: "15px" }}>
+          {successMessage}
+        </p>
+      )}
+      {errorMessage && (
+        <p className="error" style={{ marginTop: "15px" }}>
+          {errorMessage}
+        </p>
+      )}
     </div>
   );
 }

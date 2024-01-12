@@ -7,7 +7,7 @@ h1 {
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
-  max-width: 300px;
+  max-width: 400px;
   margin: auto;
   padding: 20px;
   border: 1px solid #ccc;
@@ -42,7 +42,7 @@ button,
   gap: 5px;
   padding: 10px 20px;
   border: none;
-  border-radius: 5px;
+  border-radius: 5px !important;
   background-color: #007bff;
   color: white;
   cursor: pointer;
@@ -70,6 +70,12 @@ button:hover {
 
 .success {
   color: green;
+}
+
+.info {
+  color: #007bff;
+  text-align: left;
+  margin-bottom: 10px;
 }
 
 .error {
