@@ -172,12 +172,13 @@ function App({ user, services }) {
 
   const createActionReaction = (event) => {
     event.preventDefault();
-    expressServer.createActionReaction(action, reaction).then((response) => {
+    expressServer.createActionReaction(action, reaction, uid).then((response) => {
       if (response.status !== 200) {
         console.warn(response);
         setErrorMessage(response.data);
         return;
       }
+      setErrorMessage("");
       setSuccessMessage("Action/reaction successfully created.");
       const expiryDate = new Date();
       expiryDate.setDate(expiryDate.getDate() + 30);

@@ -42,8 +42,8 @@ function App({ user, services }) {
     });
   }, [user]);
 
-  const updateActionReaction = (id, key, value) => (event) => {
-    expressServer.updateActionReaction(id, key, value).then((response) => {
+  const updateActionReaction = (id, key, value, uid) => (event) => {
+    expressServer.updateActionReaction(id, key, value, uid).then((response) => {
       if (response.status !== 200) {
         console.warn(response);
         return;
@@ -58,8 +58,8 @@ function App({ user, services }) {
     });
   };
 
-  const deleteActionReaction = (id) => (event) => {
-    expressServer.deleteActionReaction(id).then((response) => {
+  const deleteActionReaction = (id, uid) => (event) => {
+    expressServer.deleteActionReaction(id, uid).then((response) => {
       if (response.status !== 200) {
         console.warn(response);
         return;
@@ -119,11 +119,11 @@ function App({ user, services }) {
                     ) : null
                   )
                 )}
-                <a onClick={deleteActionReaction(ar._id)} href="#">
+                <a onClick={deleteActionReaction(ar._id, userData._id)} href="#">
                   Delete
                 </a>
                 <FontAwesomeIcon
-                  onClick={updateActionReaction(ar._id, "enabled", !ar.enabled)}
+                  onClick={updateActionReaction(ar._id, "enabled", !ar.enabled, userData._id)}
                   className={ar.enabled ? "enabled" : "disabled"}
                   title={ar.enabled ? "Enabled" : "Disabled"}
                   icon={fasCircleDot}

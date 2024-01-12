@@ -33,41 +33,25 @@ class ExpressServer {
 
   logoutFromService(service, uid) {
     return this.api.post(
-      `/services/logout/${service}?user_id=${uid}`,
-      {},
-      {
-        withCredentials: true,
-      }
+      `/services/logout/${service}?user_id=${uid}`
     );
   }
 
-  createActionReaction(action, reaction) {
+  createActionReaction(action, reaction, uid) {
     return this.api.post(
-      "/createActionReaction/" + action + "/" + reaction,
-      {},
-      {
-        withCredentials: true,
-      }
+      `/createActionReaction/${action}/${reaction}?user_id=${uid}`
     );
   }
 
-  updateActionReaction(id, key, value) {
+  updateActionReaction(id, key, value, uid) {
     return this.api.post(
-      "/updateActionReaction/" + id + "/" + key + "/" + value,
-      {},
-      {
-        withCredentials: true,
-      }
+      `/updateActionReaction/${id}/${key}/${value}?user_id=${uid}`,
     );
   }
 
-  deleteActionReaction(arId) {
+  deleteActionReaction(arId, uid) {
     return this.api.post(
-      "/deleteActionReaction/" + arId,
-      {},
-      {
-        withCredentials: true,
-      }
+      `/deleteActionReaction/${arId}?user_id=${uid}`,
     );
   }
 }

@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+const User = require("../models/User");
+
 router.post("/createActionReaction/:action/:reaction", async (req, res) => {
   const { action, reaction } = req.params;
   if (!req.query.user_id) {
@@ -19,7 +21,7 @@ router.post("/createActionReaction/:action/:reaction", async (req, res) => {
   ) {
     res
       .status(201)
-      .send("This action/reaction is already active on your account");
+      .send("This action/reaction already exists on your account");
     return;
   }
   try {
