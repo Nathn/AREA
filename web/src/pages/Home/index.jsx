@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleDot as fasCircleDot } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleDot as fasCircleDot,
+  faArrowRight as fasArrowRight,
+} from "@fortawesome/free-solid-svg-icons";
 
 import expressServer from "../../api/express-server";
 import "./index.css";
@@ -109,7 +112,9 @@ function App({ user, services }) {
                     ) : null
                   )
                 )}
-                <span className="arrow">→</span>
+                <span className="arrow">
+                  <FontAwesomeIcon icon={fasArrowRight} />
+                </span>
                 {services.map((service) =>
                   service.reactions.map((reaction) =>
                     service.name_short + "_" + reaction.name_short ===
