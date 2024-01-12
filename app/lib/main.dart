@@ -6,6 +6,7 @@ import 'google_firebase.dart';
 import 'welcome.dart';
 import 'homescreen.dart';
 import 'add_actions.dart';
+import 'remove_actions.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
       title: 'AREA',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -33,6 +35,7 @@ class MyApp extends StatelessWidget {
         AuthenticationScreen.routeName: (context) => const AuthenticationScreen(),
         HomeScreen.routeName: (context) => const HomeScreen(),
         AddActionScreen.routeName: (context) => const AddActionScreen(),
+        RemoveScreen.routeName: (context) => const RemoveScreen(),
       },
     );
   }

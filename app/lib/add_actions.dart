@@ -80,6 +80,7 @@ class _AddActionScreenState extends State<AddActionScreen> {
     'reddit': false,
     'twitch': false,
     'youtube': false,
+    'deezer': false,
   };
   List<ServiceData> serviceDataList = [];
   String successMessage = '';
@@ -89,8 +90,12 @@ class _AddActionScreenState extends State<AddActionScreen> {
   String selectedReaction = '';
   String selectedServiceAction = '';
   String selectedServiceReaction = '';
-  // selectedAction and selectedReaction are used to store the selected action and reaction
-  // so that we can display the selected action and reaction in the UI
+
+  @override
+  void initState() {
+    super.initState();
+    service();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,11 +109,35 @@ class _AddActionScreenState extends State<AddActionScreen> {
       _buildServiceButton('facebook', 'Facebook', 'assets/images/facebook.png'),
       _buildServiceButton('reddit', 'Reddit', 'assets/images/reddit.png'),
       _buildServiceButton('twitch', 'Twitch', 'assets/images/twitch.png'),
-      _buildServiceButton('youtube', 'Youtube', 'assets/images/youtube.png'),
+      _buildServiceButton('deezer', 'Deezer', 'assets/images/deezer.png'),
     ];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('AREA')),
+      appBar: AppBar(
+        title: const Text(
+          'AREA',
+          style: TextStyle(
+            fontSize: 24.0,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 2.0,
+          ),
+        ),
+        backgroundColor: Colors.lightBlue, // Set your preferred background color
+        actions: [
+          IconButton(
+            icon: Icon(Icons.notifications),
+            onPressed: () {
+              // Add your notification icon onPressed logic here
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              // Add your settings icon onPressed logic here
+            },
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -138,15 +167,15 @@ class _AddActionScreenState extends State<AddActionScreen> {
                   value: selectedServiceAction.isNotEmpty ? selectedServiceAction : null,
                   onChanged: (String? newValue) {
                     setState(() {
+                      selectedAction = '';
                       selectedServiceAction = newValue ?? '';
                       // Reset selectedReaction when changing the service
-                      selectedReaction = '';
                     });
                   },
                   items: ServiceData.services.keys.map((String serviceName) {
                     return DropdownMenuItem<String>(
                       value: serviceName,
-                      child: Text(serviceName),
+                      child: new Text(serviceName),
                     );
                   }).toList(),
                 ),
@@ -160,15 +189,15 @@ class _AddActionScreenState extends State<AddActionScreen> {
                 value: selectedServiceReaction.isNotEmpty ? selectedServiceReaction : null,
                 onChanged: (String? newValue) {
                   setState(() {
+                    selectedReaction = '';
                     selectedServiceReaction = newValue ?? '';
                     // Reset selectedReaction when changing the service
-                    selectedReaction = '';
                   });
                 },
                 items: ServiceData.services.keys.map((String serviceName) {
                   return DropdownMenuItem<String>(
                     value: serviceName,
-                    child: Text(serviceName),
+                    child: new Text(serviceName),
                   );
                 }).toList(),
                 ),
@@ -195,8 +224,8 @@ class _AddActionScreenState extends State<AddActionScreen> {
                       items: ServiceData.getActions(selectedServiceAction)
                           .map((Map<String, dynamic> action) {
                         return DropdownMenuItem<String>(
-                          value: action['name_long'],
-                          child: Text(action['name_long']),
+                          value: action['name_short'],
+                          child: new Text(action['name_long']),
                         );
                       }).toList(),
                     ),
@@ -216,8 +245,8 @@ class _AddActionScreenState extends State<AddActionScreen> {
                       items: ServiceData.getReactions(selectedServiceReaction)
                           .map((Map<String, dynamic> reaction) {
                         return DropdownMenuItem<String>(
-                          value: reaction['name_long'],
-                          child: Text(reaction['name_long']),
+                          value: reaction['name_short'],
+                          child: new Text(reaction['name_long']),
                         );
                       }).toList(),
                     ),
@@ -228,6 +257,7 @@ class _AddActionScreenState extends State<AddActionScreen> {
             ElevatedButton(
               onPressed: () {
                 if (selectedAction.isNotEmpty && selectedReaction.isNotEmpty) {
+
                   // Call your function to create action/reaction
                   createActionReaction();
                 }
@@ -236,10 +266,7 @@ class _AddActionScreenState extends State<AddActionScreen> {
             ),
             // Your create button
             // If selectedAction and selectedReaction are not empty, show the create button
-            ElevatedButton(
-              onPressed: service,
-              child: const Text('services'),
-            ),
+
           ],
         ),
       ),
@@ -249,6 +276,7 @@ class _AddActionScreenState extends State<AddActionScreen> {
 
   }
   Widget _buildServiceButton(String service, String serviceName, String serviceImage) {
+
     return ElevatedButton(
       onPressed: () {
         if (!accessStates[service]!) {
@@ -309,8 +337,21 @@ class _AddActionScreenState extends State<AddActionScreen> {
   }
 
   void createActionReaction() async {
+    var uid = FirebaseAuth.instance.currentUser!.uid;
+    var id = await userid(uid);
+    Map<String, dynamic> state = json.decode(id);
+    String trueId = state['_id'];
+
+    // Parse selectedServiceAction and selectedServiceReaction to get a version in minuscule with spaces replaced by underscores
+    var newSelectedServiceAction = selectedServiceAction.toLowerCase().replaceAll(' ', '_');
+    var newSelectedServiceReaction = selectedServiceReaction.toLowerCase().replaceAll(' ', '_');
+
+    action = "${newSelectedServiceAction}_$selectedAction";
+    reaction = "${newSelectedServiceReaction}_$selectedReaction";
+    //return;
+
     await ExpressServer()
-        .createActionReaction(action, reaction)
+        .createActionReaction(action, reaction, trueId)
         .then((response) {
       if (response.statusCode != 200) {
         print(response);

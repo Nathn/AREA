@@ -3,10 +3,10 @@ import 'package:http/http.dart' as http;
 
 class ExpressServer {
 
-  final String baseUrl = "http://10.0.2.2:8080";
+  final String baseUrl = "http://127.0.0.1:8080";
 
   Future<http.Response> ping() {
-    return http.get(Uri.parse('$baseUrl/'));
+    return http.get(Uri.parse('$baseUrl/')); //k
   }
 
   Future<http.Response> about() {
@@ -40,9 +40,9 @@ class ExpressServer {
     );
   }
 
-  Future<http.Response> createActionReaction(String action, String reaction) {
+  Future<http.Response> createActionReaction(String action, String reaction, String uid) {
     return http.post(
-      Uri.parse('$baseUrl/createActionReaction/$action/$reaction'),
+      Uri.parse('$baseUrl/createActionReaction/$action/$reaction?user_id=$uid'),
       headers: {'withCredentials': 'true'},
     );
   }
@@ -54,9 +54,9 @@ class ExpressServer {
     );
   }
 
-  Future<http.Response> deleteActionReaction(String arId) {
+  Future<http.Response> deleteActionReaction(String arId, String uid) {
     return http.post(
-      Uri.parse('$baseUrl/deleteActionReaction/$arId'),
+      Uri.parse('$baseUrl/deleteActionReaction/$arId?user_id=$uid'),
       headers: {'withCredentials': 'true'},
     );
   }

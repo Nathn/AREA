@@ -23,7 +23,16 @@ class _GoogleSignInScreenState extends State<GoogleSignInScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       // IF authenticated, show user profile image in the app bar
-        appBar: AppBar(title: const Text('AREA'), actions: [
+        appBar: AppBar(        title: const Text(
+          'AREA',
+          style: TextStyle(
+            fontSize: 24.0,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 2.0,
+          ),
+        ),
+            backgroundColor: Colors.lightBlue, // Set your preferred background color
+            actions: [
           ValueListenableBuilder(
               valueListenable: userCredential,
               builder: (context, value, child) {
