@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
     client_id: process.env.DISCORD_CLIENT_ID,
     response_type: "code",
     redirect_uri: process.env.DISCORD_CALLBACK_URL,
-    scope: "identify",
+    scope: "identify guilds",
   });
 
   let url = `${baseURL}?${params}`;

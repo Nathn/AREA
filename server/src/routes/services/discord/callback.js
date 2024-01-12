@@ -31,7 +31,16 @@ router.get("/callback", async (req, res) => {
   }
   const code = req.query.code;
   try {
-    let data = `client_id=${process.env.DISCORD_CLIENT_ID}&client_secret=${process.env.DISCORD_CLIENT_SECRET}&grant_type=authorization_code&code=${code}&redirect_uri=${process.env.DISCORD_CALLBACK_URL}&scope=identify`;
+    let qs = new URLSearchParams({
+      client_id: process.env.DISCORD_CLIENT_ID,
+      client_secret: process.env.DISCORD_CLIENT_SECRET,
+      grant_type: "authorization_code",
+      code: code,
+      redirect_uri: process.env.DISCORD_CALLBACK_URL,
+      scope: "identify guilds",
+    });
+    let data = qs.toString();
+
     let headers = {
       "Content-Type": "application/x-www-form-urlencoded",
     };
