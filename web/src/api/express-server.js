@@ -31,9 +31,9 @@ class ExpressServer {
     return this.api.get(`/services/${service}?user_id=${uid}`);
   }
 
-  logoutFromService(service) {
+  logoutFromService(service, uid) {
     return this.api.post(
-      "/services/logout/" + service,
+      `/services/logout/${service}?user_id=${uid}`,
       {},
       {
         withCredentials: true,

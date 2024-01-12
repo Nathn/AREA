@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const findUserInRequestCookies = require("@/utils/findUserInRequestCookies");
-
+const User = require("@/models/User");
 const Service = require("@/models/Service");
 
 const deezer = require("./deezer");
@@ -33,7 +32,11 @@ router.get("/", async (req, res) => {
 router.post("/logout/:service", async (req, res) => {
   try {
     const { service } = req.params;
-    const user = await findUserInRequestCookies(req);
+    if (!req.query.user_id) {
+      res.status(400).send("Bad request");
+      return;
+    }
+    const user = await User.findOne({ _id: req.query.user_id });
     if (!user) {
       res.status(400).send("Bad request");
       return;

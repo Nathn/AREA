@@ -27,8 +27,8 @@ async function auth(service, uid) {
   });
 }
 
-async function logout(service, servicesData, setServicesData) {
-  await expressServer.logoutFromService(service).then((response) => {
+async function logout(service, uid, servicesData, setServicesData) {
+  await expressServer.logoutFromService(service, uid).then((response) => {
     if (response.status !== 200) {
       console.warn(response);
       return;
@@ -41,7 +41,7 @@ const manageButtonState = (service, uid, servicesData, setServicesData) => {
   if (!servicesData[service].access) {
     auth(servicesData[service].service_name, uid);
   } else {
-    logout(servicesData[service].service_name, servicesData, setServicesData);
+    logout(servicesData[service].service_name, uid, servicesData, setServicesData);
   }
 };
 
