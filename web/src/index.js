@@ -87,7 +87,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home user={user} services={services} />} />
         <Route path="/new" element={<New user={user} services={services} />} />
-        <Route path="/profil" element={<Profil user={user} />} />
+        <Route path="/profile" element={<Profil user={user} />} />
         {!user && <Route path="/login" element={<Login />} />}
       </Routes>
     </Router>

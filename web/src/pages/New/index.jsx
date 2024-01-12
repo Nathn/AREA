@@ -41,7 +41,12 @@ const manageButtonState = (service, uid, servicesData, setServicesData) => {
   if (!servicesData[service].access) {
     auth(servicesData[service].service_name, uid);
   } else {
-    logout(servicesData[service].service_name, uid, servicesData, setServicesData);
+    logout(
+      servicesData[service].service_name,
+      uid,
+      servicesData,
+      setServicesData
+    );
   }
 };
 
@@ -168,25 +173,28 @@ function App({ user, services }) {
         getAuthentificationStates(response.data, servicesData, setServicesData);
         return true;
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const createActionReaction = (event) => {
     event.preventDefault();
-    expressServer.createActionReaction(action, reaction, uid).then((response) => {
-      if (response.status !== 200) {
-        console.warn(response);
-        setErrorMessage(response.data);
+    expressServer
+      .createActionReaction(action, reaction, uid)
+      .then((response) => {
+        if (response.status !== 200) {
+          console.warn(response);
+          setErrorMessage(response.data);
+          return;
+        }
+        setErrorMessage("");
+        setSuccessMessage("Action/reaction successfully created.");
+        const expiryDate = new Date();
+        expiryDate.setDate(expiryDate.getDate() + 30);
+        document.cookie = `userData=${encodeURIComponent(
+          JSON.stringify(response.data) || ""
+        )}; expires=${expiryDate}; path=/; SameSite=Lax`;
         return;
-      }
-      setErrorMessage("");
-      setSuccessMessage("Action/reaction successfully created.");
-      const expiryDate = new Date();
-      expiryDate.setDate(expiryDate.getDate() + 30);
-      document.cookie = `userData=${encodeURIComponent(
-        JSON.stringify(response.data) || ""
-      )}; expires=${expiryDate}; path=/; SameSite=Lax`;
-      return;
-    });
+      });
   };
 
   return (

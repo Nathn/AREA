@@ -40,6 +40,7 @@ function App({ user, services }) {
       setUserData(response.data);
       return;
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const updateActionReaction = (id, key, value, uid) => (event) => {
@@ -119,11 +120,20 @@ function App({ user, services }) {
                     ) : null
                   )
                 )}
-                <a onClick={deleteActionReaction(ar._id, userData._id)} href="#">
+                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                <a
+                  onClick={deleteActionReaction(ar._id, userData._id)}
+                  href="#"
+                >
                   Delete
                 </a>
                 <FontAwesomeIcon
-                  onClick={updateActionReaction(ar._id, "enabled", !ar.enabled, userData._id)}
+                  onClick={updateActionReaction(
+                    ar._id,
+                    "enabled",
+                    !ar.enabled,
+                    userData._id
+                  )}
                   className={ar.enabled ? "enabled" : "disabled"}
                   title={ar.enabled ? "Enabled" : "Disabled"}
                   icon={fasCircleDot}

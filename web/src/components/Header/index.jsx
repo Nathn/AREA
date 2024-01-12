@@ -34,17 +34,26 @@ function Header({ user }) {
 
   return (
     <header id="navHeader">
-      <div style={{ display: "flex", alignItems: "center", gap: "25px" }}>
+      <a
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "25px",
+          color: "white",
+          textDecoration: "none",
+        }}
+        href="/"
+      >
         <img src="/logo512.png" alt="logo" width="50" height="50" />
         <h2 style={{ fontStyle: "italic", fontWeight: "bold" }}>AREA</h2>
-      </div>
+      </a>
 
       <nav id="navBar" ref={navRef}>
         <NavLink to="/">Home</NavLink>
         {user ? (
           <>
             <NavLink to="/new">New</NavLink>
-            <NavLink to="/profil">Profil</NavLink>
+            <NavLink to="/profile">Profile</NavLink>
             <Button variant="danger" onClick={() => firebase.auth().signOut()}>
               Logout
             </Button>

@@ -32,9 +32,7 @@ class ExpressServer {
   }
 
   logoutFromService(service, uid) {
-    return this.api.post(
-      `/services/logout/${service}?user_id=${uid}`
-    );
+    return this.api.post(`/services/logout/${service}?user_id=${uid}`);
   }
 
   createActionReaction(action, reaction, uid) {
@@ -45,14 +43,12 @@ class ExpressServer {
 
   updateActionReaction(id, key, value, uid) {
     return this.api.post(
-      `/updateActionReaction/${id}/${key}/${value}?user_id=${uid}`,
+      `/updateActionReaction/${id}/${key}/${value}?user_id=${uid}`
     );
   }
 
   deleteActionReaction(arId, uid) {
-    return this.api.post(
-      `/deleteActionReaction/${arId}?user_id=${uid}`,
-    );
+    return this.api.post(`/deleteActionReaction/${arId}?user_id=${uid}`);
   }
 }
 
