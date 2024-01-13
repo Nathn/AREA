@@ -63,7 +63,7 @@ function App({ user }) {
                 <span className="highlight">
                   {
                     Object.values(userData.auth).filter(
-                      (value) => value !== null
+                      (value) => value === true
                     ).length
                   }
                 </span>{" "}
