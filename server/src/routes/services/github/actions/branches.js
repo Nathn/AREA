@@ -29,7 +29,7 @@ const handleBranchOperation = async (req, res, operationType) => {
     }
 
     const publicRepositories = await githubApiHandler.getPublicRepositories();
-    const branches = await githubApiHandler.getBranchesForAllPublicRepositories(githubUser.login, publicRepositories);
+    const branches = await githubApiHandler.getBranchesForAllPublicRepositories(publicRepositories);
 
     const newBranchesSize = branches.map((repository) => repository?.length).reduce((a, b) => a + b, 0);
 

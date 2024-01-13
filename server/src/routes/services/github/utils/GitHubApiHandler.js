@@ -75,16 +75,16 @@ class GitHubApiHandler {
     return forks;
   }
 
-  async getBranchesForPublicRepository(username, repository) {
+  async getBranchesForPublicRepository(repository) {
     const url = `/repos/${username}/${repository}/branches`;
     return await this.getApi(url);
   }
 
-  async getBranchesForAllPublicRepositories(username, repositories) {
+  async getBranchesForAllPublicRepositories(repositories) {
     const branches = [];
     for (let i = 0; i < repositories.length; i++) {
       const repository = repositories[i];
-      const repositoryBranches = await this.getBranchesForPublicRepository(username, repository.name);
+      const repositoryBranches = await this.getBranchesForPublicRepository(repository?.owner?.login, repository?.name);
       branches.push(repositoryBranches);
     }
     return branches;
