@@ -100,7 +100,6 @@ class GitHubApiHandler {
 
   async commentPullRequest(username, repository, pullRequestNumber, comment) {
     const url = `/repos/${username}/${repository}/issues/${pullRequestNumber}/comments`;
-    console.log("url", url);
     const data = {
       body: comment,
     };

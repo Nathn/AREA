@@ -147,7 +147,7 @@ async function actionsPool() {
 
 async function startActionsPool() {
   services = await Service.find({});
-  actionsPoolInterval = setInterval(actionsPool, 5000);
+  actionsPoolInterval = setInterval(actionsPool, 10000);
 }
 
 function stopActionsPool() {

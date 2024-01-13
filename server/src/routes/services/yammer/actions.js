@@ -1,38 +1,29 @@
 const express = require("express");
 const router = express.Router();
-
-// Variable to store previous baseValues
-let previousBaseValues = {};
-// Exemple baseValues :       baseValues[message.id] = message.body.plain;
+const YammerApiHandler = require("./utils/YammerApiHandler");
 
 router.post("/sendMessage", async (req, res) => {
   const { user, baseValues } = req.body;
+  const userPrivateMessages = baseValues?.privateMessages?.messages;
 
-  if (!user || !baseValues) {
+  const accessToken = user?.auth?.yammer?.token;
+
+  if (!user || !userPrivateMessages || !accessToken) {
     res.status(400).send("Bad request");
     return;
   }
-
   try {
-    // Compare with previous baseValues to find differences
-    const baseValuesChanged = JSON.stringify(baseValues) !== JSON.stringify(previousBaseValues);
+    const lastMessage = userPrivateMessages[0];
 
-    if (baseValuesChanged) {
-      // Perform action if baseValues are different
-      console.log("BaseValues have changed. Performing action...");
-      console.log("BaseValues:", baseValues);
-      console.log("Previous BaseValues:", previousBaseValues);
-    }
+    const yammerApiHandler = new YammerApiHandler(accessToken);
+    const privateMessages = await yammerApiHandler.getPrivateMessages();
 
-    const result = true;
-
-    // Update previousBaseValues with the latest baseValues
-    previousBaseValues = { ...baseValues };
+    const newLastMessage = privateMessages?.messages[0];
 
     res.status(200).send({
-      result: result,
-      newBaseValues: previousBaseValues,
-      baseValuesId: "sentMessages",
+      result: lastMessage?.id !== newLastMessage?.id,
+      newBaseValues: privateMessages,
+      baseValuesId: "privateMessages",
     });
   } catch (error) {
     console.log(error);
