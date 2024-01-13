@@ -47,10 +47,10 @@ class DataFormater {
     return result;
   }
 
-  formatPublicRepositoriesCommits(publicRepositories, githubUser) {
+  formatPublicRepositoriesCommits(publicRepositories) {
     return Promise.all(
       publicRepositories.map(async (repo) => {
-        const commits = await this.githubApiHandler.getCommitsForPublicRepository(githubUser.login, repo.name);
+        const commits = await this.githubApiHandler.getCommitsForPublicRepository(repo?.owner?.login, repo?.name);
         return {
           repo_id: repo.id,
           commits: commits,
@@ -59,10 +59,10 @@ class DataFormater {
     );
   }
 
-  formatPublicRepositoriesPullRequests(publicRepositories, githubUser) {
+  formatPublicRepositoriesPullRequests(publicRepositories) {
     return Promise.all(
       publicRepositories.map(async (repo) => {
-        const pullRequests = await this.githubApiHandler.getPullRequestsForPublicRepository(githubUser.login, repo.name);
+        const pullRequests = await this.githubApiHandler.getPullRequestsForPublicRepository(repo?.owner?.login, repo?.name);
         return {
           repo_id: repo.id,
           pullRequests: pullRequests,

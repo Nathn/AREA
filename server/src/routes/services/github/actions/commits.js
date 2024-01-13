@@ -31,7 +31,7 @@ router.post("/pushCommit", async (req, res) => {
     }
 
     var publicRepositories = await githubApiHandler.getPublicRepositories();
-    var publicRepositoriesCommits = await dataFormater.formatPublicRepositoriesCommits(publicRepositories, githubUser);
+    var publicRepositoriesCommits = await dataFormater.formatPublicRepositoriesCommits(publicRepositories);
     var publicRepositoriesCommitsToCheck = publicRepositoriesCommits.map((repository) => repository?.commits);
 
     var newCommits = [];

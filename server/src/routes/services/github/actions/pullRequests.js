@@ -31,7 +31,7 @@ router.post("/createPullRequest", async (req, res) => {
     }
 
     const publicRepositories = await githubApiHandler.getPublicRepositories();
-    const publicRepositoriesPullRequests = await dataFormater.formatPublicRepositoriesPullRequests(publicRepositories, githubUser);
+    const publicRepositoriesPullRequests = await dataFormater.formatPublicRepositoriesPullRequests(publicRepositories);
     const publicRepositoriesPullRequestsToCheck = publicRepositoriesPullRequests.map((repository) => repository?.pullRequests);
 
     const newPullRequests = [];
