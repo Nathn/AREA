@@ -75,7 +75,7 @@ class GitHubApiHandler {
     return forks;
   }
 
-  async getBranchesForPublicRepository(repository) {
+  async getBranchesForPublicRepository(username, repository) {
     const url = `/repos/${username}/${repository}/branches`;
     return await this.getApi(url);
   }
