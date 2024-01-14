@@ -1,5 +1,7 @@
 FROM androidsdk/android-30
 
+USER root
+
 # Install flutter
 RUN apt-get update
 RUN apt-get install -y bash git unzip wget
@@ -28,5 +30,6 @@ RUN echo "flutter.versionCode=1" >> /app/android/local.properties
 COPY ./app /app
 WORKDIR /app
 
-RUN gradle --refresh-dependencies
-RUN flutter build apk
+RUN flutter pub get
+
+ENTRYPOINT ["./entrypoint.sh"]
