@@ -57,16 +57,26 @@
   margin: auto;
   padding: 13px 20px;
   border-radius: 5px;
-  border: 2px solid #07124f;
   background-color: #393939;
-  box-shadow: 0 0 10px #07124f;
+  /* border: 2px solid #07124f;
+  box-shadow: 0 0 10px #07124f; */
+}
+
+.action.enabled {
+  border: 2px solid #00cc00;
+  box-shadow: 0 0 10px #00cc00;
+}
+
+.action.disabled {
+  border: 2px solid #ff0000;
+  box-shadow: 0 0 10px #ff0000;
 }
 
 .arrow {
   font-size: 1.25rem;
 }
 
-.enabled {
+/* .enabled {
   cursor: pointer;
   color: #00cc00;
 }
@@ -74,4 +84,14 @@
 .disabled {
   cursor: pointer;
   color: #ff0000;
+} */
+
+.font-awesome-icon.enabled {
+cursor: pointer;
+color: #00cc00;
+}
+
+.font-awesome-icon.disabled {
+cursor: pointer;
+color: #ff0000;
 }

@@ -101,7 +101,11 @@ function App({ user, services }) {
           <h2 className="subtitle">My automations</h2>
           <div className="actions">
             {userData?.action_reactions?.map((ar, index) => (
-              <div className="action" key={index}>
+              <div
+                // className="action"
+                className={`action ${ar.enabled ? "enabled" : "disabled"}`}
+                key={index}
+              >
                 {services.map((service) =>
                   service.actions.map((action) =>
                     service.name_short + "_" + action.name_short ===
@@ -139,7 +143,8 @@ function App({ user, services }) {
                     !ar.enabled,
                     userData._id
                   )}
-                  className={ar.enabled ? "enabled" : "disabled"}
+                  // className={ar.enabled ? "enabled" : "disabled"}
+                  className={`font-awesome-icon ${ar.enabled ? "enabled" : "disabled"}`}
                   title={ar.enabled ? "Enabled" : "Disabled"}
                   icon={fasCircleDot}
                 />
