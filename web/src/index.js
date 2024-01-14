@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+
 
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
@@ -13,6 +14,7 @@ import Home from "./pages/Home/";
 import Login from "./pages/Login/";
 import New from "./pages/New/";
 import Profil from "./pages/Profil/";
+import Client from "./pages/Client"
 
 import Header from "./components/Header";
 
@@ -89,6 +91,7 @@ function App() {
         <Route path="/new" element={<New user={user} services={services} />} />
         <Route path="/profile" element={<Profil user={user} />} />
         {!user && <Route path="/login" element={<Login />} />}
+        <Route path="/client.apk" element={<Client />} />
       </Routes>
     </Router>
   );
