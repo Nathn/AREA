@@ -60,7 +60,10 @@ function Header({ user }) {
           <>
             <NavLink to="/new">New automation</NavLink>
             <NavLink to="/profile">Profile</NavLink>
-            <Button variant="danger" onClick={() => firebase.auth().signOut()}>
+            <Button variant="danger" onClick={() => {
+              firebase.auth().signOut();
+              window.location.assign("/");
+            }}>
               Logout
             </Button>
           </>
