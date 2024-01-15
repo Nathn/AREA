@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import Button from "react-bootstrap/Button";
 
-import "./index.css";
-
 function App({ user, services }) {
   useEffect(() => {
     window.onload = function () {

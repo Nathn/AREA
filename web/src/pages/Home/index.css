@@ -58,8 +58,6 @@
   padding: 13px 20px;
   border-radius: 5px;
   background-color: #393939;
-  /* border: 2px solid #07124f;
-  box-shadow: 0 0 10px #07124f; */
 }
 
 .action.enabled {
@@ -76,22 +74,12 @@
   font-size: 1.25rem;
 }
 
-/* .enabled {
+.font-awesome-icon.enabled {
   cursor: pointer;
   color: #00cc00;
 }
 
-.disabled {
+.font-awesome-icon.disabled {
   cursor: pointer;
   color: #ff0000;
-} */
-
-.font-awesome-icon.enabled {
-cursor: pointer;
-color: #00cc00;
-}
-
-.font-awesome-icon.disabled {
-cursor: pointer;
-color: #ff0000;
 }
