@@ -76,4 +76,5 @@
 #navBar a.active {
   font-weight: bold;
   text-decoration: underline;
+  text-underline-offset: 0.2rem;
 }

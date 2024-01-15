@@ -49,13 +49,17 @@ function Header({ user }) {
       </a>
 
       <nav id="navBar" ref={navRef}>
+        <Button
+          variant="primary"
+          onClick={() => window.location.assign("/client.apk")}
+        >
+          Get the app
+        </Button>
         <NavLink to="/">Home</NavLink>
         {user ? (
           <>
-            <NavLink to="/new">New</NavLink>
+            <NavLink to="/new">New automation</NavLink>
             <NavLink to="/profile">Profile</NavLink>
-            {/* /client.apk */}
-            <a href="/client.apk" _target="blank">Download APK</a>
             <Button variant="danger" onClick={() => firebase.auth().signOut()}>
               Logout
             </Button>
