@@ -1,5 +1,10 @@
 # Adding a Reaction to the AREA Project
 
+### [Return to the README](../README.md)
+---
+
+
+
 ## Overview
 
 This guide outlines the steps to add a new reaction to a [service](./Add%20a%20service.md) in the AREA project. Follow these instructions to seamlessly integrate your new reaction into the existing ecosystem.
@@ -86,3 +91,8 @@ Go check the [frontend](http://localhost:8081/), connect your account with the s
 
 Test it by linking it with an action of your choice. <br />
 If you encouters problems, check for errors by opening the **Network** tab of the devlopers tools panel of your browser, or the server's logs with the bash `docker logs -f area-server` command.
+
+---
+<br>
+
+### [Return to the README](../README.md)

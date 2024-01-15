@@ -10,6 +10,7 @@
     - [Benchmark](#benchmark)
   - [Requirements](#requirements)
   - [Launching the project](#launching-the-project)
+  - [Working on the project](#working-on-the-project)
 
 ## Description
 <p style="font-size:40px; color: cyan;font-weight:bold;">A<span style="color:white;font-weight:bold">ction</span></span><span style="color:gray;font-size:30px"> and</span> REA<span style="color:white">ction</span></p>
@@ -57,3 +58,11 @@ docker compose up -d
 ```
 
 Now you should be able to access the web application on [localhost:8081](http://localhost:8081) !
+
+### Working on the project
+If you want to work on the project and add new features.
+<br>
+Here are a few link to help you figure out :
+- ### [Add a reaction](./docs/Add_a_reaction.md)
+- ### [Add a service](./docs/Add_a_service.md)
+- ### [Add an action](./docs/Add_an_action.md)

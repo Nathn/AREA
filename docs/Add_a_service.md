@@ -1,5 +1,10 @@
 # Adding a Service to the AREA Project
 
+### [Return to the README](../README.md)
+---
+
+
+
 ## Overview
 
 This guide outlines the steps to add a new service to the AREA project. Follow these instructions to seamlessly integrate your service into the existing ecosystem.
@@ -184,3 +189,8 @@ After the OAuth screen is closed, the button should change color and the tokens 
 If it didn't work, open the Network tab of the developer tools and look for a 400 status code.
 
 Once everything is properly working, you can start adding [actions](./Add%20an%20action.md) and [reactions](./Add%20a%20reaction.md) !
+
+---
+<br>
+
+### [Return to the README](../README.md)
