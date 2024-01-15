@@ -1,6 +1,6 @@
 # AREA
 
-<img src="./img_src/place_holder.png" height="150px" style=";margin: 1em 30vh 0;z-index: 1">
+<img src="./img/place_holder.png" height="150px" style=";margin: 1em 30vh 0;z-index: 1">
 
 ## **Table of contents**
 - [AREA](#area)
