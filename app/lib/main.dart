@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:untitled/password_firebase.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as dotenv;
 import 'firebase_options.dart';
 import 'google_firebase.dart';
 import 'welcome.dart';
@@ -9,6 +10,7 @@ import 'add_actions.dart';
 import 'remove_actions.dart';
 
 void main() async {
+  await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
