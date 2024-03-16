@@ -6,19 +6,11 @@ FROM node:latest
 # Set working directory
 WORKDIR /app
 
+# Install http-server
 RUN npm install -g http-server
 
 # Copy package.json and package-lock.json
 COPY ./web/package*.json ./
 
-# Install dependencies and launch react application
-
-#WORKDIR /apk
-
-#RUN http-server -p 8090
-
-#WORKDIR /app
-
-#CMD [ "sh", "-c", "npm install --legacy-peer-deps && npm start" ]
-
+# Install dependencies and launch react app in the container
 ENTRYPOINT ["./entrypoint.sh"]
