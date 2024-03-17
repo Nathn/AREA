@@ -4,3 +4,7 @@ B-DEV-500_AREA.pdf
 # IDEs
 /.vscode
 /.idea
+
+# Garbage
+.DS_Store
+*Zone.Identifier
