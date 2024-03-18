@@ -24,13 +24,20 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  padding-right: 10%;
 }
 
 #navBar a {
   margin: 0 2rem;
   color: #ffffff;
   text-decoration: none;
+}
+
+#navBar a:first-of-type {
+  margin-left: 4rem;
+}
+
+#navBar a:last-of-type {
+  margin-right: 4rem;
 }
 
 #navBar a:hover {
@@ -70,6 +77,14 @@
 
   #navHeader a {
     font-size: 1.5rem;
+  }
+
+  #navBar a:first-of-type {
+    margin-left: 2rem;
+  }
+
+  #navBar a:last-of-type {
+    margin-right: 2rem;
   }
 }
 

@@ -1,5 +1,7 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 
@@ -7,6 +9,7 @@ import { FaBars, FaTimes } from "react-icons/fa";
 
 import Button from "react-bootstrap/Button";
 
+import expressServer from "../../api/express-server";
 import "./index.css";
 
 const firebaseConfig = {
@@ -27,6 +30,28 @@ if (!firebase.apps.length) {
 
 function Header({ user }) {
   const navRef = useRef(null);
+  const [displayAppButton, setDisplayAppButton] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    // Perform a request to the client.apk file
+    expressServer
+      .pingMobileAPK()
+      .then((response) => {
+        if (response.status !== 200) {
+          console.warn(response);
+          setDisplayAppButton(false);
+          return;
+        } else {
+          setDisplayAppButton(true);
+          return;
+        }
+      })
+      .catch(() => {
+        setDisplayAppButton(false);
+        return;
+      });
+  }, [location]);
 
   const showNavbar = () => {
     navRef.current.classList.toggle("responsive-nav");
@@ -49,21 +74,26 @@ function Header({ user }) {
       </a>
 
       <nav id="navBar" ref={navRef}>
-        <Button
-          variant="primary"
-          onClick={() => window.location.assign("/client.apk")}
-        >
-          Get the app
-        </Button>
+        {displayAppButton && (
+          <Button
+            variant="primary"
+            onClick={() => window.location.assign("/client.apk")}
+          >
+            Get the app
+          </Button>
+        )}
         <NavLink to="/">Home</NavLink>
         {user ? (
           <>
             <NavLink to="/new">New automation</NavLink>
             <NavLink to="/profile">Profile</NavLink>
-            <Button variant="danger" onClick={() => {
-              firebase.auth().signOut();
-              window.location.assign("/");
-            }}>
+            <Button
+              variant="danger"
+              onClick={() => {
+                firebase.auth().signOut();
+                window.location.assign("/");
+              }}
+            >
               Logout
             </Button>
           </>

@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 function App({ user, services }) {
   useEffect(() => {
     window.onload = function () {
-      window.location.assign("http://127.0.0.1:8090/client.apk");
+      window.location.assign(`${process.env.REACT_APP_MOBILE_PATH}/client.apk`);
     };
   }, []);
 

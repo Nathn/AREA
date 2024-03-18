@@ -2,53 +2,61 @@ import axios from "axios";
 
 class ExpressServer {
   constructor() {
-    this.api = axios.create({
+    this.serverAPI = axios.create({
       baseURL: process.env.REACT_APP_SERVER_URL,
+    });
+
+    this.mobileAPI = axios.create({
+      baseURL: process.env.REACT_APP_MOBILE_PATH,
     });
   }
 
   ping() {
-    return this.api.get("/");
+    return this.serverAPI.get("/");
+  }
+
+  pingMobileAPK() {
+    return this.mobileAPI.get("/client.apk");
   }
 
   about() {
-    return this.api.get("/about.json");
+    return this.serverAPI.get("/about.json");
   }
 
   getServices() {
-    return this.api.get("/services");
+    return this.serverAPI.get("/services");
   }
 
   createUser(user) {
-    return this.api.post("/register", user);
+    return this.serverAPI.post("/register", user);
   }
 
   getUserData(uid) {
-    return this.api.get("/users/" + uid);
+    return this.serverAPI.get("/users/" + uid);
   }
 
   serviceAuth(service, uid) {
-    return this.api.get(`/services/${service}?user_id=${uid}`);
+    return this.serverAPI.get(`/services/${service}?user_id=${uid}`);
   }
 
   logoutFromService(service, uid) {
-    return this.api.post(`/services/logout/${service}?user_id=${uid}`);
+    return this.serverAPI.post(`/services/logout/${service}?user_id=${uid}`);
   }
 
   createActionReaction(action, reaction, uid) {
-    return this.api.post(
+    return this.serverAPI.post(
       `/createActionReaction/${action}/${reaction}?user_id=${uid}`
     );
   }
 
   updateActionReaction(id, key, value, uid) {
-    return this.api.post(
+    return this.serverAPI.post(
       `/updateActionReaction/${id}/${key}/${value}?user_id=${uid}`
     );
   }
 
   deleteActionReaction(arId, uid) {
-    return this.api.post(`/deleteActionReaction/${arId}?user_id=${uid}`);
+    return this.serverAPI.post(`/deleteActionReaction/${arId}?user_id=${uid}`);
   }
 }
 
