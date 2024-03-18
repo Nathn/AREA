@@ -3,7 +3,7 @@ import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 
-import expressServer from "../../api/express-server";
+import APIClient from "../../api/APIClient";
 
 function Login() {
   const firebaseConfig = {
@@ -26,21 +26,19 @@ function Login() {
       signInSuccessWithAuthResult: function (authResult, redirectUrl) {
         redirectUrl = "/";
         if (authResult.additionalUserInfo.isNewUser) {
-          expressServer
-            .createUser({
-              uid: authResult.user.uid,
-              email: authResult.user.email,
-              name: authResult.user.displayName,
-              photoURL: authResult.user.photoURL,
-            })
-            .then((response) => {
-              if (response.status !== 200) {
-                console.log(response);
-                return false;
-              }
-              window.location.assign(redirectUrl);
+          APIClient.createUser({
+            uid: authResult.user.uid,
+            email: authResult.user.email,
+            name: authResult.user.displayName,
+            photoURL: authResult.user.photoURL,
+          }).then((response) => {
+            if (response.status !== 200) {
+              console.log(response);
               return false;
-            });
+            }
+            window.location.assign(redirectUrl);
+            return false;
+          });
         } else {
           window.location.assign(redirectUrl);
           return false;

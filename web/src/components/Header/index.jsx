@@ -9,7 +9,7 @@ import { FaBars, FaTimes } from "react-icons/fa";
 
 import Button from "react-bootstrap/Button";
 
-import expressServer from "../../api/express-server";
+import APIClient from "../../api/APIClient";
 import "./index.css";
 
 const firebaseConfig = {
@@ -35,8 +35,7 @@ function Header({ user }) {
 
   useEffect(() => {
     // Perform a request to the client.apk file
-    expressServer
-      .pingMobileAPK()
+    APIClient.pingMobileAPK()
       .then((response) => {
         if (response.status !== 200) {
           console.warn(response);

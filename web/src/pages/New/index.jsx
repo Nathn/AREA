@@ -15,11 +15,11 @@ import {
   faYammer,
 } from "@fortawesome/free-brands-svg-icons";
 
-import expressServer from "../../api/express-server";
+import APIClient from "../../api/APIClient";
 import "./index.css";
 
 async function auth(service, uid) {
-  await expressServer.serviceAuth(service, uid).then((response) => {
+  await APIClient.serviceAuth(service, uid).then((response) => {
     if (response.status !== 200) {
       console.warn(response);
       return;
@@ -29,7 +29,7 @@ async function auth(service, uid) {
 }
 
 async function logout(service, uid, servicesData, setServicesData) {
-  await expressServer.logoutFromService(service, uid).then((response) => {
+  await APIClient.logoutFromService(service, uid).then((response) => {
     if (response.status !== 200) {
       console.warn(response);
       return;
@@ -158,44 +158,40 @@ function App({ user, services }) {
       getAuthentificationStates(userData, servicesData, setServicesData);
     }
     // get user data from db
-    expressServer
-      .getUserData(user?.user?.uid || userData.uid)
-      .then((response) => {
-        if (response.status !== 200) {
-          console.warn(response);
-          return false;
-        }
-        const expiryDate = new Date();
-        expiryDate.setDate(expiryDate.getDate() + 30);
-        document.cookie = `userData=${encodeURIComponent(
-          JSON.stringify(response.data) || ""
-        )}; expires=${expiryDate}; path=/; SameSite=Lax`;
-        setUid(response.data._id);
-        getAuthentificationStates(response.data, servicesData, setServicesData);
-        return true;
-      });
+    APIClient.getUserData(user?.user?.uid || userData.uid).then((response) => {
+      if (response.status !== 200) {
+        console.warn(response);
+        return false;
+      }
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 30);
+      document.cookie = `userData=${encodeURIComponent(
+        JSON.stringify(response.data) || ""
+      )}; expires=${expiryDate}; path=/; SameSite=Lax`;
+      setUid(response.data._id);
+      getAuthentificationStates(response.data, servicesData, setServicesData);
+      return true;
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const createActionReaction = (event) => {
     event.preventDefault();
-    expressServer
-      .createActionReaction(action, reaction, uid)
-      .then((response) => {
-        if (response.status !== 200) {
-          console.warn(response);
-          setErrorMessage(response.data);
-          return;
-        }
-        setErrorMessage("");
-        setSuccessMessage("Action/reaction successfully created.");
-        const expiryDate = new Date();
-        expiryDate.setDate(expiryDate.getDate() + 30);
-        document.cookie = `userData=${encodeURIComponent(
-          JSON.stringify(response.data) || ""
-        )}; expires=${expiryDate}; path=/; SameSite=Lax`;
+    APIClient.createActionReaction(action, reaction, uid).then((response) => {
+      if (response.status !== 200) {
+        console.warn(response);
+        setErrorMessage(response.data);
         return;
-      });
+      }
+      setErrorMessage("");
+      setSuccessMessage("Action/reaction successfully created.");
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 30);
+      document.cookie = `userData=${encodeURIComponent(
+        JSON.stringify(response.data) || ""
+      )}; expires=${expiryDate}; path=/; SameSite=Lax`;
+      return;
+    });
   };
 
   return (

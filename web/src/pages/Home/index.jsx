@@ -6,7 +6,7 @@ import {
   faArrowRight as fasArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
 
-import expressServer from "../../api/express-server";
+import APIClient from "../../api/APIClient";
 import "./index.css";
 
 function App({ user, services }) {
@@ -14,7 +14,7 @@ function App({ user, services }) {
   const [about, setAbout] = useState(null);
 
   useEffect(() => {
-    expressServer.about().then((response) => {
+    APIClient.about().then((response) => {
       setAbout(response.data);
     });
   }, []);
@@ -30,7 +30,7 @@ function App({ user, services }) {
       setUserData(JSON.parse(decodeURIComponent(cookie.split("=")[1])));
     }
     // get user data from db
-    expressServer.getUserData(user?.uid || userData.uid).then((response) => {
+    APIClient.getUserData(user?.uid || userData.uid).then((response) => {
       if (response.status !== 200) {
         console.warn(response);
         return;
@@ -47,7 +47,7 @@ function App({ user, services }) {
   }, [user]);
 
   const updateActionReaction = (id, key, value, uid) => (event) => {
-    expressServer.updateActionReaction(id, key, value, uid).then((response) => {
+    APIClient.updateActionReaction(id, key, value, uid).then((response) => {
       if (response.status !== 200) {
         console.warn(response);
         return;
@@ -63,7 +63,7 @@ function App({ user, services }) {
   };
 
   const deleteActionReaction = (id, uid) => (event) => {
-    expressServer.deleteActionReaction(id, uid).then((response) => {
+    APIClient.deleteActionReaction(id, uid).then((response) => {
       if (response.status !== 200) {
         console.warn(response);
         return;
@@ -144,7 +144,9 @@ function App({ user, services }) {
                     userData._id
                   )}
                   // className={ar.enabled ? "enabled" : "disabled"}
-                  className={`font-awesome-icon ${ar.enabled ? "enabled" : "disabled"}`}
+                  className={`font-awesome-icon ${
+                    ar.enabled ? "enabled" : "disabled"
+                  }`}
                   title={ar.enabled ? "Enabled" : "Disabled"}
                   icon={fasCircleDot}
                 />

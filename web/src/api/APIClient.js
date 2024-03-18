@@ -1,6 +1,6 @@
 import axios from "axios";
 
-class ExpressServer {
+class Client {
   constructor() {
     this.serverAPI = axios.create({
       baseURL: process.env.REACT_APP_SERVER_URL,
@@ -60,5 +60,5 @@ class ExpressServer {
   }
 }
 
-const expressServer = new ExpressServer();
-export default expressServer;
+const APIClient = new Client();
+export default APIClient;

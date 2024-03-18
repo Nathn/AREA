@@ -7,7 +7,7 @@ import "firebase/compat/auth";
 
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import expressServer from "./api/express-server";
+import APIClient from "./api/APIClient";
 
 import Home from "./pages/Home/";
 import Login from "./pages/Login/";
@@ -62,7 +62,7 @@ function App() {
       setServices(servicesFromCookie);
     }
 
-    expressServer.getServices().then((response) => {
+    APIClient.getServices().then((response) => {
       setServices(response.data);
       const expiryDate = new Date();
       expiryDate.setDate(expiryDate.getDate() + 30);

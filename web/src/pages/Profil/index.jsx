@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import expressServer from "../../api/express-server";
+import APIClient from "../../api/APIClient";
 
 function App({ user }) {
   const [userData, setUserData] = useState(null);
@@ -16,7 +16,7 @@ function App({ user }) {
       setUserData(JSON.parse(decodeURIComponent(cookie.split("=")[1])));
     }
     // get user data from db
-    expressServer.getUserData(user?.uid || userData.uid).then((response) => {
+    APIClient.getUserData(user?.uid || userData.uid).then((response) => {
       if (response.status !== 200) {
         console.warn(response);
         return;
