@@ -51,12 +51,9 @@ function App() {
       setUser(userFromCookie);
     }
 
-    const servicesCookieValue = document.cookie
-      ?.split("; ")
-      ?.find((row) => row.startsWith("services="))
-      ?.split("=")[1];
+    const servicesCookieValue = localStorage.getItem("services");
     const servicesFromCookie = servicesCookieValue
-      ? JSON.parse(decodeURIComponent(servicesCookieValue))
+      ? JSON.parse(servicesCookieValue)
       : null;
     if (servicesFromCookie) {
       setServices(servicesFromCookie);
@@ -64,11 +61,7 @@ function App() {
 
     APIClient.getServices().then((response) => {
       setServices(response.data);
-      const expiryDate = new Date();
-      expiryDate.setDate(expiryDate.getDate() + 30);
-      document.cookie = `services=${encodeURIComponent(
-        JSON.stringify(response.data)
-      )}; expires=${expiryDate}; path=/; SameSite=Lax`;
+      localStorage.setItem("services", JSON.stringify(response.data));
     });
 
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
