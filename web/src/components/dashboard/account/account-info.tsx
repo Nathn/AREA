@@ -36,12 +36,6 @@ export function AccountInfo(): React.JSX.Element {
           </Stack>
         </Stack>
       </CardContent>
-      <Divider />
-      <CardActions>
-        <Button fullWidth variant="text">
-          Upload picture
-        </Button>
-      </CardActions>
     </Card>
   );
 }
