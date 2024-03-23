@@ -1,26 +1,31 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # Environment variables
-.env
+/.env
+/.env.local
+/.env.development.local
+/.env.test.local
+/.env.production.local
 
 # dependencies
 /node_modules
 /.pnp
 .pnp.js
-package-lock.json
+/package-lock.json
 
 # testing
 /coverage
 
 # production
 /build
+out
+.next
 
 # misc
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.eslintcache
+.idea
+old
 
 npm-debug.log*
 yarn-debug.log*

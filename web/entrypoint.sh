@@ -9,4 +9,4 @@ cd /app
 
 npm install --legacy-peer-deps
 
-npm start
+npm run dev
