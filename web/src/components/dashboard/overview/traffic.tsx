@@ -11,12 +11,22 @@ import Typography from '@mui/material/Typography';
 import type { Icon } from '@phosphor-icons/react/dist/lib/types';
 import { Desktop as DesktopIcon } from '@phosphor-icons/react/dist/ssr/Desktop';
 import { DeviceTablet as DeviceTabletIcon } from '@phosphor-icons/react/dist/ssr/DeviceTablet';
+import { GithubLogo as GithubLogoIcon } from '@phosphor-icons/react/dist/ssr/GithubLogo';
 import { Phone as PhoneIcon } from '@phosphor-icons/react/dist/ssr/Phone';
+import { RedditLogo as RedditLogoIcon } from '@phosphor-icons/react/dist/ssr/RedditLogo';
+import { YoutubeLogo as YoutubeLogoIcon } from '@phosphor-icons/react/dist/ssr/YoutubeLogo';
 import type { ApexOptions } from 'apexcharts';
 
 import { Chart } from '@/components/core/chart';
 
-const iconMapping = { Desktop: DesktopIcon, Tablet: DeviceTabletIcon, Phone: PhoneIcon } as Record<string, Icon>;
+const iconMapping = {
+  Desktop: DesktopIcon,
+  Tablet: DeviceTabletIcon,
+  Phone: PhoneIcon,
+  YouTube: YoutubeLogoIcon,
+  Reddit: RedditLogoIcon,
+  Github: GithubLogoIcon,
+} as Record<string, Icon>;
 
 export interface TrafficProps {
   chartSeries: number[];
@@ -29,7 +39,7 @@ export function Traffic({ chartSeries, labels, sx }: TrafficProps): React.JSX.El
 
   return (
     <Card sx={sx}>
-      <CardHeader title="Traffic source" />
+      <CardHeader title="Most used services" />
       <CardContent>
         <Stack spacing={2}>
           <Chart height={300} options={chartOptions} series={chartSeries} type="donut" width="100%" />
