@@ -7,32 +7,32 @@ import type { SxProps } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { ArrowDown as ArrowDownIcon } from '@phosphor-icons/react/dist/ssr/ArrowDown';
 import { ArrowUp as ArrowUpIcon } from '@phosphor-icons/react/dist/ssr/ArrowUp';
-import { Users as UsersIcon } from '@phosphor-icons/react/dist/ssr/Users';
+import { PlugsConnected as PlugsConnectedIcon } from '@phosphor-icons/react/dist/ssr/PlugsConnected';
 
-export interface TotalCustomersProps {
+export interface TotalAutomationsProps {
   diff?: number;
   trend: 'up' | 'down';
   sx?: SxProps;
   value: string;
 }
 
-export function TotalCustomers({ diff, trend, sx, value }: TotalCustomersProps): React.JSX.Element {
+export function TotalAutomations({ diff, trend, sx, value }: TotalAutomationsProps): React.JSX.Element {
   const TrendIcon = trend === 'up' ? ArrowUpIcon : ArrowDownIcon;
   const trendColor = trend === 'up' ? 'var(--mui-palette-success-main)' : 'var(--mui-palette-error-main)';
 
   return (
     <Card sx={sx}>
       <CardContent>
-        <Stack spacing={2}>
+        <Stack spacing={3}>
           <Stack direction="row" sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }} spacing={3}>
             <Stack spacing={1}>
               <Typography color="text.secondary" variant="overline">
-                Unique actions triggered
+                Total automations fired
               </Typography>
               <Typography variant="h4">{value}</Typography>
             </Stack>
-            <Avatar sx={{ backgroundColor: 'var(--mui-palette-success-main)', height: '56px', width: '56px' }}>
-              <UsersIcon fontSize="var(--icon-fontSize-lg)" />
+            <Avatar sx={{ backgroundColor: 'var(--mui-palette-primary-main)', height: '56px', width: '56px' }}>
+              <PlugsConnectedIcon fontSize="var(--icon-fontSize-lg)" />
             </Avatar>
           </Stack>
           {diff ? (

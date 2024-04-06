@@ -21,7 +21,7 @@ const statusMap = {
   refunded: { label: 'Rate limited', color: 'error' },
 } as const;
 
-export interface Order {
+export interface Log {
   id: string;
   customer: { name: string };
   amount: number;
@@ -29,12 +29,12 @@ export interface Order {
   createdAt: Date;
 }
 
-export interface LatestOrdersProps {
-  orders?: Order[];
+export interface LogsProps {
+  orders?: Log[];
   sx?: SxProps;
 }
 
-export function LatestOrders({ orders = [], sx }: LatestOrdersProps): React.JSX.Element {
+export function Logs({ orders = [], sx }: LogsProps): React.JSX.Element {
   return (
     <Card sx={sx}>
       <CardHeader title="Latest automations fired" />

@@ -28,13 +28,13 @@ const iconMapping = {
   Github: GithubLogoIcon,
 } as Record<string, Icon>;
 
-export interface TrafficProps {
+export interface ServicesChartProps {
   chartSeries: number[];
   labels: string[];
   sx?: SxProps;
 }
 
-export function Traffic({ chartSeries, labels, sx }: TrafficProps): React.JSX.Element {
+export function ServicesChart({ chartSeries, labels, sx }: ServicesChartProps): React.JSX.Element {
   const chartOptions = useChartOptions(labels);
 
   return (

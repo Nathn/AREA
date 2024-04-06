@@ -6,17 +6,17 @@ import Stack from '@mui/material/Stack';
 import type { SxProps } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { ArrowDown as ArrowDownIcon } from '@phosphor-icons/react/dist/ssr/ArrowDown';
+import { ArrowSquareOut as ArrowSquareOutIcon } from '@phosphor-icons/react/dist/ssr/ArrowSquareOut';
 import { ArrowUp as ArrowUpIcon } from '@phosphor-icons/react/dist/ssr/ArrowUp';
-import { Users as UsersIcon } from '@phosphor-icons/react/dist/ssr/Users';
 
-export interface TotalCustomersProps {
+export interface UniqueReactionsProps {
   diff?: number;
   trend: 'up' | 'down';
   sx?: SxProps;
   value: string;
 }
 
-export function UniqueReactions({ diff, trend, sx, value }: TotalCustomersProps): React.JSX.Element {
+export function UniqueReactions({ diff, trend, sx, value }: UniqueReactionsProps): React.JSX.Element {
   const TrendIcon = trend === 'up' ? ArrowUpIcon : ArrowDownIcon;
   const trendColor = trend === 'up' ? 'var(--mui-palette-success-main)' : 'var(--mui-palette-error-main)';
 
@@ -32,7 +32,7 @@ export function UniqueReactions({ diff, trend, sx, value }: TotalCustomersProps)
               <Typography variant="h4">{value}</Typography>
             </Stack>
             <Avatar sx={{ backgroundColor: 'var(--mui-palette-success-main)', height: '56px', width: '56px' }}>
-              <UsersIcon fontSize="var(--icon-fontSize-lg)" />
+              <ArrowSquareOutIcon fontSize="var(--icon-fontSize-lg)" />
             </Avatar>
           </Stack>
           {diff ? (

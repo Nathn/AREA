@@ -8,12 +8,12 @@ import type { SxProps } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import { ListBullets as ListBulletsIcon } from '@phosphor-icons/react/dist/ssr/ListBullets';
 
-export interface TasksProgressProps {
+export interface ServicesProgressProps {
   sx?: SxProps;
   value: number;
 }
 
-export function TasksProgress({ value, sx }: TasksProgressProps): React.JSX.Element {
+export function ServicesProgress({ value, sx }: ServicesProgressProps): React.JSX.Element {
   return (
     <Card sx={sx}>
       <CardContent>
