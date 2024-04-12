@@ -54,7 +54,6 @@ export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): Reac
       anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
       onClose={onClose}
       open={open}
-      slotProps={{ paper: { sx: { width: '240px' } } }}
     >
       <Box sx={{ p: '16px 20px ' }}>
         <Typography variant="subtitle1">Sofia Rivers</Typography>

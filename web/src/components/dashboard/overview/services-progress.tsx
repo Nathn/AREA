@@ -6,7 +6,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import Stack from '@mui/material/Stack';
 import type { SxProps } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import { ListBullets as ListBulletsIcon } from '@phosphor-icons/react/dist/ssr/ListBullets';
+import { Package as PackageIcon } from '@phosphor-icons/react/dist/ssr/Package';
 
 export interface ServicesProgressProps {
   sx?: SxProps;
@@ -26,7 +26,7 @@ export function ServicesProgress({ value, sx }: ServicesProgressProps): React.JS
               <Typography variant="h4">{value}%</Typography>
             </Stack>
             <Avatar sx={{ backgroundColor: 'var(--mui-palette-warning-main)', height: '56px', width: '56px' }}>
-              <ListBulletsIcon fontSize="var(--icon-fontSize-lg)" />
+              <PackageIcon fontSize="var(--icon-fontSize-lg)" />
             </Avatar>
           </Stack>
           <div>
