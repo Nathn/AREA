@@ -23,6 +23,7 @@ const statusMap = {
 
 export interface Log {
   id: string;
+  action: string;
   customer: { name: string };
   amount: number;
   status: 'pending' | 'delivered' | 'refunded';
@@ -55,7 +56,7 @@ export function Logs({ orders = [], sx }: LogsProps): React.JSX.Element {
 
               return (
                 <TableRow hover key={order.id}>
-                  <TableCell>{order.id}</TableCell>
+                  <TableCell>{order.action}</TableCell>
                   <TableCell>{order.customer.name}</TableCell>
                   <TableCell>{dayjs(order.createdAt).format('MMM D, YYYY [at] h:mm A')}</TableCell>
                   <TableCell>
